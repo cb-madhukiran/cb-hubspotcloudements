@@ -1,6 +1,5 @@
 let creates = [];
 let deletes = [];
-let updates = [];
 
 let prefix = "cb_";
 let companyProperties = steps.getPropertiesForHubspot.companyProperties
@@ -43,6 +42,10 @@ let createPropertyMapOfEntity = (properties) => {
   }
   return map;
 };
+let syncRulesforOrders = "true";
+if(steps.ConfigData.configJson.config_json.cloudElements.syncRuleForOrders !== undefined){
+    syncRulesforOrders = steps.ConfigData.configJson.config_json.cloudElements.syncRuleForOrders.sync;
+}
 
 if (retainHubspot) {
   //First "if" is to check for custom is true or not
@@ -280,26 +283,20 @@ if (retainHubspot) {
             },
           });
         }
-        if (steps.LoopOverHubGroups.entry.group === "chargebeeorderinfo") {
-          creates.push({
-            url: "https://api.hubapi.com/properties/v1/contacts/groups",
-            body: {
-              name: "chargebeeorderinfo",
-              displayName: "Chargebee order info",
-            },
-          });
+        if(steps.LoopOverHubGroups.entry.group === "chargebeeorderinfo"){
+            if (syncRulesforOrders=== "true") {
+                creates.push({
+                  url: "https://api.hubapi.com/properties/v1/contacts/groups",
+                  body: {
+                    name: "chargebeeorderinfo",
+                    displayName: "Chargebee order info",
+                  },
+                });  
+                addContactProperties();  
+            } 
         }
-
-        for (var k = 0; k < contactProperties.length; k++) {
-          if (
-            steps.LoopOverHubGroups.entry.group ===
-            contactProperties[k].groupName
-          ) {
-            creates.push({
-              url: "https://api.hubapi.com/properties/v1/contacts/properties",
-              body: contactProperties[k],
-            });
-          }
+        else{
+            addContactProperties();  
         }
       }
       if (steps.LoopOverHubGroups.entry.type === "deal") {
@@ -378,3 +375,15 @@ done({
   deletes: deletes,
   updates: updates
 });
+function addContactProperties() {
+    for (var k = 0; k < contactProperties.length; k++) {
+        if (steps.LoopOverHubGroups.entry.group ===
+            contactProperties[k].groupName) {
+            creates.push({
+                url: "https://api.hubapi.com/properties/v1/contacts/properties",
+                body: contactProperties[k],
+            });
+        }
+    }
+}
+
