@@ -1,0 +1,73 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31671,
+    "name": "HubSpotPut",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "IsValidUrl"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "IsValidUrl",
+            "onFailure": [
+                "Error"
+            ],
+            "onSuccess": [
+                "PutHttpData"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "PutHttpData",
+            "onFailure": [],
+            "onSuccess": [
+                "Result2"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200-600",
+                "body": "${steps.InputParams.body}",
+                "headers": "${steps.InputParams.headers}",
+                "method": "PUT",
+                "query": "",
+                "url": "${steps.InputParams.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "Result2",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "Error",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+done(steps.BulKInput.input !== undefined);

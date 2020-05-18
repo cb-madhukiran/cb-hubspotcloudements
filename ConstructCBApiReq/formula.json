@@ -1,0 +1,52 @@
+{
+    "active": true,
+    "api": "GET /getCBUrl",
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "description": "Generate Chargebee url for app/integrations for the given name",
+    "engine": "v3",
+    "id": 31428,
+    "method": "GET",
+    "name": "ConstructCBApiReq",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "RequestParams",
+            "onFailure": [],
+            "onSuccess": [
+                "ConstructCBApiReq"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ConstructCBApiReq",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorResponse",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "RequestParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/getCBUrl"
+}

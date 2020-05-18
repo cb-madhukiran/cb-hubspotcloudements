@@ -1,0 +1,98 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 35305,
+    "name": "HubSpotPatch",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "HubSpotPatchInputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotPostIsValidUrl"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HubSpotPostIsValidUrl",
+            "onFailure": [
+                "HubSpotPatchError"
+            ],
+            "onSuccess": [
+                "HubSpotPatchHttpData"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HubSpotPatchHttpData",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotPatchCallAgainHttp"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200-600",
+                "body": "${steps.HubSpotPatchInputParams.body}",
+                "headers": "${steps.HubSpotPatchInputParams.headers}",
+                "method": "PATCH",
+                "query": "",
+                "url": "${steps.HubSpotPatchInputParams.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HubSpotPatchCallAgainHttp",
+            "onFailure": [
+                "HubSpotPatchResult2"
+            ],
+            "onSuccess": [
+                "HubSpotPatchCBDelay"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HubSpotPatchCBDelay",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotPatchHttpData"
+            ],
+            "properties": {
+                "headers": "${steps.HubSpotPatchInputParams.delay.headers}",
+                "method": "GET",
+                "query": "${steps.HubSpotPatchInputParams.delay.query}",
+                "url": "${steps.HubSpotPatchInputParams.delay.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HubSpotPatchResult2",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HubSpotPatchError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotPatchInputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

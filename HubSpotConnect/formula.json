@@ -1,0 +1,138 @@
+{
+    "active": true,
+    "api": "GET /hubspot/connect",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31434,
+    "method": "GET",
+    "name": "HubSpotConnect",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "noError"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "noError",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "getChargebeeInstance"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "getChargebeeInstance",
+            "onFailure": [
+                "createChargebeeInstanceParams"
+            ],
+            "onSuccess": [
+                "chargebeeInstanceFound"
+            ],
+            "properties": {
+                "api": "/instances",
+                "method": "GET",
+                "query": "${steps.InputParams.chargebee.searchParam}"
+            },
+            "type": "request"
+        },
+        {
+            "name": "chargebeeInstanceFound",
+            "onFailure": [],
+            "onSuccess": [
+                "Updateconfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "Updateconfig",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateChargebeeConfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "UpdateChargebeeConfig",
+            "onFailure": [],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {
+                "body": "${steps.Updateconfig.body}",
+                "headers": "${steps.Updateconfig.headers}",
+                "method": "POST",
+                "url": "${steps.Updateconfig.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "createChargebeeInstanceParams",
+            "onFailure": [],
+            "onSuccess": [
+                "createChargebeeInstance"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "createChargebeeInstance",
+            "onFailure": [],
+            "onSuccess": [
+                "chargebeeInstanceCreated"
+            ],
+            "properties": {
+                "api": "${steps.createChargebeeInstanceParams.createChargebeeInstanceConfig.url}",
+                "body": "${steps.createChargebeeInstanceParams.createChargebeeInstanceConfig.body}",
+                "method": "POST"
+            },
+            "type": "request"
+        },
+        {
+            "name": "chargebeeInstanceCreated",
+            "onFailure": [],
+            "onSuccess": [
+                "Updateconfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorCard",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/connect"
+}

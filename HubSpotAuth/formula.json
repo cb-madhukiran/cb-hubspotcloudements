@@ -1,0 +1,33 @@
+{
+    "active": true,
+    "api": "GET /hubspot/auth",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31435,
+    "method": "GET",
+    "name": "HubSpotAuth",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "SendOptions",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "SendOptions"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/auth"
+}

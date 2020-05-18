@@ -1,0 +1,1 @@
+done(steps.GetCBOrder.response.code === 200 && steps.GetCBOrder.response.body.order_used === true);

@@ -1,0 +1,671 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31444,
+    "name": "HubSpotFullSyncDeals_old",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "SyncLog"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "SyncLog",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeConfigParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeConfigParams",
+            "onFailure": [],
+            "onSuccess": [
+                "GetCBCustomFields"
+            ],
+            "properties": {
+                "headers": "${steps.InputParams.config.auth}",
+                "method": "GET",
+                "query": "${steps.InputParams.config.query}",
+                "url": "${steps.InputParams.config.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "GetCBCustomFields",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateCustomFieldInfo"
+            ],
+            "properties": {
+                "headers": "${steps.InputParams.config.auth}",
+                "method": "GET",
+                "url": "${steps.InputParams.config.customFieldUrl}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "UpdateCustomFieldInfo",
+            "onFailure": [],
+            "onSuccess": [
+                "CustomersParam"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CustomersParam",
+            "onFailure": [],
+            "onSuccess": [
+                "DoContinue"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "DoContinue",
+            "onFailure": [
+                "SyncDone"
+            ],
+            "onSuccess": [
+                "TPParam"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "TPParam",
+            "onFailure": [],
+            "onSuccess": [
+                "GetTpData"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "GetTpData",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateTPList"
+            ],
+            "properties": {
+                "headers": "${steps.TPParam.auth}",
+                "method": "GET",
+                "query": "${steps.TPParam.query}",
+                "url": "${steps.TPParam.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "UpdateTPList",
+            "onFailure": [],
+            "onSuccess": [
+                "HaveTPOffset"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HaveTPOffset",
+            "onFailure": [
+                "GetHubSpotPipeLine"
+            ],
+            "onSuccess": [
+                "TPParam"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetHubSpotPipeLine",
+            "onFailure": [],
+            "onSuccess": [
+                "SubParam"
+            ],
+            "properties": {
+                "headers": "${steps.CustomersParam.hubspotAuth}",
+                "method": "GET",
+                "retryAttempts": "3",
+                "retryDelay": "300",
+                "retryStatusCodes": "502",
+                "url": "${steps.CustomersParam.stage}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "SubParam",
+            "onFailure": [],
+            "onSuccess": [
+                "IsValid"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "IsValid",
+            "onFailure": [
+                "SyncDone"
+            ],
+            "onSuccess": [
+                "GetAllSubscriptions"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetAllSubscriptions",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverSubscriptions"
+            ],
+            "properties": {
+                "headers": "${steps.SubParam.auth}",
+                "method": "GET",
+                "query": "${steps.SubParam.query}",
+                "url": "${steps.SubParam.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "LoopOverSubscriptions",
+            "onFailure": [
+                "HasNoSubOffset"
+            ],
+            "onSuccess": [
+                "DealInfo"
+            ],
+            "properties": {
+                "list": "${steps.GetAllSubscriptions.response.body.list}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "DealInfo",
+            "onFailure": [],
+            "onSuccess": [
+                "CBInfo"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CBInfo",
+            "onFailure": [],
+            "onSuccess": [
+                "GetCustomerEntityMappping"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "GetCustomerEntityMappping",
+            "onFailure": [],
+            "onSuccess": [
+                "HasAContactExist"
+            ],
+            "properties": {
+                "headers": "${steps.CBInfo.auth}",
+                "method": "GET",
+                "query": "${steps.CBInfo.query.customer}",
+                "url": "${steps.CBInfo.url.get}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HasAContactExist",
+            "onFailure": [
+                "UpdateSubscriptionError"
+            ],
+            "onSuccess": [
+                "GetCurrentHubSpotContact"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetCurrentHubSpotContact",
+            "onFailure": [
+                "HasAContactExistInHubSpot"
+            ],
+            "onSuccess": [
+                "HasAContactExistInHubSpot"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200,404",
+                "headers": "${steps.CustomersParam.hubspotAuth}",
+                "method": "GET",
+                "retry": "true",
+                "retryAttempts": "3",
+                "retryDelay": "300",
+                "retryStatusCodes": "502",
+                "url": "${steps.DealInfo.getContactId}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HasAContactExistInHubSpot",
+            "onFailure": [
+                "UpdateSubscriptionError"
+            ],
+            "onSuccess": [
+                "GetSubscriptionEntity"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetSubscriptionEntity",
+            "onFailure": [],
+            "onSuccess": [
+                "HasADealInEntityMapping"
+            ],
+            "properties": {
+                "headers": "${steps.CBInfo.auth}",
+                "method": "GET",
+                "query": "${steps.CBInfo.query.subscription}",
+                "url": "${steps.CBInfo.url.get}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HasADealInEntityMapping",
+            "onFailure": [
+                "DoLookupforDealInHubSpot"
+            ],
+            "onSuccess": [
+                "GetDealByID"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetDealByID",
+            "onFailure": [
+                "UpdateDealInfoFromEM"
+            ],
+            "onSuccess": [
+                "UpdateDealInfoFromEM"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200,404",
+                "headers": "${steps.CustomersParam.hubspotAuth}",
+                "method": "GET",
+                "retry": "true",
+                "retryAttempts": "3",
+                "retryDelay": "300",
+                "retryStatusCodes": "502",
+                "url": "${steps.DealInfo.getDealByID}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "UpdateDealInfoFromEM",
+            "onFailure": [],
+            "onSuccess": [
+                "HasAValidDealInHubSpot"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HasAValidDealInHubSpot",
+            "onFailure": [
+                "DoLookupforDealInHubSpot"
+            ],
+            "onSuccess": [
+                "GetInvoiceForDeal"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetInvoiceForDeal",
+            "onFailure": [],
+            "onSuccess": [
+                "DoGetPlan"
+            ],
+            "properties": {
+                "headers": "${steps.SubParam.auth}",
+                "method": "GET",
+                "query": "${steps.CBInfo.query.invoice}",
+                "url": "${steps.CBInfo.url.invoice}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "DoGetPlan",
+            "onFailure": [
+                "UpdateCBInfo"
+            ],
+            "onSuccess": [
+                "GetPlanByID"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetPlanByID",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateCBInfo"
+            ],
+            "properties": {
+                "headers": "${steps.SubParam.auth}",
+                "method": "GET",
+                "url": "${steps.CBInfo.planurl}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "UpdateCBInfo",
+            "onFailure": [],
+            "onSuccess": [
+                "IsDealCreate"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "IsDealCreate",
+            "onFailure": [
+                "PrepareDealUpdate"
+            ],
+            "onSuccess": [
+                "PrepareDealCreate"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "PrepareDealCreate",
+            "onFailure": [],
+            "onSuccess": [
+                "CreateDealInHubSpot"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CreateDealInHubSpot",
+            "onFailure": [
+                "DealCreateError"
+            ],
+            "onSuccess": [
+                "DealThirdpartyCreateParam"
+            ],
+            "properties": {
+                "body": "${steps.PrepareDealCreate.input}",
+                "headers": "${steps.CustomersParam.hubspotAuth}",
+                "method": "POST",
+                "retry": "true",
+                "retryAttempts": "3",
+                "retryDelay": "300",
+                "retryStatusCodes": "502",
+                "url": "${steps.DealInfo.url.createDeal}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "DealThirdpartyCreateParam",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateThirdPartyDeal"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "UpdateThirdPartyDeal",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverSubscriptions"
+            ],
+            "properties": {
+                "headers": "${steps.CBInfo.auth}",
+                "method": "POST",
+                "query": "${steps.DealInfo.updateQuery}",
+                "url": "${steps.CBInfo.url.update}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "DealCreateError",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateThirdPartyError6"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "UpdateThirdPartyError6",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverSubscriptions"
+            ],
+            "properties": {
+                "headers": "${steps.DealCreateError.url}",
+                "method": "POST",
+                "query": "${steps.DealCreateError.url}",
+                "url": "${steps.DealCreateError.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "PrepareDealUpdate",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateDealInHubSpot"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "UpdateDealInHubSpot",
+            "onFailure": [
+                "DealCreateError"
+            ],
+            "onSuccess": [
+                "DealThirdPartyCreateParam"
+            ],
+            "properties": {
+                "body": "${steps.PrepareDealUpdate.input}",
+                "headers": "${steps.CustomersParam.hubspotAuth}",
+                "method": "PUT",
+                "retry": "true",
+                "retryAttempts": "3",
+                "retryDelay": "300",
+                "retryStatusCodes": "502",
+                "url": "${steps.DealInfo.getDealByID}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "DealThirdPartyCreateParam",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateThirdPartyDeal"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "DoLookupforDealInHubSpot",
+            "onFailure": [
+                "GetInvoiceForDeal"
+            ],
+            "onSuccess": [
+                "GetDealsByContact"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetDealsByContact",
+            "onFailure": [
+                "DoLookupforDealByCompany"
+            ],
+            "onSuccess": [
+                "DoLookupforDealByCompany"
+            ],
+            "properties": {
+                "headers": "${steps.CustomersParam.hubspotAuth}",
+                "method": "GET",
+                "retry": "true",
+                "retryAttempts": "3",
+                "retryDelay": "300",
+                "retryStatusCodes": "502",
+                "url": "${steps.DealInfo.url.getDealByContact}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "DoLookupforDealByCompany",
+            "onFailure": [
+                "HasADealForLookup"
+            ],
+            "onSuccess": [
+                "GetDealsByCompany"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetDealsByCompany",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateDealInfo"
+            ],
+            "properties": {
+                "headers": "${steps.CustomersParam.hubspotAuth}",
+                "method": "GET",
+                "retry": "true",
+                "retryAttempts": "2",
+                "retryDelay": "300",
+                "retryStatusCodes": "502",
+                "url": "${steps.DealInfo.url.getDealByCompany}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "UpdateDealInfo",
+            "onFailure": [],
+            "onSuccess": [
+                "HasADealForLookup"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HasADealForLookup",
+            "onFailure": [
+                "NoOpenDealOption"
+            ],
+            "onSuccess": [
+                "GetLookUPDeal"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetLookUPDeal",
+            "onFailure": [],
+            "onSuccess": [
+                "HasLookUpDeal"
+            ],
+            "properties": {
+                "headers": "${steps.CustomersParam.hubspotAuth}",
+                "method": "GET",
+                "retry": "true",
+                "retryAttempts": "2",
+                "retryDelay": "300",
+                "retryStatusCodes": "502",
+                "url": "${steps.DealInfo.getDealByID}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HasLookUpDeal",
+            "onFailure": [
+                "NoOpenDealOption"
+            ],
+            "onSuccess": [
+                "GetInvoiceForDeal"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "NoOpenDealOption",
+            "onFailure": [
+                "LoopOverSubscriptions"
+            ],
+            "onSuccess": [
+                "GetInvoiceForDeal"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "UpdateSubscriptionError",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateThirdPartyError5"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "UpdateThirdPartyError5",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverSubscriptions"
+            ],
+            "properties": {
+                "headers": "${steps.UpdateSubscriptionError.auth}",
+                "method": "POST",
+                "query": "${steps.UpdateSubscriptionError.query}",
+                "url": "${steps.UpdateSubscriptionError.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HasNoSubOffset",
+            "onFailure": [
+                "SubParam"
+            ],
+            "onSuccess": [
+                "SyncDone"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "SyncDone",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

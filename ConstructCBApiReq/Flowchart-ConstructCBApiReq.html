@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ConstructCBApiReq</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>
+        var callback = function(){}
+    </script>
+    <style>
+        div.mermaidTooltip {
+                    margin-left: 50px;
+                    text-align: left;
+                    max-width: none;
+                }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+                    fill: #ffffff;
+                    stroke: rgb(200,200,200);
+                    stroke-width: 2px;
+                }
+        .mermaid .label {
+                  max-width: 50px;
+                }
+        table, th, td {
+                    border: 1px solid black;
+                }
+        table {
+                    border-spacing: 5px;
+                    border-radius: 5px;
+                    margin: auto;
+                }
+        th, td {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 5px;
+                }
+        th {
+                    color: blue;
+                }
+        td {
+                    width: 180px;
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                }
+        h2 {
+                    text-align: center;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                    padding: 1em;
+                }
+        .container {
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                    font-size: 11px;
+                    font-weight: 900;
+                }
+        body {
+                    font-family: 'Arial';
+                }
+        .edgeLabel {
+                    font-size: 9px;
+                }
+    </style>
+</head>
+<body>
+    <h2>
+        ConstructCBApiReq
+    </h2>
+    <div class="container">
+        <div class="mermaid">
+            graph TD
+
+                step-000((Trigger))
+            step-001(RequestParams)
+            step-002(ConstructCBApiReq)
+            step-003(sendErrorResponse)
+            step-004((END))
+
+                step-000== continue ==>step-001
+            step-001-- success -->step-002
+            step-002-- failure -->step-003
+            step-003-. done .->step-004
+
+                style step-004 stroke-width:3px,stroke-dasharray: 5, 5;
+
+                click step-000 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnRyaWdnZXI8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5UcmlnZ2VyIEVsZW1lbnQ6PC9iPjxicj48YnI+PHByZT4gICB0eXBlIDogbWFudWFsPGJyPiAgYXN5bmMgOiB0cnVlPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnUmVxdWVzdFBhcmFtcyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAndHlwZSc6ICdtYW51YWwnLDxicj4gICdhc3luYyc6IHRydWUsPGJyPiAgJ25hbWUnOiAndHJpZ2dlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7fTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "Trigger Element:<br><pre>   type : manual<br>  async : true</pre>"
+            click step-001 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlJlcXVlc3RQYXJhbXM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+ZG9uZSh0cmlnZ2VyLmFyZ3MpOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0NvbnN0cnVjdENCQXBpUmVxJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ1JlcXVlc3RQYXJhbXMnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdkb25lKHRyaWdnZXIuYXJncyk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done(trigger.args);</pre>"
+            click step-002 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNvbnN0cnVjdENCQXBpUmVxPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBzaXRlTmFtZSA9IHN0ZXBzLlJlcXVlc3RQYXJhbXNbJ3NpdGVOYW1lJ107PGJyPmxldCBkb21haW4gPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydkb21haW4nXTs8YnI+bGV0IGFwaVR5cGUgPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydhcGlUeXBlJ107PGJyPmxldCBhcGlOYW1lID0gc3RlcHMuUmVxdWVzdFBhcmFtc1snYXBpTmFtZSddOzxicj5sZXQgaW50ZWdyYXRpb24gPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydpbnRlZ3JhdGlvbiddOzxicj5sZXQgdHlwZSA9IHN0ZXBzLlJlcXVlc3RQYXJhbXNbJ3R5cGUnXTs8YnI+bGV0IGFwaUtleSA9IHN0ZXBzLlJlcXVlc3RQYXJhbXNbJ2FwaUtleSddOzxicj5sZXQgcGFzc3dvcmQgPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydwYXNzd29yZCddOzxicj5sZXQgcXVlcnlWYWwgPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydxdWVyeUpzb24nXTs8YnI+bGV0IGlucHV0VmFsID0gc3RlcHMuUmVxdWVzdFBhcmFtc1snaW5wdXRKc29uJ107PGJyPmxldCBib2R5VmFsID0gc3RlcHMuUmVxdWVzdFBhcmFtc1snYm9keUpzb24nXTs8YnI+bGV0IGhlYWRlclZhbCA9IHN0ZXBzLlJlcXVlc3RQYXJhbXNbJ2hlYWRlcnNKc29uJ107PGJyPmxldCByZXF1ZXN0VHlwZSA9IHN0ZXBzLlJlcXVlc3RQYXJhbXNbJ3JlcXVlc3RUeXBlJ107PGJyPmxldCBhcGlVcmwgPSAnJzs8YnI+bGV0IGhkclN0ciA9ICcnOzxicj5sZXQgaGVhZGVyQXV0aCA9IHt9Ozxicj5sZXQgYXBpRGF0YSA9IHt9Ozxicj4vL2FwaVR5cGUgMS4gQVBQIDIuaW50ZWdyYXRpb25WMSwgaW50ZWdyYXRpb25WMiBpbnRlZ3JhdGlvblYzPGJyPmlmKHNpdGVOYW1lID09PSB1bmRlZmluZWQgfHwgZG9tYWluID09PSB1bmRlZmluZWQpPGJyPns8YnI+ICBkb25lKHsnZXJyb3InOidJbnZhbGlkIHNpdGVOYW1lIG9yIGRvbWFpbid9KTs8YnI+fTxicj48YnI+aWYgKGFwaVR5cGU9PT0gdW5kZWZpbmVkIHx8IGFwaVR5cGUudG9VcHBlckNhc2UoKT09PSdBUFAnKTxicj57PGJyPiAgYXBpVXJsID0gJ2h0dHBzOi8vJyArIHNpdGVOYW1lICsgJy4nICsgZG9tYWluICsgJy9hcGkvdjIvJyArIGFwaU5hbWU7PGJyPn08YnI+ZWxzZTxicj57PGJyPiAgLy8naHR0cHM6Ly8nK3NpdGVOYW1lKycuaW50ZWdyYXRpb25zLicrc2l0ZURvbWFpbisnL2ludGVncmF0aW9ucy91cGRhdGVfdHBfaW50ZWdfY29uZicsPGJyPiAgaWYgKGludGVncmF0aW9uICE9PSB1bmRlZmluZWQgJiYgYXBpVHlwZSE9PSB1bmRlZmluZWQgJiYgYXBpVHlwZS50b1VwcGVyQ2FzZSgpID09PSAnSU5URUctSU5URUctVjInKTxicj4gIHs8YnI+ICAgIGFwaVVybCA9ICdodHRwczovLycgKyBzaXRlTmFtZSArICcuaW50ZWdyYXRpb25zLicgKyBkb21haW4gKyAnLycraW50ZWdyYXRpb24rJy9hcGkvdjIvJythcGlOYW1lOzxicj4gIH08YnI+ICBlbHNlIGlmIChpbnRlZ3JhdGlvbiAhPT0gdW5kZWZpbmVkICYmIGFwaVR5cGUgIT09IHVuZGVmaW5lZCAmJiBhcGlUeXBlLnRvVXBwZXJDYXNlKCkgPT09ICdJTlRFRy1WMicpPGJyPiAgezxicj4gICAgIGFwaVVybCA9ICdodHRwczovLycgKyBzaXRlTmFtZSArICcuaW50ZWdyYXRpb25zLicgKyBkb21haW4gKyAnL2FwaS92Mi8nICsgYXBpTmFtZTs8YnI+ICB9PGJyPiAgZWxzZSBpZiAoYXBpVHlwZSAhPT0gdW5kZWZpbmVkICYmIGFwaVR5cGUudG9VcHBlckNhc2UoKSA9PT0gJ0lOVEVHLUlOVEVHJyk8YnI+ICB7PGJyPiAgICAgYXBpVXJsID0gJ2h0dHBzOi8vJyArIHNpdGVOYW1lICsgJy5pbnRlZ3JhdGlvbnMuJyArIGRvbWFpbiArICcvaW50ZWdyYXRpb25zLycgKyBhcGlOYW1lOzxicj4gIH08YnI+ICBlbHNlIGlmIChhcGlUeXBlICE9PSB1bmRlZmluZWQgJiYgYXBpVHlwZS50b1VwcGVyQ2FzZSgpID09PSAnSU5URUctSU5URUctQVBJJyk8YnI+ICB7PGJyPiAgICAgYXBpVXJsID0gJ2h0dHBzOi8vJyArIHNpdGVOYW1lICsgJy5pbnRlZ3JhdGlvbnMuJyArIGRvbWFpbiArICcvaW50ZWdyYXRpb25zL2FwaS8nICsgYXBpTmFtZTs8YnI+ICB9PGJyPiAgZWxzZTxicj4gIHs8YnI+ICAgIGRvbmUoeydlcnJvcic6J2FwaVR5cGUgaXMgSW52YWxpZCd9KTs8YnI+ICB9PGJyPn08YnI+Ly9hcGlVcmwgaXMgcG9wdWxhdGVkPGJyPjxicj5pZiAoYXBpS2V5ICE9PSB1bmRlZmluZWQpPGJyPns8YnI+ICAgaGVhZGVyQXV0aCA9ICB7PGJyPiAgICAgICAgQXV0aG9yaXphdGlvbjogJ0Jhc2ljICcgKyBDRS5iNjQoYXBpS2V5ICsgJzonICsgcGFzc3dvcmQpPGJyPiAgICB9Ozxicj59PGJyPmVsc2U8YnI+ezxicj4gIGRvbmUoeydlcnJvcic6J2FwaUtleSBpcyBJbnZhbGlkJ30pOzxicj59PGJyPjxicj5pZihpbnB1dFZhbCA9PT0gdW5kZWZpbmVkKTxicj57PGJyPiAgaW5wdXRWYWwgPSB7fTs8YnI+fTxicj5pZiAocXVlcnlWYWwgPT09IHVuZGVmaW5lZCk8YnI+ezxicj4gIHF1ZXJ5VmFsID0ge307PGJyPn08YnI+Ly8gZnVuY3Rpb24gdGVzdChmZXIpezxicj4vLyAgIHJldHVybiBmZXIgKyd0ZXN0Jzs8YnI+Ly8gfTxicj5pZiAoT2JqZWN0LmtleXMoaGVhZGVyQXV0aCkubGVuZ3RoICE9PSAwICYmIChyZXF1ZXN0VHlwZSA9PT0gdW5kZWZpbmVkICkgfHwgKHJlcXVlc3RUeXBlLnRvVXBwZXJDYXNlKCkgPT09ICdHRVQnKSk8YnI+ezxicj4gIGFwaURhdGEgPSB7PGJyPiAgdXJsIDogYXBpVXJsLDxicj4gIGFwaUtleTphcGlLZXksPGJyPiAgYXV0aCA6IGhlYWRlckF1dGgsPGJyPiAgcXVlcnkgOiBxdWVyeVZhbCw8YnI+ICBpbnB1dCA6IGlucHV0VmFsLDxicj4gIHNpdGVEb21haW46ZG9tYWluLDxicj4gIHNpdGVOYW1lOnNpdGVOYW1lLDxicj4gIGhlYWRlcnM6aGVhZGVyVmFsLDxicj4gIHR5cGUgOiB0eXBlPGJyPiAgLy8gLy90ZXN0ZnVuY3Rpb24gOnRlc3Q8YnI+ICAvLyBhcGlLZXk6IHN0ZXBzLkNvbnN0cnVjdENCQXBpUmVxLmlucHV0LmFwaUtleSw8YnI+ICAvLyBoZWFkZXJzOiBzdGVwcy5Db25zdHJ1Y3RDQkFwaVJlcS5hdXRoLDxicj4gIC8vIHF1ZXJ5OiBzdGVwcy5Db25zdHJ1Y3RDQkFwaVJlcS5xdWVyeSw8YnI+ICAvLyBzaXRlRG9tYWluOiBzdGVwcy5Db25zdHJ1Y3RDQkFwaVJlcS5pbnB1dC5zaXRlRG9tYWluLDxicj4gIC8vIHNpdGVOYW1lOiBzdGVwcy5Db25zdHJ1Y3RDQkFwaVJlcS5pbnB1dC5zaXRlTmFtZSw8YnI+ICAvLyB0eXBlOiBzdGVwcy5Db25zdHJ1Y3RDQkFwaVJlcS50eXBlLDxicj4gIC8vIHVybDogc3RlcHMuQ29uc3RydWN0Q0JBcGlSZXEudXJsPGJyPiAgPGJyPn08YnI+fTxicj48YnI+ZWxzZSBpZiAoKHJlcXVlc3RUeXBlICE9PSB1bmRlZmluZWQgKSB8fCAocmVxdWVzdFR5cGUudG9VcHBlckNhc2UoKSA9PT0gJ1BPU1QnKSk8YnI+ezxicj4gIGFwaURhdGEgPSB7PGJyPiAgICBhcGlLZXk6IGFwaUtleSw8YnI+ICAgIHVybDogYXBpVXJsLDxicj4gICAgcXVlcnk6IHF1ZXJ5VmFsLDxicj4gICAgYm9keTogYm9keVZhbCw8YnI+ICAgIGhlYWRlcnM6IGhlYWRlclZhbCw8YnI+ICAgIHNpdGVOYW1lOnNpdGVOYW1lLDxicj4gICAgc2l0ZURvbWFpbjpkb21haW4sPGJyPiAgICB0eXBlOnR5cGU8YnI+ICAgIDxicj59PGJyPn08YnI+ZG9uZShhcGlEYXRhKTsgIDwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogW10sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdzZW5kRXJyb3JSZXNwb25zZSc8YnI+ICBdLDxicj4gICduYW1lJzogJ0NvbnN0cnVjdENCQXBpUmVxJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnbGV0IHNpdGVOYW1lID0gc3RlcHMuUmVxdWVzdFBhcmFtc1snc2l0ZU5hbWUnXTtcbmxldCBkb21haW4gPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydkb21haW4nXTtcbmxldCBhcGlUeXBlID0gc3RlcHMuUmVxdWVzdFBhcmFtc1snYXBpVHlwZSddO1xubGV0IGFwaU5hbWUgPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydhcGlOYW1lJ107XG5sZXQgaW50ZWdyYXRpb24gPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydpbnRlZ3JhdGlvbiddO1xubGV0IHR5cGUgPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWyd0eXBlJ107XG5sZXQgYXBpS2V5ID0gc3RlcHMuUmVxdWVzdFBhcmFtc1snYXBpS2V5J107XG5sZXQgcGFzc3dvcmQgPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydwYXNzd29yZCddO1xubGV0IHF1ZXJ5VmFsID0gc3RlcHMuUmVxdWVzdFBhcmFtc1sncXVlcnlKc29uJ107XG5sZXQgaW5wdXRWYWwgPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydpbnB1dEpzb24nXTtcbmxldCBib2R5VmFsID0gc3RlcHMuUmVxdWVzdFBhcmFtc1snYm9keUpzb24nXTtcbmxldCBoZWFkZXJWYWwgPSBzdGVwcy5SZXF1ZXN0UGFyYW1zWydoZWFkZXJzSnNvbiddO1xubGV0IHJlcXVlc3RUeXBlID0gc3RlcHMuUmVxdWVzdFBhcmFtc1sncmVxdWVzdFR5cGUnXTtcbmxldCBhcGlVcmwgPSBcJ1wnO1xubGV0IGhkclN0ciA9IFwnXCc7XG5sZXQgaGVhZGVyQXV0aCA9IHt9O1xubGV0IGFwaURhdGEgPSB7fTtcbi8vYXBpVHlwZSAxLiBBUFAgMi5pbnRlZ3JhdGlvblYxLCBpbnRlZ3JhdGlvblYyIGludGVncmF0aW9uVjNcbmlmKHNpdGVOYW1lID09PSB1bmRlZmluZWQgfHwgZG9tYWluID09PSB1bmRlZmluZWQpXG57XG4gIGRvbmUoe1wnZXJyb3JcJzpcJ0ludmFsaWQgc2l0ZU5hbWUgb3IgZG9tYWluXCd9KTtcbn1cblxuaWYgKGFwaVR5cGU9PT0gdW5kZWZpbmVkIHx8IGFwaVR5cGUudG9VcHBlckNhc2UoKT09PVwnQVBQXCcpXG57XG4gIGFwaVVybCA9IFwnaHR0cHM6Ly9cJyArIHNpdGVOYW1lICsgXCcuXCcgKyBkb21haW4gKyBcJy9hcGkvdjIvXCcgKyBhcGlOYW1lO1xufVxuZWxzZVxue1xuICAvL1wnaHR0cHM6Ly9cJytzaXRlTmFtZStcJy5pbnRlZ3JhdGlvbnMuXCcrc2l0ZURvbWFpbitcJy9pbnRlZ3JhdGlvbnMvdXBkYXRlX3RwX2ludGVnX2NvbmZcJyxcbiAgaWYgKGludGVncmF0aW9uICE9PSB1bmRlZmluZWQgJiYgYXBpVHlwZSE9PSB1bmRlZmluZWQgJiYgYXBpVHlwZS50b1VwcGVyQ2FzZSgpID09PSBcJ0lOVEVHLUlOVEVHLVYyXCcpXG4gIHtcbiAgICBhcGlVcmwgPSBcJ2h0dHBzOi8vXCcgKyBzaXRlTmFtZSArIFwnLmludGVncmF0aW9ucy5cJyArIGRvbWFpbiArIFwnL1wnK2ludGVncmF0aW9uK1wnL2FwaS92Mi9cJythcGlOYW1lO1xuICB9XG4gIGVsc2UgaWYgKGludGVncmF0aW9uICE9PSB1bmRlZmluZWQgJiYgYXBpVHlwZSAhPT0gdW5kZWZpbmVkICYmIGFwaVR5cGUudG9VcHBlckNhc2UoKSA9PT0gXCdJTlRFRy1WMlwnKVxuICB7XG4gICAgIGFwaVVybCA9IFwnaHR0cHM6Ly9cJyArIHNpdGVOYW1lICsgXCcuaW50ZWdyYXRpb25zLlwnICsgZG9tYWluICsgXCcvYXBpL3YyL1wnICsgYXBpTmFtZTtcbiAgfVxuICBlbHNlIGlmIChhcGlUeXBlICE9PSB1bmRlZmluZWQgJiYgYXBpVHlwZS50b1VwcGVyQ2FzZSgpID09PSBcJ0lOVEVHLUlOVEVHXCcpXG4gIHtcbiAgICAgYXBpVXJsID0gXCdodHRwczovL1wnICsgc2l0ZU5hbWUgKyBcJy5pbnRlZ3JhdGlvbnMuXCcgKyBkb21haW4gKyBcJy9pbnRlZ3JhdGlvbnMvXCcgKyBhcGlOYW1lO1xuICB9XG4gIGVsc2UgaWYgKGFwaVR5cGUgIT09IHVuZGVmaW5lZCAmJiBhcGlUeXBlLnRvVXBwZXJDYXNlKCkgPT09IFwnSU5URUctSU5URUctQVBJXCcpXG4gIHtcbiAgICAgYXBpVXJsID0gXCdodHRwczovL1wnICsgc2l0ZU5hbWUgKyBcJy5pbnRlZ3JhdGlvbnMuXCcgKyBkb21haW4gKyBcJy9pbnRlZ3JhdGlvbnMvYXBpL1wnICsgYXBpTmFtZTtcbiAgfVxuICBlbHNlXG4gIHtcbiAgICBkb25lKHtcJ2Vycm9yXCc6XCdhcGlUeXBlIGlzIEludmFsaWRcJ30pO1xuICB9XG59XG4vL2FwaVVybCBpcyBwb3B1bGF0ZWRcblxuaWYgKGFwaUtleSAhPT0gdW5kZWZpbmVkKVxue1xuICAgaGVhZGVyQXV0aCA9ICB7XG4gICAgICAgIEF1dGhvcml6YXRpb246IFwnQmFzaWMgXCcgKyBDRS5iNjQoYXBpS2V5ICsgXCc6XCcgKyBwYXNzd29yZClcbiAgICB9O1xufVxuZWxzZVxue1xuICBkb25lKHtcJ2Vycm9yXCc6XCdhcGlLZXkgaXMgSW52YWxpZFwnfSk7XG59XG5cbmlmKGlucHV0VmFsID09PSB1bmRlZmluZWQpXG57XG4gIGlucHV0VmFsID0ge307XG59XG5pZiAocXVlcnlWYWwgPT09IHVuZGVmaW5lZClcbntcbiAgcXVlcnlWYWwgPSB7fTtcbn1cbi8vIGZ1bmN0aW9uIHRlc3QoZmVyKXtcbi8vICAgcmV0dXJuIGZlciArXCd0ZXN0XCc7XG4vLyB9XG5pZiAoT2JqZWN0LmtleXMoaGVhZGVyQXV0aCkubGVuZ3RoICE9PSAwICYmIChyZXF1ZXN0VHlwZSA9PT0gdW5kZWZpbmVkICkgfHwgKHJlcXVlc3RUeXBlLnRvVXBwZXJDYXNlKCkgPT09IFwnR0VUXCcpKVxue1xuICBhcGlEYXRhID0ge1xuICB1cmwgOiBhcGlVcmwsXG4gIGFwaUtleTphcGlLZXksXG4gIGF1dGggOiBoZWFkZXJBdXRoLFxuICBxdWVyeSA6IHF1ZXJ5VmFsLFxuICBpbnB1dCA6IGlucHV0VmFsLFxuICBzaXRlRG9tYWluOmRvbWFpbixcbiAgc2l0ZU5hbWU6c2l0ZU5hbWUsXG4gIGhlYWRlcnM6aGVhZGVyVmFsLFxuICB0eXBlIDogdHlwZVxuICAvLyAvL3Rlc3RmdW5jdGlvbiA6dGVzdFxuICAvLyBhcGlLZXk6IHN0ZXBzLkNvbnN0cnVjdENCQXBpUmVxLmlucHV0LmFwaUtleSxcbiAgLy8gaGVhZGVyczogc3RlcHMuQ29uc3RydWN0Q0JBcGlSZXEuYXV0aCxcbiAgLy8gcXVlcnk6IHN0ZXBzLkNvbnN0cnVjdENCQXBpUmVxLnF1ZXJ5LFxuICAvLyBzaXRlRG9tYWluOiBzdGVwcy5Db25zdHJ1Y3RDQkFwaVJlcS5pbnB1dC5zaXRlRG9tYWluLFxuICAvLyBzaXRlTmFtZTogc3RlcHMuQ29uc3RydWN0Q0JBcGlSZXEuaW5wdXQuc2l0ZU5hbWUsXG4gIC8vIHR5cGU6IHN0ZXBzLkNvbnN0cnVjdENCQXBpUmVxLnR5cGUsXG4gIC8vIHVybDogc3RlcHMuQ29uc3RydWN0Q0JBcGlSZXEudXJsXG4gIFxufVxufVxuXG5lbHNlIGlmICgocmVxdWVzdFR5cGUgIT09IHVuZGVmaW5lZCApIHx8IChyZXF1ZXN0VHlwZS50b1VwcGVyQ2FzZSgpID09PSBcJ1BPU1RcJykpXG57XG4gIGFwaURhdGEgPSB7XG4gICAgYXBpS2V5OiBhcGlLZXksXG4gICAgdXJsOiBhcGlVcmwsXG4gICAgcXVlcnk6IHF1ZXJ5VmFsLFxuICAgIGJvZHk6IGJvZHlWYWwsXG4gICAgaGVhZGVyczogaGVhZGVyVmFsLFxuICAgIHNpdGVOYW1lOnNpdGVOYW1lLFxuICAgIHNpdGVEb21haW46ZG9tYWluLFxuICAgIHR5cGU6dHlwZVxuICAgIFxufVxufVxuZG9uZShhcGlEYXRhKTsgICc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let siteName = steps.RequestParams['siteName'];<br>let domain = steps.RequestParams['domain'];<br>let apiType = steps.RequestParams['apiType'];<br>let apiName = steps.RequestParams['apiName'];<br>let integration = steps.RequestParams['integration'];<br>let type = steps.RequestParams['type'];<br>let apiKey = steps.RequestParams['apiKey'];<br>let password = steps.RequestParams['password'];<br>let queryVal = steps.RequestParams['queryJson'];<br>let inputVal = steps.RequestParams['inputJson'];<br>let bodyVal = steps.RequestParams['bodyJson'];<br>let headerVal = steps.RequestParams['headersJson'];<br>let requestType = steps.RequestParams['requestType'];<br>let apiUrl = '';<br>let hdrStr = '';<br>let headerAuth = {};<br>let apiData = {};<br>//apiType 1. APP 2.integrationV1, integrationV2 integrationV3<br>if(siteName === undefined || domain === undefined)<br>{<br>  done({'error':'Invalid siteName or domain'});<br>}<br><br>if (apiType=== undefined || apiType.toUpperCase()==='APP')<br>{<br>  apiUrl = 'https://' + siteName + '.' + domain + '/api/v2/' + apiName;<br>}<br>else<br>{<br>  //'https://'+siteName+'.integrations.'+siteDomain+'/integrations/update_tp_integ_conf',<br>  if (integration !== undefined && apiType!== undefined && apiType.toUpperCase() === 'INTEG-INTEG-V2')<br>  {<br>    apiUrl = 'https://' + siteName + '.integrations.' + domain + '/'+integration+'/api/v2/'+apiName;<br>  }<br>  else if (integration !== undefined && apiType !== undefined && apiType.toUpperCase() === 'INTEG-V2')<br>  {<br>     apiUrl = 'https://' + siteName + '.integrations.' + domain + '/api/v2/' + apiName;<br>  }<br>  else if (apiType !== undefined && apiType.toUpperCase() === 'INTEG-INTEG')<br>  {<br>     apiUrl = 'https://' + siteName + '.integrations.' + domain + '/integrations/' + apiName;<br>  }<br>  else if (apiType !== undefined && apiType.toUpperCase() === 'INTEG-INTEG-API')<br>  {<br>     apiUrl = 'https://' + siteName + '.integrations.' + domain + '/integrations/api/' + apiName;<br>  }<br>  else<br>  {<br>    done({'error':'apiType is Invalid'});<br>  }<br>}<br>//apiUrl is populated<br><br>if (apiKey !== undefined)<br>{<br>   headerAuth =  {<br>        Authorization: 'Basic ' + CE.b64(apiKey + ':' + password)<br>    };<br>}<br>else<br>{<br>  done({'error':'apiKey is Invalid'});<br>}<br><br>if(inputVal === undefined)<br>{<br>  inputVal = {};<br>}<br>if (queryVal === undefined)<br>{<br>  queryVal = {};<br>}<br>// function test(fer){<br>//   return fer +'test';<br>// }<br>if (Object.keys(headerAuth).length !== 0 && (requestType === undefined ) || (requestType.toUpperCase() === 'GET'))<br>{<br>  apiData = {<br>  url : apiUrl,<br>  apiKey:apiKey,<br>  auth : headerAuth,<br>  query : queryVal,<br>  input : inputVal,<br>  siteDomain:domain,<br>  siteName:siteName,<br>  headers:headerVal,<br>  type : type<br>  // //testfunction :test<br>  // apiKey: steps.ConstructCBApiReq.input.apiKey,<br>  // headers: steps.ConstructCBApiReq.auth,<br>  // query: steps.ConstructCBApiReq.query,<br>  // siteDomain: steps.ConstructCBApiReq.input.siteDomain,<br>  // siteName: steps.ConstructCBApiReq.input.siteName,<br>  // type: steps.ConstructCBApiReq.type,<br>  // url: steps.ConstructCBApiReq.url<br>  <br>}<br>}<br><br>else if ((requestType !== undefined ) || (requestType.toUpperCase() === 'POST'))<br>{<br>  apiData = {<br>    apiKey: apiKey,<br>    url: apiUrl,<br>    query: queryVal,<br>    body: bodyVal,<br>    headers: headerVal,<br>    siteName:siteName,<br>    siteDomain:domain,<br>    type:type<br>    <br>}<br>}<br>done(apiData);  </pre>"
+            click step-003 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnNlbmRFcnJvclJlc3BvbnNlPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUoeydlcnJvcic6J0Vycm9yIHdoaWxlIGNvbnN0cnVjdGluZyBhcGkgZGF0YSd9KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFtdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdzZW5kRXJyb3JSZXNwb25zZScsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUoe1wnZXJyb3JcJzpcJ0Vycm9yIHdoaWxlIGNvbnN0cnVjdGluZyBhcGkgZGF0YVwnfSk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done({'error':'Error while constructing api data'});</pre>"
+
+        </div>
+    </div>
+    <h2>
+        Formula Configuration
+    </h2>
+    <div class="container">
+        <h3>Basic</h3><table><tr><th>key</th><th>value</th></tr><tr><td>Name</td><td>ConstructCBApiReq</td></tr><tr><td>Single Threaded?</td><td>false</td></tr><tr><td>Active?</td><td>true</td></tr><tr><td>Number of Steps</td><td>4</td></tr><tr><td>Number of Triggers</td><td>1</td></tr></table>
+    <br/><h3>Elements</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table>
+    <br/><h3>Values</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table><br/>
+    </div>
+    <div class="key">
+        <h2>
+            Key
+        </h2>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+            </tr>
+
+            <tr>
+                <td>Filter Steps</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A{Step Name}
+                    </div>
+                </td>
+                <td>Trigger/End</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        B((Actual))
+                        C((Generated))
+                        style C stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Request Step</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A>GET]
+                        style A stroke:#0f6ab4;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        B>POST]
+                        style B stroke:#10a54a;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PATCH]
+                        style C stroke:#D38042;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PUT]
+                        style C stroke:#C5862B;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        D>DELETE]
+                        style D stroke:#a41e22;
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Script</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(Step Name)
+                    </div>
+                </td>
+                <td>Loop</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(-Step Name-)
+                    </div>
+                </td>
+                <td>Other(TYPE)</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D[Step Name]
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Pass/Fail Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL-->BL
+                    </div>
+                </td>
+                <td>Generated Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL((B))
+                        AL-.->BL
+                        style BL stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Continue Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL==>BL
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+</body>
+</html>

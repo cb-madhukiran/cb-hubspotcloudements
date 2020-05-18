@@ -1,0 +1,1 @@
+done(steps.GetDealExecutionStatus.response.body.status === "pending");

@@ -1,0 +1,71 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31447,
+    "name": "HubSpotRefreshToken",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "HFRInputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "HFRISHubSpotTokenValid"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HFRISHubSpotTokenValid",
+            "onFailure": [
+                "HFRResult"
+            ],
+            "onSuccess": [
+                "HFRRefreshToken"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HFRRefreshToken",
+            "onFailure": [],
+            "onSuccess": [
+                "HFRUpdateTokenInfo"
+            ],
+            "properties": {
+                "headers": "${steps.HFRInputParams.refresh.headers}",
+                "method": "POST",
+                "query": "${steps.HFRInputParams.refresh.query}",
+                "url": "${steps.HFRInputParams.refresh.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HFRUpdateTokenInfo",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HFRResult",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "HFRInputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

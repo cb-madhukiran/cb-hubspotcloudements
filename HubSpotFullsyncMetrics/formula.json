@@ -1,0 +1,775 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31672,
+    "name": "HubSpotFullSyncMetrics",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "MetricsInputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetTpIntegConf"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetTpIntegConf",
+            "onFailure": [],
+            "onSuccess": [
+                "IsTpIntegConfFetched"
+            ],
+            "properties": {
+                "args": "${steps.MetricsInputParams.config}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsTpIntegConfFetched",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotParam"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HubSpotParam",
+            "onFailure": [],
+            "onSuccess": [
+                "CompanyList"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CompanyList",
+            "onFailure": [],
+            "onSuccess": [
+                "ContactList"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ContactList",
+            "onFailure": [],
+            "onSuccess": [
+                "SyncLog"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "SyncLog",
+            "onFailure": [],
+            "onSuccess": [
+                "TPMappingParam"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "TPMappingParam",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetTpData"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetTpData",
+            "onFailure": [],
+            "onSuccess": [
+                "IsTpDataFetched"
+            ],
+            "properties": {
+                "args": "${steps.TPMappingParam}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsTpDataFetched",
+            "onFailure": [],
+            "onSuccess": [
+                "PrepareContact"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "PrepareContact",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverList"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "LoopOverList",
+            "onFailure": [
+                "ChargebeeGetCbDelay"
+            ],
+            "onSuccess": [
+                "GetContactParams"
+            ],
+            "properties": {
+                "list": "${steps.PrepareContact.list}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "GetContactParams",
+            "onFailure": [],
+            "onSuccess": [
+                "HubspotGetContact"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HubspotGetContact",
+            "onFailure": [],
+            "onSuccess": [
+                "IsHubSpotGetContactFetched"
+            ],
+            "properties": {
+                "args": "${steps.GetContactParams}",
+                "formulaId": "31332"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsHubSpotGetContactFetched",
+            "onFailure": [],
+            "onSuccess": [
+                "PrepareMetrics"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "PrepareMetrics",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverList"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetCbDelay",
+            "onFailure": [],
+            "onSuccess": [
+                "IsChargebeeGetCbDelayFetched"
+            ],
+            "properties": {
+                "args": "${steps.MetricsInputParams.delay}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsChargebeeGetCbDelayFetched",
+            "onFailure": [],
+            "onSuccess": [
+                "HasTPOffset"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HasTPOffset",
+            "onFailure": [
+                "CompanyInfo"
+            ],
+            "onSuccess": [
+                "TPMappingParam"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "CompanyInfo",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverCompany"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "LoopOverCompany",
+            "onFailure": [
+                "DoneMetrics"
+            ],
+            "onSuccess": [
+                "CompanyMetrics"
+            ],
+            "properties": {
+                "list": "${steps.CompanyInfo.list}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "CompanyMetrics",
+            "onFailure": [],
+            "onSuccess": [
+                "CASParam"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CASParam",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotGetCAS"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HubSpotGetCAS",
+            "onFailure": [],
+            "onSuccess": [
+                "IsHubSpotGetCASFetched"
+            ],
+            "properties": {
+                "args": "${steps.CASParam}",
+                "formulaId": "31332"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsHubSpotGetCASFetched",
+            "onFailure": [],
+            "onSuccess": [
+                "ContactIn"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ContactIn",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverCASContact"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "LoopOverCASContact",
+            "onFailure": [
+                "ChargebeeGetCbDelay2"
+            ],
+            "onSuccess": [
+                "HubSpotGetCASContactParam"
+            ],
+            "properties": {
+                "list": "${steps.ContactIn.list}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "HubSpotGetCASContactParam",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotGetCASContact"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HubSpotGetCASContact",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateMetrics"
+            ],
+            "properties": {
+                "args": "${steps.HubSpotGetCASContactParam}",
+                "formulaId": "31332"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "UpdateMetrics",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverCASContact"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetCbDelay2",
+            "onFailure": [],
+            "onSuccess": [
+                "IsChargebeeGetCbDelay2Fetched"
+            ],
+            "properties": {
+                "args": "${steps.MetricsInputParams.delay}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsChargebeeGetCbDelay2Fetched",
+            "onFailure": [],
+            "onSuccess": [
+                "HasCASOffset"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HasCASOffset",
+            "onFailure": [
+                "CompanyUpdate"
+            ],
+            "onSuccess": [
+                "CASParam"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "CompanyUpdate",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotPutCompanyUpdate"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HubSpotPutCompanyUpdate",
+            "onFailure": [],
+            "onSuccess": [
+                "IsHubSpotPutCompanyUpdateFetched"
+            ],
+            "properties": {
+                "args": "${steps.CompanyUpdate}",
+                "formulaId": "31671"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsHubSpotPutCompanyUpdateFetched",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverCompany"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "DoneMetrics",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "subFormulas": [
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31330,
+            "name": "ChargebeeGet",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ChargebeeGetCallAgainCB",
+                    "onFailure": [
+                        "ChargebeeGetResult"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCBDelay2"
+                    ],
+                    "properties": {
+                        "body": "let code = \"\";\nif(steps.ChargebeeGetGetCBData !== undefined && steps.ChargebeeGetGetCBData.response !== undefined) {\n  code = steps.ChargebeeGetGetCBData.response.code;\n}\nif(steps.ChargebeeGetInputParams.intervel.length > 0 && steps.ChargebeeGetInputParams.retryCode[code] !== undefined) {\n  steps.ChargebeeGetInputParams.delay.query.delay = steps.ChargebeeGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetCallAgainHttp",
+                    "onFailure": [
+                        "ChargebeeGetResult2"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeeGetInputParams.intervel.length > 0 && steps.ChargebeeGetInputParams.retryCode[steps.ChargebeeGetGetHttpData.response.code] !== undefined) {\n  steps.ChargebeeGetInputParams.delay.query.delay = steps.ChargebeeGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetGetHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429",
+                        "url": "${steps.ChargebeeGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetCBDelay2",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetGetCBData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429",
+                        "url": "${steps.ChargebeeGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"formula_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetGetCBData",
+                    "onFailure": [
+                        "ChargebeeGetCallAgainCB"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCallAgainCB"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "api": "${steps.ChargebeeGetInputParams.url}",
+                        "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                        "elementInstanceId": "${config.chargebee}",
+                        "headers": "",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429"
+                    },
+                    "type": "elementRequest"
+                },
+                {
+                    "name": "ChargebeeGetGetHttpData",
+                    "onFailure": [
+                        "ChargebeeGetCallAgainHttp"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                        "headers": "${steps.ChargebeeGetInputParams.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.query}",
+                        "url": "${steps.ChargebeeGetInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\nlet bodydata = trigger.args.bodydata;\nif (bodydata === undefined)\n{\n  bodydata = {};\n}\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\ndone({\n    url: url,\n    query: query,\n    bodydata: bodydata,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n    },\n    hardStop: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n        500:true,\n        401:true\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetIsHttp",
+                    "onFailure": [
+                        "ChargebeeGetGetCBData"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetGetHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeeGetInputParams.url.startsWith(\"https://\"));"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetIsValidUrl",
+                    "onFailure": [
+                        "ChargebeeGetError"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetIsHttp"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeeGetInputParams.url !== undefined && steps.ChargebeeGetInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetResult",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let code = 600;\nif(steps.ChargebeeGetGetCBData !== undefined && steps.ChargebeeGetGetCBData.response !== undefined) {\n  code = steps.ChargebeeGetGetCBData.response.code;\n}\nif(code < 300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeeGetGetCBData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeeGetInputParams.hardStop[code] !== undefined;\n  if(steps.ChargebeeGetGetCBData!== undefined && steps.ChargebeeGetGetCBData.response!== undefined && steps.ChargebeeGetGetCBData.response.body!== undefined && steps.ChargebeeGetGetCBData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeeGetGetCBData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    msg:steps.ChargebeeGetGetCBData.response,\n    cb_status_code:code\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.ChargebeeGetGetHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeeGetGetHttpData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeeGetInputParams.hardStop[steps.ChargebeeGetGetHttpData.response.code] !== undefined;\n  if(steps.ChargebeeGetGetHttpData.response.body!== undefined && steps.ChargebeeGetGetHttpData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeeGetGetHttpData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    cb_status_code:steps.ChargebeeGetGetHttpData.response.code\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31332,
+            "name": "HubSpotGet",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "HubSpotGetCallAgainHttp",
+                    "onFailure": [
+                        "HubSpotGetResult2"
+                    ],
+                    "onSuccess": [
+                        "HubSpotGetCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.HubSpotGetInputParams.intervel.length > 0 && steps.HubSpotGetInputParams.retryCode[steps.HubSpotGetGetHttpData.response.code] !== undefined) {\n  steps.HubSpotGetInputParams.delay.query.delay = steps.HubSpotGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HubSpotGetCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotGetGetHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.HubSpotGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.HubSpotGetInputParams.delay.query}",
+                        "url": "${steps.HubSpotGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "HubSpotGetError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"hubspot_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "HubSpotGetGetHttpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotGetCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "",
+                        "headers": "${steps.HubSpotGetInputParams.headers}",
+                        "method": "GET",
+                        "query": "${steps.HubSpotGetInputParams.query}",
+                        "url": "${steps.HubSpotGetInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "HubSpotGetInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotGetIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\ndone({\n    url: url,\n    query: query,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        429: true,\n        502: true,\n        504: true,\n    },\n    hardStop: {\n        401: true,\n        403: true,\n        429: true,\n        502: true,\n        504: true,\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "HubSpotGetIsValidUrl",
+                    "onFailure": [
+                        "HubSpotGetError"
+                    ],
+                    "onSuccess": [
+                        "HubSpotGetGetHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.HubSpotGetInputParams.url !== undefined && steps.HubSpotGetInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HubSpotGetResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let response  = steps.HubSpotGetGetHttpData.response;\nif(response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:response.body,\n    cb_code:response.code,\n  });\n}else {\n  let cb_error_code = \"hubspot_default_error\";\n\n  let hardstop = steps.HubSpotGetInputParams.hardStop[response.code] !== undefined;\n  if(response.body!== undefined && response.body.category !== undefined) {\n    cb_error_code = \"hubspot_\" +response.body.category;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    cb_code:response.code,\n  });\n}\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotGetInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31671,
+            "name": "HubSpotPut",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "Error",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failed\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "InputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "IsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet body = trigger.args.body;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\n\nif(body === undefined) {\n  body = {};\n}\nif(headers === undefined) {\n  headers = {};\n}\ndone({\n  url:url,\n  body:body,\n  intervel:[5000,10000,20000,40000,80000],\n  headers:headers,\n     delay :{\n      url : \"https://apps.integrations.chargebee.com/api/ipaasdelay\",\n      query:{\n        delay:2000\n      },\n      headers: {\n        \"api_key\":apiKey\n      }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "IsValidUrl",
+                    "onFailure": [
+                        "Error"
+                    ],
+                    "onSuccess": [
+                        "PutHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.InputParams.url !== undefined && steps.InputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "PutHttpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "Result2"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.InputParams.body}",
+                        "headers": "${steps.InputParams.headers}",
+                        "method": "PUT",
+                        "query": "",
+                        "url": "${steps.InputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "Result2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.PutHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.PutHttpData.response.body\n  });\n}else {\n  done({\n    cb_status:\"failure\",\n    msg:\" Some thing went wrong\"\n  });\n}"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "InputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "MetricsInputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

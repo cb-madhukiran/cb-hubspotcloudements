@@ -1,0 +1,174 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31330,
+    "name": "ChargebeeGet",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "ChargebeeGetInputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetIsValidUrl"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetIsValidUrl",
+            "onFailure": [
+                "ChargebeeGetError"
+            ],
+            "onSuccess": [
+                "ChargebeeGetIsHttp"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ChargebeeGetIsHttp",
+            "onFailure": [
+                "ChargebeeGetGetCBData"
+            ],
+            "onSuccess": [
+                "ChargebeeGetGetHttpData"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ChargebeeGetGetHttpData",
+            "onFailure": [
+                "ChargebeeGetCallAgainHttp"
+            ],
+            "onSuccess": [
+                "ChargebeeGetCallAgainHttp"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200-600",
+                "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                "headers": "${steps.ChargebeeGetInputParams.headers}",
+                "method": "GET",
+                "query": "${steps.ChargebeeGetInputParams.query}",
+                "url": "${steps.ChargebeeGetInputParams.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ChargebeeGetCallAgainHttp",
+            "onFailure": [
+                "ChargebeeGetResult2"
+            ],
+            "onSuccess": [
+                "ChargebeeGetCBDelay"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ChargebeeGetCBDelay",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetGetHttpData"
+            ],
+            "properties": {
+                "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                "method": "GET",
+                "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                "retry": "true",
+                "retryAttempts": "5",
+                "retryDelay": "500",
+                "retryStatusCodes": "500-599,429",
+                "url": "${steps.ChargebeeGetInputParams.delay.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ChargebeeGetResult2",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetGetCBData",
+            "onFailure": [
+                "ChargebeeGetCallAgainCB"
+            ],
+            "onSuccess": [
+                "ChargebeeGetCallAgainCB"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200-600",
+                "api": "${steps.ChargebeeGetInputParams.url}",
+                "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                "elementInstanceId": "${config.chargebee}",
+                "headers": "",
+                "method": "GET",
+                "query": "${steps.ChargebeeGetInputParams.query}",
+                "retry": "true",
+                "retryAttempts": "5",
+                "retryDelay": "500",
+                "retryStatusCodes": "500-599,429"
+            },
+            "type": "elementRequest"
+        },
+        {
+            "name": "ChargebeeGetCallAgainCB",
+            "onFailure": [
+                "ChargebeeGetResult"
+            ],
+            "onSuccess": [
+                "ChargebeeGetCBDelay2"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ChargebeeGetCBDelay2",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetGetCBData"
+            ],
+            "properties": {
+                "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                "method": "GET",
+                "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                "retry": "true",
+                "retryAttempts": "5",
+                "retryDelay": "500",
+                "retryStatusCodes": "500-599,429",
+                "url": "${steps.ChargebeeGetInputParams.delay.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ChargebeeGetResult",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetInputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

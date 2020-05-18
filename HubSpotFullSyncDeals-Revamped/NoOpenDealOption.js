@@ -1,0 +1,1 @@
+done(steps.CustomersParam.syncRulesDeals.noOpenDeal ==="Create_A_Deal");

@@ -1,0 +1,1 @@
+throw "Failed to retrieve TpConfig";

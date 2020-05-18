@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Testing-Admin-Activecampaign-DeleteMerchantIntegration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>
+        var callback = function(){}
+    </script>
+    <style>
+        div.mermaidTooltip {
+                    margin-left: 50px;
+                    text-align: left;
+                    max-width: none;
+                }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+                    fill: #ffffff;
+                    stroke: rgb(200,200,200);
+                    stroke-width: 2px;
+                }
+        .mermaid .label {
+                  max-width: 50px;
+                }
+        table, th, td {
+                    border: 1px solid black;
+                }
+        table {
+                    border-spacing: 5px;
+                    border-radius: 5px;
+                    margin: auto;
+                }
+        th, td {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 5px;
+                }
+        th {
+                    color: blue;
+                }
+        td {
+                    width: 180px;
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                }
+        h2 {
+                    text-align: center;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                    padding: 1em;
+                }
+        .container {
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                    font-size: 11px;
+                    font-weight: 900;
+                }
+        body {
+                    font-family: 'Arial';
+                }
+        .edgeLabel {
+                    font-size: 9px;
+                }
+    </style>
+</head>
+<body>
+    <h2>
+        Testing-Admin-Activecampaign-DeleteMerchantIntegration
+    </h2>
+    <div class="container">
+        <div class="mermaid">
+            graph TD
+
+                step-000((Trigger))
+            step-001{IsValidParam}
+            step-002(InputParams)
+            step-003(Error)
+            step-025((END))
+            step-005>GetAllInstance]
+            step-006(-loopOverInstances-)
+            step-007(Error2)
+            step-025((END))
+            step-009(ElementList)
+            step-010{ElementsNextPageToken}
+            step-011(-LoopOverElements-)
+            step-012(FormulaParams)
+            step-013(-LoopOverFormulaList-)
+            step-014>GetAllFormula]
+            step-015>DeleteFormula]
+            step-016(-LoopOverElementsAgain-)
+            step-017(-LoopOverFormulas-)
+            step-018(Error3)
+            step-025((END))
+            step-020>DeleteElement]
+            step-021(Success)
+            step-025((END))
+            step-023(FormulaList)
+            step-024(Error4)
+            step-025((END))
+
+                step-000== continue ==>step-001
+            step-001-- success -->step-002
+            step-001-- failure -->step-003
+            step-002-- success -->step-005
+            step-003-. done .->step-025
+            step-005-- success -->step-006
+            step-005-- failure -->step-007
+            step-006-- success -->step-009
+            step-006-- failure -->step-010
+            step-007-. done .->step-025
+            step-009-- success -->step-006
+            step-010-- success -->step-002
+            step-010-- failure -->step-011
+            step-011-- success -->step-012
+            step-011-- failure -->step-013
+            step-012-- success -->step-014
+            step-013-- success -->step-015
+            step-013-- failure -->step-016
+            step-014-- success -->step-017
+            step-014-- failure -->step-016
+            step-015-- success -->step-013
+            step-015-- failure -->step-018
+            step-016-- success -->step-020
+            step-016-- failure -->step-021
+            step-017-- success -->step-023
+            step-017-- failure -->step-011
+            step-018-. done .->step-025
+            step-020-- success -->step-016
+            step-020-- failure -->step-024
+            step-021-. done .->step-025
+            step-023-- success -->step-017
+            step-024-. done .->step-025
+
+                style step-025 stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-005 stroke:#0f6ab4;
+            style step-025 stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-014 stroke:#0f6ab4;
+            style step-015 stroke:#a41e22;
+            style step-025 stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-020 stroke:#a41e22;
+            style step-025 stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-025 stroke-width:3px,stroke-dasharray: 5, 5;
+
+                click step-000 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnRyaWdnZXI8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5UcmlnZ2VyIEVsZW1lbnQ6PC9iPjxicj48YnI+PHByZT4gICB0eXBlIDogbWFudWFsPGJyPiAgYXN5bmMgOiB0cnVlPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnSXNWYWxpZFBhcmFtJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICd0eXBlJzogJ21hbnVhbCcsPGJyPiAgJ2FzeW5jJzogdHJ1ZSw8YnI+ICAnbmFtZSc6ICd0cmlnZ2VyJyw8YnI+ICAncHJvcGVydGllcyc6IHt9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Trigger Element:<br><pre>   type : manual<br>  async : true</pre>"
+            click step-001 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPklzVmFsaWRQYXJhbTwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT48YnI+bGV0IHNpdGVOYW1lID0gdHJpZ2dlci5hcmdzWydzaXRlX25hbWUnXTs8YnI+bGV0IGludGVncmF0aW9uTmFtZSA9IHRyaWdnZXIuYXJnc1snaW50ZWdyYXRpb25fbmFtZSddOzxicj48YnI+aWYoKHNpdGVOYW1lICE9PSB1bmRlZmluZWQpICYmIChpbnRlZ3JhdGlvbk5hbWUgIT09IHVuZGVmaW5lZCkpezxicj4gIGRvbmUodHJ1ZSk7PGJyPn08YnI+PGJyPmRvbmUoZmFsc2UpOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0lucHV0UGFyYW1zJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdFcnJvcic8YnI+ICBdLDxicj4gICduYW1lJzogJ0lzVmFsaWRQYXJhbScsPGJyPiAgJ3R5cGUnOiAnZmlsdGVyJyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ1xubGV0IHNpdGVOYW1lID0gdHJpZ2dlci5hcmdzWydzaXRlX25hbWUnXTtcbmxldCBpbnRlZ3JhdGlvbk5hbWUgPSB0cmlnZ2VyLmFyZ3NbJ2ludGVncmF0aW9uX25hbWUnXTtcblxuaWYoKHNpdGVOYW1lICE9PSB1bmRlZmluZWQpICYmIChpbnRlZ3JhdGlvbk5hbWUgIT09IHVuZGVmaW5lZCkpe1xuICBkb25lKHRydWUpO1xufVxuXG5kb25lKGZhbHNlKTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre><br>let siteName = trigger.args['site_name'];<br>let integrationName = trigger.args['integration_name'];<br><br>if((siteName !== undefined) && (integrationName !== undefined)){<br>  done(true);<br>}<br><br>done(false);</pre>"
+            click step-002 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPklucHV0UGFyYW1zPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBzaXRlTmFtZSA9IHRyaWdnZXIuYXJnc1snc2l0ZV9uYW1lJ107PGJyPmxldCBpbnRlZ3JhdGlvbk5hbWUgPSB0cmlnZ2VyLmFyZ3NbJ2ludGVncmF0aW9uX25hbWUnXTs8YnI+PGJyPjxicj5sZXQgc2VhcmNoVGFnID0gc2l0ZU5hbWUgKyAnLScgKyBpbnRlZ3JhdGlvbk5hbWU7PGJyPjxicj48YnI+bGV0IHNlYXJjaFBhcmFtID0gezxicj4gICAgICAndGFnc1tdJzogc2VhcmNoVGFnLDxicj4gICAgICBwYWdlU2l6ZTogMjAwPGJyPn07PGJyPjxicj5pZihzdGVwcy5FbGVtZW50c05leHRQYWdlVG9rZW4gIT09IHVuZGVmaW5lZCkgezxicj4gIHNlYXJjaFBhcmFtLm5leHRQYWdlID0gc3RlcHMuR2V0QWxsSW5zdGFuY2UucmVzcG9uc2UuaGVhZGVyc1snRWxlbWVudHMtTmV4dC1QYWdlLVRva2VuJ107PGJyPn08YnI+ZG9uZShzZWFyY2hQYXJhbSk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnR2V0QWxsSW5zdGFuY2UnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnSW5wdXRQYXJhbXMnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgc2l0ZU5hbWUgPSB0cmlnZ2VyLmFyZ3NbJ3NpdGVfbmFtZSddO1xubGV0IGludGVncmF0aW9uTmFtZSA9IHRyaWdnZXIuYXJnc1snaW50ZWdyYXRpb25fbmFtZSddO1xuXG5cbmxldCBzZWFyY2hUYWcgPSBzaXRlTmFtZSArICctJyArIGludGVncmF0aW9uTmFtZTtcblxuXG5sZXQgc2VhcmNoUGFyYW0gPSB7XG4gICAgICAndGFnc1tdJzogc2VhcmNoVGFnLFxuICAgICAgcGFnZVNpemU6IDIwMFxufTtcblxuaWYoc3RlcHMuRWxlbWVudHNOZXh0UGFnZVRva2VuICE9PSB1bmRlZmluZWQpIHtcbiAgc2VhcmNoUGFyYW0ubmV4dFBhZ2UgPSBzdGVwcy5HZXRBbGxJbnN0YW5jZS5yZXNwb25zZS5oZWFkZXJzWydFbGVtZW50cy1OZXh0LVBhZ2UtVG9rZW4nXTtcbn1cbmRvbmUoc2VhcmNoUGFyYW0pOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let siteName = trigger.args['site_name'];<br>let integrationName = trigger.args['integration_name'];<br><br><br>let searchTag = siteName + '-' + integrationName;<br><br><br>let searchParam = {<br>      'tags[]': searchTag,<br>      pageSize: 200<br>};<br><br>if(steps.ElementsNextPageToken !== undefined) {<br>  searchParam.nextPage = steps.GetAllInstance.response.headers['Elements-Next-Page-Token'];<br>}<br>done(searchParam);</pre>"
+            click step-003 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkVycm9yPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUoezxicj4JJ3N0YXR1cycgOiAnRmFpbHVyZScsPGJyPgknZXJybXNnJyA6ICdJbnZhbGlkUGFyYW1zJzxicj59KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFtdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdFcnJvcicsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUoe1xuXHRcJ3N0YXR1c1wnIDogXCdGYWlsdXJlXCcsXG5cdFwnZXJybXNnXCcgOiBcJ0ludmFsaWRQYXJhbXNcJ1xufSk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done({<br>	'status' : 'Failure',<br>	'errmsg' : 'InvalidParams'<br>});</pre>"
+            click step-005 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkdldEFsbEluc3RhbmNlPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+T3RoZXIgKHJlcXVlc3QpOjwvYj48YnI+PGJyPjxwcmU+ICAgcXVlcnkgOiAke3N0ZXBzLklucHV0UGFyYW1zfTxicj4gICAgIGFwaSA6IC9pbnN0YW5jZXM8YnI+ICBtZXRob2QgOiBHRVQ8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdsb29wT3Zlckluc3RhbmNlcyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnRXJyb3IyJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnR2V0QWxsSW5zdGFuY2UnLDxicj4gICd0eXBlJzogJ3JlcXVlc3QnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ3F1ZXJ5JzogJyR7c3RlcHMuSW5wdXRQYXJhbXN9Jyw8YnI+ICAgICdhcGknOiAnL2luc3RhbmNlcycsPGJyPiAgICAnbWV0aG9kJzogJ0dFVCc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (request):<br><pre>   query : ${steps.InputParams}<br>     api : /instances<br>  method : GET</pre>"
+            click step-006 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPmxvb3BPdmVySW5zdGFuY2VzPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+TG9vcDo8L2I+PGJyPjxicj48cHJlPiAgbGlzdCA6ICR7c3RlcHMuR2V0QWxsSW5zdGFuY2UucmVzcG9uc2UuYm9keX08L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdFbGVtZW50TGlzdCc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnRWxlbWVudHNOZXh0UGFnZVRva2VuJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnbG9vcE92ZXJJbnN0YW5jZXMnLDxicj4gICd0eXBlJzogJ2xvb3AnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2xpc3QnOiAnJHtzdGVwcy5HZXRBbGxJbnN0YW5jZS5yZXNwb25zZS5ib2R5fSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Loop:<br><pre>  list : ${steps.GetAllInstance.response.body}</pre>"
+            click step-007 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkVycm9yMjwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5kb25lKHs8YnI+CSdzdGF0dXMnIDogJ0ZhaWx1cmUnLDxicj4JJ2Vycm1zZycgOiAnTm8gaW5zdGFuY2VzJzxicj59KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFtdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdFcnJvcjInLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdkb25lKHtcblx0XCdzdGF0dXNcJyA6IFwnRmFpbHVyZVwnLFxuXHRcJ2Vycm1zZ1wnIDogXCdObyBpbnN0YW5jZXNcJ1xufSk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done({<br>	'status' : 'Failure',<br>	'errmsg' : 'No instances'<br>});</pre>"
+            click step-009 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkVsZW1lbnRMaXN0PC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBsaXN0ID0gezxicj4gIGVsZW1lbnRzOltdPGJyPn07PGJyPmlmKHN0ZXBzLkVsZW1lbnRMaXN0ICE9PSB1bmRlZmluZWQpIHs8YnI+ICBsaXN0ID0gc3RlcHMuRWxlbWVudExpc3Q7PGJyPn08YnI+ICBsaXN0LmVsZW1lbnRzLnB1c2goezxicj4gIGlkOnN0ZXBzLmxvb3BPdmVySW5zdGFuY2VzLmVudHJ5LmlkPGJyPn0pOzxicj48YnI+PGJyPmRvbmUobGlzdCk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnbG9vcE92ZXJJbnN0YW5jZXMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnRWxlbWVudExpc3QnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgbGlzdCA9IHtcbiAgZWxlbWVudHM6W11cbn07XG5pZihzdGVwcy5FbGVtZW50TGlzdCAhPT0gdW5kZWZpbmVkKSB7XG4gIGxpc3QgPSBzdGVwcy5FbGVtZW50TGlzdDtcbn1cbiAgbGlzdC5lbGVtZW50cy5wdXNoKHtcbiAgaWQ6c3RlcHMubG9vcE92ZXJJbnN0YW5jZXMuZW50cnkuaWRcbn0pO1xuXG5cbmRvbmUobGlzdCk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>let list = {<br>  elements:[]<br>};<br>if(steps.ElementList !== undefined) {<br>  list = steps.ElementList;<br>}<br>  list.elements.push({<br>  id:steps.loopOverInstances.entry.id<br>});<br><br><br>done(list);</pre>"
+            click step-010 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkVsZW1lbnRzTmV4dFBhZ2VUb2tlbjwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5kb25lKHN0ZXBzLkdldEFsbEluc3RhbmNlLnJlc3BvbnNlLmhlYWRlcnNbJ0VsZW1lbnRzLU5leHQtUGFnZS1Ub2tlbiddICE9PXVuZGVmaW5lZCk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnSW5wdXRQYXJhbXMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ0xvb3BPdmVyRWxlbWVudHMnPGJyPiAgXSw8YnI+ICAnbmFtZSc6ICdFbGVtZW50c05leHRQYWdlVG9rZW4nLDxicj4gICd0eXBlJzogJ2ZpbHRlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdkb25lKHN0ZXBzLkdldEFsbEluc3RhbmNlLnJlc3BvbnNlLmhlYWRlcnNbJ0VsZW1lbnRzLU5leHQtUGFnZS1Ub2tlbiddICE9PXVuZGVmaW5lZCk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done(steps.GetAllInstance.response.headers['Elements-Next-Page-Token'] !==undefined);</pre>"
+            click step-011 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkxvb3BPdmVyRWxlbWVudHM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5Mb29wOjwvYj48YnI+PGJyPjxwcmU+ICBsaXN0IDogJHtzdGVwcy5FbGVtZW50TGlzdC5lbGVtZW50c308L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdGb3JtdWxhUGFyYW1zJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdMb29wT3ZlckZvcm11bGFMaXN0Jzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnTG9vcE92ZXJFbGVtZW50cycsPGJyPiAgJ3R5cGUnOiAnbG9vcCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnbGlzdCc6ICcke3N0ZXBzLkVsZW1lbnRMaXN0LmVsZW1lbnRzfSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Loop:<br><pre>  list : ${steps.ElementList.elements}</pre>"
+            click step-012 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkZvcm11bGFQYXJhbXM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+ZG9uZSh7PGJyPiAgZWxlbWVudEluc3RhbmNlSWQgOiBzdGVwcy5Mb29wT3ZlckVsZW1lbnRzLmVudHJ5LmlkPGJyPn0pPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnR2V0QWxsRm9ybXVsYSc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdGb3JtdWxhUGFyYW1zJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnZG9uZSh7XG4gIGVsZW1lbnRJbnN0YW5jZUlkIDogc3RlcHMuTG9vcE92ZXJFbGVtZW50cy5lbnRyeS5pZFxufSknPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>done({<br>  elementInstanceId : steps.LoopOverElements.entry.id<br>})</pre>"
+            click step-013 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkxvb3BPdmVyRm9ybXVsYUxpc3Q8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5Mb29wOjwvYj48YnI+PGJyPjxwcmU+ICBsaXN0IDogJHtzdGVwcy5Gb3JtdWxhTGlzdC5mb3JtdWxhfTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0RlbGV0ZUZvcm11bGEnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ0xvb3BPdmVyRWxlbWVudHNBZ2Fpbic8YnI+ICBdLDxicj4gICduYW1lJzogJ0xvb3BPdmVyRm9ybXVsYUxpc3QnLDxicj4gICd0eXBlJzogJ2xvb3AnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2xpc3QnOiAnJHtzdGVwcy5Gb3JtdWxhTGlzdC5mb3JtdWxhfSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Loop:<br><pre>  list : ${steps.FormulaList.formula}</pre>"
+            click step-014 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkdldEFsbEZvcm11bGE8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5PdGhlciAocmVxdWVzdCk6PC9iPjxicj48YnI+PHByZT4gICBxdWVyeSA6ICR7c3RlcHMuRm9ybXVsYVBhcmFtc308YnI+ICAgICBhcGkgOiAvZm9ybXVsYXMvaW5zdGFuY2VzPGJyPiAgbWV0aG9kIDogR0VUPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnTG9vcE92ZXJGb3JtdWxhcyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnTG9vcE92ZXJFbGVtZW50c0FnYWluJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnR2V0QWxsRm9ybXVsYScsPGJyPiAgJ3R5cGUnOiAncmVxdWVzdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAncXVlcnknOiAnJHtzdGVwcy5Gb3JtdWxhUGFyYW1zfScsPGJyPiAgICAnYXBpJzogJy9mb3JtdWxhcy9pbnN0YW5jZXMnLDxicj4gICAgJ21ldGhvZCc6ICdHRVQnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "Other (request):<br><pre>   query : ${steps.FormulaParams}<br>     api : /formulas/instances<br>  method : GET</pre>"
+            click step-015 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkRlbGV0ZUZvcm11bGE8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5PdGhlciAocmVxdWVzdCk6PC9iPjxicj48YnI+PHByZT4gICAgIGFwaSA6IC9mb3JtdWxhcy8ke3N0ZXBzLkxvb3BPdmVyRm9ybXVsYUxpc3QuZW50cnkuaWR9L2luc3RhbmNlcy8ke3N0ZXBzLkxvb3BPdmVyRm9ybXVsYUxpc3QuZW50cnkuaW5zdGFuY2V9PGJyPiAgbWV0aG9kIDogREVMRVRFPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnTG9vcE92ZXJGb3JtdWxhTGlzdCc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnRXJyb3IzJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnRGVsZXRlRm9ybXVsYScsPGJyPiAgJ3R5cGUnOiAncmVxdWVzdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYXBpJzogJy9mb3JtdWxhcy8ke3N0ZXBzLkxvb3BPdmVyRm9ybXVsYUxpc3QuZW50cnkuaWR9L2luc3RhbmNlcy8ke3N0ZXBzLkxvb3BPdmVyRm9ybXVsYUxpc3QuZW50cnkuaW5zdGFuY2V9Jyw8YnI+ICAgICdtZXRob2QnOiAnREVMRVRFJzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Other (request):<br><pre>     api : /formulas/${steps.LoopOverFormulaList.entry.id}/instances/${steps.LoopOverFormulaList.entry.instance}<br>  method : DELETE</pre>"
+            click step-016 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkxvb3BPdmVyRWxlbWVudHNBZ2FpbjwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkxvb3A6PC9iPjxicj48YnI+PHByZT4gIGxpc3QgOiAke3N0ZXBzLkVsZW1lbnRMaXN0LmVsZW1lbnRzfTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0RlbGV0ZUVsZW1lbnQnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ1N1Y2Nlc3MnPGJyPiAgXSw8YnI+ICAnbmFtZSc6ICdMb29wT3ZlckVsZW1lbnRzQWdhaW4nLDxicj4gICd0eXBlJzogJ2xvb3AnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2xpc3QnOiAnJHtzdGVwcy5FbGVtZW50TGlzdC5lbGVtZW50c30nPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "Loop:<br><pre>  list : ${steps.ElementList.elements}</pre>"
+            click step-017 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkxvb3BPdmVyRm9ybXVsYXM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5Mb29wOjwvYj48YnI+PGJyPjxwcmU+ICBsaXN0IDogJHtzdGVwcy5HZXRBbGxGb3JtdWxhLnJlc3BvbnNlLmJvZHl9PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnRm9ybXVsYUxpc3QnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ0xvb3BPdmVyRWxlbWVudHMnPGJyPiAgXSw8YnI+ICAnbmFtZSc6ICdMb29wT3ZlckZvcm11bGFzJyw8YnI+ICAndHlwZSc6ICdsb29wJyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdsaXN0JzogJyR7c3RlcHMuR2V0QWxsRm9ybXVsYS5yZXNwb25zZS5ib2R5fSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Loop:<br><pre>  list : ${steps.GetAllFormula.response.body}</pre>"
+            click step-018 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkVycm9yMzwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5kb25lKHs8YnI+CSdzdGF0dXMnIDogJ0ZhaWx1cmUnLDxicj4JJ2Vycm1zZycgOiAnRm9ybXVsYSBkZWxldGUgZmFpbGVkIGluc3RhbmNlLGlkID0gJyArc3RlcHMuTG9vcE92ZXJGb3JtdWxhTGlzdC5lbnRyeS5pbnN0YW5jZSArICcgLCAnICsgc3RlcHMuTG9vcE92ZXJGb3JtdWxhTGlzdC5lbnRyeS5pZDxicj59KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFtdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdFcnJvcjMnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdkb25lKHtcblx0XCdzdGF0dXNcJyA6IFwnRmFpbHVyZVwnLFxuXHRcJ2Vycm1zZ1wnIDogXCdGb3JtdWxhIGRlbGV0ZSBmYWlsZWQgaW5zdGFuY2UsaWQgPSBcJyArc3RlcHMuTG9vcE92ZXJGb3JtdWxhTGlzdC5lbnRyeS5pbnN0YW5jZSArIFwnICwgXCcgKyBzdGVwcy5Mb29wT3ZlckZvcm11bGFMaXN0LmVudHJ5LmlkXG59KTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>done({<br>	'status' : 'Failure',<br>	'errmsg' : 'Formula delete failed instance,id = ' +steps.LoopOverFormulaList.entry.instance + ' , ' + steps.LoopOverFormulaList.entry.id<br>});</pre>"
+            click step-020 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkRlbGV0ZUVsZW1lbnQ8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5PdGhlciAocmVxdWVzdCk6PC9iPjxicj48YnI+PHByZT4gICAgIGFwaSA6IC9pbnN0YW5jZXMvJHtzdGVwcy5Mb29wT3ZlckVsZW1lbnRzQWdhaW4uZW50cnkuaWR9PGJyPiAgbWV0aG9kIDogREVMRVRFPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnTG9vcE92ZXJFbGVtZW50c0FnYWluJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdFcnJvcjQnPGJyPiAgXSw8YnI+ICAnbmFtZSc6ICdEZWxldGVFbGVtZW50Jyw8YnI+ICAndHlwZSc6ICdyZXF1ZXN0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdhcGknOiAnL2luc3RhbmNlcy8ke3N0ZXBzLkxvb3BPdmVyRWxlbWVudHNBZ2Fpbi5lbnRyeS5pZH0nLDxicj4gICAgJ21ldGhvZCc6ICdERUxFVEUnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "Other (request):<br><pre>     api : /instances/${steps.LoopOverElementsAgain.entry.id}<br>  method : DELETE</pre>"
+            click step-021 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlN1Y2Nlc3M8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+ZG9uZSggezxicj4Jc3RhdHVzIDogJ1N1Y2Nlc3MnPGJyPn0gKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFtdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdTdWNjZXNzJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnZG9uZSgge1xuXHRzdGF0dXMgOiBcJ1N1Y2Nlc3NcJ1xufSApOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>done( {<br>	status : 'Success'<br>} );</pre>"
+            click step-023 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkZvcm11bGFMaXN0PC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBsaXN0ID0gezxicj4gIGZvcm11bGEgOltdPGJyPn07PGJyPjxicj5pZihzdGVwcy5Gb3JtdWxhTGlzdCAhPT0gdW5kZWZpbmVkKSB7PGJyPiAgbGlzdCA9IHN0ZXBzLkZvcm11bGFMaXN0Ozxicj59PGJyPjxicj5pZihsaXN0W3N0ZXBzLkxvb3BPdmVyRm9ybXVsYXMuZW50cnkuaWRdID09PSB1bmRlZmluZWQpIHs8YnI+ICBsaXN0W3N0ZXBzLkxvb3BPdmVyRm9ybXVsYXMuZW50cnkuaWRdPSBzdGVwcy5Mb29wT3ZlckZvcm11bGFzLmVudHJ5LmlkOzxicj4gIGxpc3QuZm9ybXVsYS5wdXNoKDxicj4gICAgIHsgIGluc3RhbmNlOiBsaXN0W3N0ZXBzLkxvb3BPdmVyRm9ybXVsYXMuZW50cnkuaWRdLDxicj4gICAgIGlkICA6IHN0ZXBzLkxvb3BPdmVyRm9ybXVsYXMuZW50cnkuZm9ybXVsYS5pZDxicj4gICAgIH08YnI+ICAgICk7PGJyPn08YnI+IDxicj48YnI+ZG9uZShsaXN0KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdMb29wT3ZlckZvcm11bGFzJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ0Zvcm11bGFMaXN0Jyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnbGV0IGxpc3QgPSB7XG4gIGZvcm11bGEgOltdXG59O1xuXG5pZihzdGVwcy5Gb3JtdWxhTGlzdCAhPT0gdW5kZWZpbmVkKSB7XG4gIGxpc3QgPSBzdGVwcy5Gb3JtdWxhTGlzdDtcbn1cblxuaWYobGlzdFtzdGVwcy5Mb29wT3ZlckZvcm11bGFzLmVudHJ5LmlkXSA9PT0gdW5kZWZpbmVkKSB7XG4gIGxpc3Rbc3RlcHMuTG9vcE92ZXJGb3JtdWxhcy5lbnRyeS5pZF09IHN0ZXBzLkxvb3BPdmVyRm9ybXVsYXMuZW50cnkuaWQ7XG4gIGxpc3QuZm9ybXVsYS5wdXNoKFxuICAgICB7ICBpbnN0YW5jZTogbGlzdFtzdGVwcy5Mb29wT3ZlckZvcm11bGFzLmVudHJ5LmlkXSxcbiAgICAgaWQgIDogc3RlcHMuTG9vcE92ZXJGb3JtdWxhcy5lbnRyeS5mb3JtdWxhLmlkXG4gICAgIH1cbiAgICApO1xufVxuIFxuXG5kb25lKGxpc3QpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let list = {<br>  formula :[]<br>};<br><br>if(steps.FormulaList !== undefined) {<br>  list = steps.FormulaList;<br>}<br><br>if(list[steps.LoopOverFormulas.entry.id] === undefined) {<br>  list[steps.LoopOverFormulas.entry.id]= steps.LoopOverFormulas.entry.id;<br>  list.formula.push(<br>     {  instance: list[steps.LoopOverFormulas.entry.id],<br>     id  : steps.LoopOverFormulas.entry.formula.id<br>     }<br>    );<br>}<br> <br><br>done(list);</pre>"
+            click step-024 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkVycm9yNDwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5kb25lKHs8YnI+CSdzdGF0dXMnIDogJ0ZhaWx1cmUnLDxicj4JJ2Vycm1zZycgOiAnRWxlbWVudCBkZWxldGUgZmFpbGVkIGluc3RhbmNlID0gJyArc3RlcHMuTG9vcE92ZXJFbGVtZW50c0FnYWluLmVudHJ5LmlkPGJyPn0pOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogW10sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ0Vycm9yNCcsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUoe1xuXHRcJ3N0YXR1c1wnIDogXCdGYWlsdXJlXCcsXG5cdFwnZXJybXNnXCcgOiBcJ0VsZW1lbnQgZGVsZXRlIGZhaWxlZCBpbnN0YW5jZSA9IFwnICtzdGVwcy5Mb29wT3ZlckVsZW1lbnRzQWdhaW4uZW50cnkuaWRcbn0pOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>done({<br>	'status' : 'Failure',<br>	'errmsg' : 'Element delete failed instance = ' +steps.LoopOverElementsAgain.entry.id<br>});</pre>"
+
+        </div>
+    </div>
+    <h2>
+        Formula Configuration
+    </h2>
+    <div class="container">
+        <h3>Basic</h3><table><tr><th>key</th><th>value</th></tr><tr><td>Name</td><td>Testing-Admin-Activecampaign-DeleteMerchantIntegration</td></tr><tr><td>Single Threaded?</td><td>false</td></tr><tr><td>Active?</td><td>true</td></tr><tr><td>Number of Steps</td><td>20</td></tr><tr><td>Number of Triggers</td><td>1</td></tr></table>
+    <br/><h3>Elements</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table>
+    <br/><h3>Values</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table><br/>
+    </div>
+    <div class="key">
+        <h2>
+            Key
+        </h2>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+            </tr>
+
+            <tr>
+                <td>Filter Steps</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A{Step Name}
+                    </div>
+                </td>
+                <td>Trigger/End</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        B((Actual))
+                        C((Generated))
+                        style C stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Request Step</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A>GET]
+                        style A stroke:#0f6ab4;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        B>POST]
+                        style B stroke:#10a54a;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PATCH]
+                        style C stroke:#D38042;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PUT]
+                        style C stroke:#C5862B;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        D>DELETE]
+                        style D stroke:#a41e22;
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Script</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(Step Name)
+                    </div>
+                </td>
+                <td>Loop</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(-Step Name-)
+                    </div>
+                </td>
+                <td>Other(TYPE)</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D[Step Name]
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Pass/Fail Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL-->BL
+                    </div>
+                </td>
+                <td>Generated Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL((B))
+                        AL-.->BL
+                        style BL stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Continue Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL==>BL
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+</body>
+</html>

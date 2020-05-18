@@ -1,0 +1,1589 @@
+{
+    "active": true,
+    "api": "GET /initialsync/setup",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "debugLoggingExpires": "2019-11-15T15:43:56Z",
+    "description": "Revamp",
+    "engine": "v1",
+    "id": 31420,
+    "method": "GET",
+    "name": "HubSpotInitialSyncRun",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "Props",
+            "onFailure": [],
+            "onSuccess": [
+                "InitialSyncParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InitialSyncParams",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetTpIntegConf"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetTpIntegConf",
+            "onFailure": [],
+            "onSuccess": [
+                "IsTpIntegConfFetched"
+            ],
+            "properties": {
+                "args": "${steps.InitialSyncParams.input.getTpIntegConf}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsTpIntegConfFetched",
+            "onFailure": [
+                "UpdateTpIntegConfWithSyncTypeErrorParam"
+            ],
+            "onSuccess": [
+                "IsFromLayout"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "IsFromLayout",
+            "onFailure": [
+                "ConfigParam"
+            ],
+            "onSuccess": [
+                "SendFirstCard"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "SendFirstCard",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ConfigParam",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetTpIntegSync"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetTpIntegSync",
+            "onFailure": [],
+            "onSuccess": [
+                "IsTpIntegSyncFetched"
+            ],
+            "properties": {
+                "args": "${steps.InitialSyncParams.input.getTpIntegSync}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsTpIntegSyncFetched",
+            "onFailure": [
+                "HasInstance"
+            ],
+            "onSuccess": [
+                "IsFirstRun"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "IsFirstRun",
+            "onFailure": [
+                "ISRunning"
+            ],
+            "onSuccess": [
+                "FormulaParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "FormulaParams",
+            "onFailure": [],
+            "onSuccess": [
+                "CreateFormulaInstance"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CreateFormulaInstance",
+            "onFailure": [],
+            "onSuccess": [
+                "ReplaceInstanceInConfigParam"
+            ],
+            "properties": {
+                "api": "${steps.FormulaParams.url}",
+                "body": "${steps.FormulaParams.body}",
+                "method": "POST"
+            },
+            "type": "request"
+        },
+        {
+            "name": "ReplaceInstanceInConfigParam",
+            "onFailure": [],
+            "onSuccess": [
+                "HasLastSyncCompleted"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HasLastSyncCompleted",
+            "onFailure": [
+                "CloseLastSync"
+            ],
+            "onSuccess": [
+                "InitialSyncSubFormula"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InitialSyncSubFormula",
+            "onFailure": [
+                "UpdateTpIntegConfWithSyncTypeErrorParam"
+            ],
+            "onSuccess": [
+                "ProcesscardForRetry"
+            ],
+            "properties": {
+                "args": "${steps.ReplaceInstanceInConfigParam}",
+                "formulaId": "31419"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "ProcesscardForRetry",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "UpdateTpIntegConfWithSyncTypeErrorParam",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateTpIntegConfWithSyncTypeError"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "UpdateTpIntegConfWithSyncTypeError",
+            "onFailure": [],
+            "onSuccess": [
+                "SendErrorCard"
+            ],
+            "properties": {
+                "args": "${steps.UpdateTpIntegConfWithSyncTypeErrorParam}",
+                "formulaId": "31331"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "SendErrorCard",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CloseLastSync",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeePostUpdateTpIntegSync"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeePostUpdateTpIntegSync",
+            "onFailure": [],
+            "onSuccess": [
+                "IsTpIntegSyncUpdated"
+            ],
+            "properties": {
+                "args": "${steps.CloseLastSync}",
+                "formulaId": "31331"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsTpIntegSyncUpdated",
+            "onFailure": [
+                "SendErrorCard"
+            ],
+            "onSuccess": [
+                "InitialSyncSubFormula"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ISRunning",
+            "onFailure": [
+                "IsRetry"
+            ],
+            "onSuccess": [
+                "ProcesscardForRetry"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "IsRetry",
+            "onFailure": [
+                "IsFailed"
+            ],
+            "onSuccess": [
+                "SyncSubFormula"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "SyncSubFormula",
+            "onFailure": [
+                "UpdateTpIntegConfWithSyncTypeErrorParam"
+            ],
+            "onSuccess": [
+                "ProcesscardForRetry"
+            ],
+            "properties": {
+                "args": "${steps.ConfigParam}",
+                "formulaId": "31419"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsFailed",
+            "onFailure": [
+                "TPMappingParam"
+            ],
+            "onSuccess": [
+                "SendErrorCard"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "TPMappingParam",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetTpMapping"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetTpMapping",
+            "onFailure": [],
+            "onSuccess": [
+                "SendLastSyncDetails"
+            ],
+            "properties": {
+                "args": "${steps.TPMappingParam}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "SendLastSyncDetails",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HasInstance",
+            "onFailure": [
+                "InstanceCreation"
+            ],
+            "onSuccess": [
+                "SyncSubFormula"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InstanceCreation",
+            "onFailure": [],
+            "onSuccess": [
+                "CreateInstance"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CreateInstance",
+            "onFailure": [],
+            "onSuccess": [
+                "ReplaceInstance"
+            ],
+            "properties": {
+                "api": "${steps.InstanceCreation.url}",
+                "body": "${steps.InstanceCreation.body}",
+                "method": "POST"
+            },
+            "type": "request"
+        },
+        {
+            "name": "ReplaceInstance",
+            "onFailure": [],
+            "onSuccess": [
+                "SyncsubFormula"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "SyncsubFormula",
+            "onFailure": [
+                "UpdateTpIntegConfWithSyncTypeErrorParam"
+            ],
+            "onSuccess": [
+                "ProcesscardForRetry"
+            ],
+            "properties": {
+                "args": "${steps.ReplaceInstance}",
+                "formulaId": "31419"
+            },
+            "type": "formula"
+        }
+    ],
+    "subFormulas": [
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31330,
+            "name": "ChargebeeGet",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ChargebeeGetCallAgainCB",
+                    "onFailure": [
+                        "ChargebeeGetResult"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCBDelay2"
+                    ],
+                    "properties": {
+                        "body": "let code = \"\";\nif(steps.ChargebeeGetGetCBData !== undefined && steps.ChargebeeGetGetCBData.response !== undefined) {\n  code = steps.ChargebeeGetGetCBData.response.code;\n}\nif(steps.ChargebeeGetInputParams.intervel.length > 0 && steps.ChargebeeGetInputParams.retryCode[code] !== undefined) {\n  steps.ChargebeeGetInputParams.delay.query.delay = steps.ChargebeeGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetCallAgainHttp",
+                    "onFailure": [
+                        "ChargebeeGetResult2"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeeGetInputParams.intervel.length > 0 && steps.ChargebeeGetInputParams.retryCode[steps.ChargebeeGetGetHttpData.response.code] !== undefined) {\n  steps.ChargebeeGetInputParams.delay.query.delay = steps.ChargebeeGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetGetHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429",
+                        "url": "${steps.ChargebeeGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetCBDelay2",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetGetCBData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429",
+                        "url": "${steps.ChargebeeGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"formula_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetGetCBData",
+                    "onFailure": [
+                        "ChargebeeGetCallAgainCB"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCallAgainCB"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "api": "${steps.ChargebeeGetInputParams.url}",
+                        "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                        "elementInstanceId": "${config.chargebee}",
+                        "headers": "",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429"
+                    },
+                    "type": "elementRequest"
+                },
+                {
+                    "name": "ChargebeeGetGetHttpData",
+                    "onFailure": [
+                        "ChargebeeGetCallAgainHttp"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                        "headers": "${steps.ChargebeeGetInputParams.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.query}",
+                        "url": "${steps.ChargebeeGetInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\nlet bodydata = trigger.args.bodydata;\nif (bodydata === undefined)\n{\n  bodydata = {};\n}\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\ndone({\n    url: url,\n    query: query,\n    bodydata: bodydata,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n    },\n    hardStop: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n        500:true,\n        401:true\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetIsHttp",
+                    "onFailure": [
+                        "ChargebeeGetGetCBData"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetGetHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeeGetInputParams.url.startsWith(\"https://\"));"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetIsValidUrl",
+                    "onFailure": [
+                        "ChargebeeGetError"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetIsHttp"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeeGetInputParams.url !== undefined && steps.ChargebeeGetInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetResult",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let code = 600;\nif(steps.ChargebeeGetGetCBData !== undefined && steps.ChargebeeGetGetCBData.response !== undefined) {\n  code = steps.ChargebeeGetGetCBData.response.code;\n}\nif(code < 300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeeGetGetCBData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeeGetInputParams.hardStop[code] !== undefined;\n  if(steps.ChargebeeGetGetCBData!== undefined && steps.ChargebeeGetGetCBData.response!== undefined && steps.ChargebeeGetGetCBData.response.body!== undefined && steps.ChargebeeGetGetCBData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeeGetGetCBData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    msg:steps.ChargebeeGetGetCBData.response,\n    cb_status_code:code\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.ChargebeeGetGetHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeeGetGetHttpData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeeGetInputParams.hardStop[steps.ChargebeeGetGetHttpData.response.code] !== undefined;\n  if(steps.ChargebeeGetGetHttpData.response.body!== undefined && steps.ChargebeeGetGetHttpData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeeGetGetHttpData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    cb_status_code:steps.ChargebeeGetGetHttpData.response.code\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31375,
+            "name": "ChargebeePost",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "Error",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failed\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "InputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "IsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet body = trigger.args.body;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nif(query === undefined) {\n  query = {};\n}\nif(body === undefined) {\n  body = {};\n}\nif(headers === undefined) {\n  headers = {};\n}\ndone({\n  url:url,\n  query:query,\n  body:body,\n  intervel:[5000,10000,20000,40000,80000],\n  headers:headers,\n     delay :{\n      url : \"https://apps.integrations.chargebee.com/api/ipaasdelay\",\n      query:{\n        delay:2000\n      },\n      headers: {\n        \"api_key\":apiKey\n      }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "IsValidUrl",
+                    "onFailure": [
+                        "Error"
+                    ],
+                    "onSuccess": [
+                        "PostHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.InputParams.url !== undefined && steps.InputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "PostHttpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "Result2"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.InputParams.body}",
+                        "headers": "${steps.InputParams.headers}",
+                        "method": "POST",
+                        "query": "${steps.InputParams.query}",
+                        "url": "${steps.InputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "Result2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.PostHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.PostHttpData.response.body\n  });\n}else {\n  done({\n    cb_status:\"failure\",\n    msg:\" Some thing went wrong\"\n  });\n}"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "InputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31331,
+            "name": "ChargebeePost",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ChargebeePostCallAgainHttp",
+                    "onFailure": [
+                        "ChargebeePostResult2"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostInputParams.intervel.length > 0 && steps.ChargebeePostInputParams.retryCode[steps.ChargebeePostPostHttpData.response.code] !== undefined) {\n  steps.ChargebeePostInputParams.delay.query.delay = steps.ChargebeePostInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeePostCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostPostHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeePostInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeePostInputParams.delay.query}",
+                        "url": "${steps.ChargebeePostInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeePostError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"formula_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeePostInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet body = trigger.args.body;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\nif(body === undefined) {\n  body = {};\n}\ndone({\n    url: url,\n    query: query,\n    body:body,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n    },\n    hardStop: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n        500:true,\n        401:true\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeePostIsValidUrl",
+                    "onFailure": [
+                        "ChargebeePostError"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostPostHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeePostInputParams.url !== undefined && steps.ChargebeePostInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeePostPostHttpData",
+                    "onFailure": [
+                        "ChargebeePostCallAgainHttp"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.ChargebeePostInputParams.body}",
+                        "headers": "${steps.ChargebeePostInputParams.headers}",
+                        "method": "POST",
+                        "query": "${steps.ChargebeePostInputParams.query}",
+                        "url": "${steps.ChargebeePostInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeePostResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostPostHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeePostPostHttpData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeePostInputParams.hardStop[steps.ChargebeePostPostHttpData.response.code] !== undefined;\n  if(steps.ChargebeePostPostHttpData.response.body!== undefined && steps.ChargebeePostPostHttpData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeePostPostHttpData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    rbody:steps.ChargebeePostPostHttpData.response.body\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": true,
+            "debugLoggingExpires": "2019-11-15T14:10:07Z",
+            "description": "Sync SubFormula",
+            "engine": "v3",
+            "id": 31419,
+            "name": "HubspotInitialSyncSubFormula",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ChargebeePostCreateTpIntegSync",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "IsTpIntegSyncCreated"
+                    ],
+                    "properties": {
+                        "args": "${steps.NewSyncDetails.createTpIntegSync}",
+                        "formulaId": "31331"
+                    },
+                    "type": "formula"
+                },
+                {
+                    "name": "ChargebeePostUpdateTpIntegConf",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "IsTpIntegConfUpdated"
+                    ],
+                    "properties": {
+                        "args": "${steps.NewSyncDetails.updateTpIntegConf}",
+                        "formulaId": "31331"
+                    },
+                    "type": "formula"
+                },
+                {
+                    "name": "ChargebeePostUpdateTpIntegSync",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "IsTpIntegSyncUpdated"
+                    ],
+                    "properties": {
+                        "args": "${steps.RunSyncParam}",
+                        "formulaId": "31331"
+                    },
+                    "type": "formula"
+                },
+                {
+                    "name": "CheckStatus",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HasError"
+                    ],
+                    "properties": {
+                        "body": "let input = {\n  error : false,\n   isStopSync: false,\n  done: false,\n  url : \"https://\"+steps.InputParams.input.siteName+\".\"+steps.InputParams.input.siteDomain+\"/api/v2/third_party_sync_details/\" +steps.LastSyncDetails.response.body.third_party_sync_detail.id,\n  auth: steps.InputParams.input.config.auth,\n  body: steps.LastSyncDetails.response.body.third_party_sync_detail,\n};\n\nif(steps.ExecutionStatus.response.body.status === undefined) {\n  \n  input.error = true;\n  input.done = true;\n  input.body.status = \"failed\";\n  \n}else if(steps.ExecutionStatus.response.body.status === \"failed\"){\n   \n  input.error = true;\n  input.done = true;\n  input.body.status = \"failed\";\n  \n}else if(steps.ExecutionStatus.response.body.status === \"success\"){\n  \n  input.error = false;\n  input.done = true;\n  input.body.status = \"succeeded\";\n   \n  for(var i=0;i<steps.ExecutionStatus.response.body.stepExecutions.length;i++){\n    \n    if(steps.ExecutionStatus.response.body.stepExecutions[i][\"stepName\"] ===\"Done\") {\n      input.result = steps.ExecutionStatus.response.body.stepExecutions[i];\n      break;\n    }\n  }\n  if(input.result === undefined){\n    input.error = true;\n  input.done = true;\n  input.body.status = \"failed\";\n  }\n   \n}else if(steps.ExecutionStatus.response.body.status === \"pending\"){\n  input.error = false;\n  input.done = false;\n  input.body.status = \"running\";\n}\n\n\ndone(input);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "CloseCall",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "StartExcecution"
+                    ],
+                    "properties": {
+                        "body": "",
+                        "headers": "${steps.CloseLastSync.auth}",
+                        "method": "POST",
+                        "query": "${steps.CloseLastSync.body}",
+                        "url": "${steps.CloseLastSync.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "CloseLastSync",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "CloseCall"
+                    ],
+                    "properties": {
+                        "body": "let input = {\n  url : \"https://\"+steps.InputParams.input.siteName+\".\"+steps.InputParams.input.siteDomain+\"/api/v2/third_party_sync_details/\" +steps.LastSyncDetails.response.body.third_party_sync_detail.id,\n  auth: steps.InputParams.input.config.auth,\n  body: steps.LastSyncDetails.response.body.third_party_sync_detail,\n};\ninput.body.status = \"failed\";\ninput.body.context.sync_context_messages = \"No excution found\";\ndone(input);\n  "
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ConfigParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "LastSyncDetails"
+                    ],
+                    "properties": {
+                        "body": "done({\n  formula: {\n    instance:steps.CreateFormulaInstance.response.body.id,\n  },\n  body  :{\n      \"cb-api-key\": steps.InputParams.input.apiKey,\n      \"cb-domain\": steps.InputParams.input.siteDomain,\n      \"cb-site-name\": steps.InputParams.input.siteName,\n      \"type\": steps.InputParams.input.type,\n      \"initialSync\":true,\n      \"debugLoggingEnabled\": true,\n  }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "CreateFormulaInstance",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "StartExcecution"
+                    ],
+                    "properties": {
+                        "api": "${steps.FormulaParams.url}",
+                        "body": "${steps.FormulaParams.body}",
+                        "method": "POST"
+                    },
+                    "type": "request"
+                },
+                {
+                    "name": "CreateSync",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RunSyncParam"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InitParams.input.config.auth}",
+                        "method": "POST",
+                        "query": "${steps.NewSyncDetails.query}",
+                        "retryAttempts": "5",
+                        "retryDelay": "100",
+                        "retryStatusCodes": "429",
+                        "url": "${steps.NewSyncDetails.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "DoStartExcution",
+                    "onFailure": [
+                        "SendErrorCard"
+                    ],
+                    "onSuccess": [
+                        "StartExcecution"
+                    ],
+                    "properties": {
+                        "body": "done(steps.LastSyncDetails.response.code===409);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ExecutionStatus",
+                    "onFailure": [
+                        "CloseLastSync"
+                    ],
+                    "onSuccess": [
+                        "CheckStatus"
+                    ],
+                    "properties": {
+                        "api": "/formulas/instances/executions/${steps.LastSyncDetails.response.body.third_party_sync_detail.context.excecutionId}",
+                        "method": "GET"
+                    },
+                    "type": "request"
+                },
+                {
+                    "name": "FormulaParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "StartExcecution"
+                    ],
+                    "properties": {
+                        "body": "let config = {\n   url: \"/formulas/\"+steps.InitParams.input.formulaId+\"/instances\",\n  body : {\n    active: true,\n    configuration: {\n    },\n    name: steps.InitParams.input.siteName + \"-Sync\"\n  }\n};\ndone(config);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "GetChargebeeConfig",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "IsFirstRun"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InputParams.input.config.auth}",
+                        "method": "GET",
+                        "query": "${steps.InputParams.input.config.query}",
+                        "url": "${steps.InputParams.input.config.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "GetResult",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HasValidBody"
+                    ],
+                    "properties": {
+                        "api": "/formulas/instances/executions/steps/${steps.CheckStatus.result.id}/values",
+                        "method": "GET"
+                    },
+                    "type": "request"
+                },
+                {
+                    "name": "GetSyncDetails",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ISRunning"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InputParams.input.config.auth}",
+                        "method": "GET",
+                        "query": "${steps.InputParams.input.config.syncQuery}",
+                        "url": "${steps.InputParams.input.config.syncUrl}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "GetTpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "SendLastSyncDetails"
+                    ],
+                    "properties": {
+                        "headers": "${steps.TPMappingParam.auth}",
+                        "method": "GET",
+                        "query": "${steps.TPMappingParam.query}",
+                        "url": "${steps.TPMappingParam.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "GetTpData2",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "TpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.TPMappingParam2.auth}",
+                        "method": "GET",
+                        "query": "${steps.TPMappingParam2.query}",
+                        "url": "${steps.TPMappingParam2.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "HasDone",
+                    "onFailure": [
+                        "ProcesscardForRetry"
+                    ],
+                    "onSuccess": [
+                        "TPMappingParam2"
+                    ],
+                    "properties": {
+                        "body": "done(steps.CheckStatus.done);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HasError",
+                    "onFailure": [
+                        "HasDone"
+                    ],
+                    "onSuccess": [
+                        "UpdateSyncError"
+                    ],
+                    "properties": {
+                        "body": "done(steps.CheckStatus.error);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HasInitialSyncInstance",
+                    "onFailure": [
+                        "FormulaParams"
+                    ],
+                    "onSuccess": [
+                        "UpdateSyncSetup"
+                    ],
+                    "properties": {
+                        "body": "done(steps.GetChargebeeConfig.response.body.third_party_configuration.config_json.cloudElements.formulas.formula_InitialSync!==undefined);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HasLastSyncCompleted",
+                    "onFailure": [
+                        "CloseLastSync"
+                    ],
+                    "onSuccess": [
+                        "StartExcecution"
+                    ],
+                    "properties": {
+                        "body": "let flag = false;\nlet syncStatus = steps.LastSyncDetails.response.body.third_party_sync_detail.status;\nif(syncStatus===\"succeeded\" || syncStatus===\"failed\") {\n  flag = true;\n}\ndone(flag);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HasValidBody",
+                    "onFailure": [
+                        "ProcesscardForRetry"
+                    ],
+                    "onSuccess": [
+                        "UpdateStatus"
+                    ],
+                    "properties": {
+                        "body": "done(steps.GetResult.response.body !== undefined && steps.GetResult.response.body.length >0);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HasValidResult",
+                    "onFailure": [
+                        "ProcesscardForRetry"
+                    ],
+                    "onSuccess": [
+                        "UpdateSyncSuccess"
+                    ],
+                    "properties": {
+                        "body": "done(steps.GetResult.response.body.length > 0);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "InitParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "StartExcecution"
+                    ],
+                    "properties": {
+                        "body": "let apiKey = trigger.args.apiKey;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\nlet siteDomain = trigger.args.domain;\nlet formulaInstance = trigger.args.formulaInstance;\nlet formulaId = trigger.args.formulaId;\nlet tpIntegConf = trigger.args.tpIntegConf;\nlet password = \"\";\nlet initialSync = trigger.args.initialSync;\nlet cloud = \"https://staging.cloud-elements.com\";\n\nconsole.log(formulaInstance);\n\nlet params = {\n  input: {\n    apiKey: apiKey,\n    siteName: siteName,\n    siteDomain:siteDomain,\n    type: type,\n    formulaInstance : formulaInstance,\n    formulaId : formulaId,\n    tpIntegConf : tpIntegConf,\n    formulaInstanceBody : {\n       \"cb-api-key\": apiKey,\n      \"cb-domain\": siteDomain,\n      \"cb-site-name\": siteName,\n      \"type\": type,\n      \"initialSync\":initialSync,\n      \"debugLoggingEnabled\": true\n    },\n    props:{\n      initialsync:{\n         url :cloud + \"/elements/api-v2/initialsync/setup\",\n        id:\"411939\"\n      },\n       syncProcessingCard:{\n         url :cloud + \"/elements/api-v2/sync/run\",\n        id:\"411944\"\n      }\n      \n    },\n    config :{\n      url: \"https://\"+siteName+\".\"+siteDomain+\"/api/v2/third_party_configurations\",\n      syncUrl:\"https://\"+siteName+\".\"+siteDomain+\"/api/v2/third_party_sync_details/retrieve_latest_sync\",\n      auth:{\n        Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n      },\n      query:{\n        integration_name: type\n      },\n      syncQuery:{\n        'third_party_configuration[integration_name]': type\n      }\n    }\n  }\n};\ndone(params);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "InputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "GetChargebeeConfig"
+                    ],
+                    "properties": {
+                        "body": "\nlet apiKey = trigger.args.request.query['cb-api-key'];\nlet siteName = trigger.args.request.query['cb-site-name'];\nlet type = trigger.args.request.query['type'];\nlet siteDomain = trigger.args.request.query['cb-domain'];\nlet action = trigger.args.request.query['action'];\nlet password = \"\";\n\nlet params = {\n  input: {\n    apiKey: apiKey,\n    siteName: siteName,\n    siteDomain:siteDomain,\n    type: type,\n    action:action,\n    config :{\n      url: \"https://\"+siteName+\".\"+siteDomain+\"/api/v2/third_party_configurations\",\n      syncUrl:\"https://\"+siteName+\".\"+siteDomain+\"/api/v2/third_party_sync_details/retrieve_latest_sync\",\n      auth:{\n        Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n      },\n      query:{\n        integration_name: type\n      },\n      syncQuery:{\n        'third_party_configuration[integration_name]': type\n      },\n     \n    }\n  }\n};\ndone(params);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "IsFailed",
+                    "onFailure": [
+                        "TPMappingParam"
+                    ],
+                    "onSuccess": [
+                        "SyncFailed"
+                    ],
+                    "properties": {
+                        "body": "let flag = false;\nlet syncStatus = steps.GetSyncDetails.response.body.third_party_sync_detail.status;\nif(syncStatus===\"failed\") {\n  flag = true;\n}\ndone(flag);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "IsFirstRun",
+                    "onFailure": [
+                        "GetSyncDetails"
+                    ],
+                    "onSuccess": [
+                        "FormulaParams"
+                    ],
+                    "properties": {
+                        "body": "let syncData = steps.GetChargebeeConfig.response.body.third_party_configuration.config_json.cloudElements.syncData;\ndone(syncData === undefined);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "IsRetry",
+                    "onFailure": [
+                        "IsFailed"
+                    ],
+                    "onSuccess": [
+                        "RetryParams"
+                    ],
+                    "properties": {
+                        "body": "done(steps.InputParams.input.action===\"retry\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ISRunning",
+                    "onFailure": [
+                        "IsRetry"
+                    ],
+                    "onSuccess": [
+                        "ProcesscardForRetry"
+                    ],
+                    "properties": {
+                        "body": "let flag = false;\nlet syncStatus = steps.GetSyncDetails.response.body.third_party_sync_detail.status;\nif(syncStatus===\"running\") {\n  flag = true;\n}\ndone(flag);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "IsTpIntegConfUpdated",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostCreateTpIntegSync"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostUpdateTpIntegConf.cb_status == \"success\")\n done(true);\nelse\n done(false);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "IsTpIntegSyncCreated",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RunSyncParam"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostCreateTpIntegSync.cb_status == \"success\")\n  done(true);\nelse\n  done(false);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "IsTpIntegSyncUpdated",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostUpdateTpIntegSync.cb_status == \"success\")\n done(true);\nelse\n done(false);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "LastSyncDetails",
+                    "onFailure": [
+                        "StartExcecution"
+                    ],
+                    "onSuccess": [
+                        "StartExcecution"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InputParams.input.config.auth}",
+                        "method": "GET",
+                        "query": "${steps.InputParams.input.config.syncQuery}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "200",
+                        "retryStatusCodes": "429",
+                        "url": "${steps.InputParams.input.config.syncUrl}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "MakeCard",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let cardarray = steps.TpData;\nlet successRecord = 0;\nif(steps.TpData.successLog !== undefined) {\n  successRecord = steps.TpData.successLog.length;\n}\nlet errorRecord = 0;\nif(steps.TpData.errorLog !== undefined) {\n  errorRecord = steps.TpData.errorLog.length;\n}\n\nlet total = Number(successRecord) + Number(errorRecord);\nlet card = {\n   cards:[\n      {\n         \"card\": {\n            \"type\" : \"ACTION\",\n            \"heading\" :\" \"+successRecord+\" of \"+total +\" records synced successfully\",\n            \"listContent\":steps.TpData.successLog,\n            \"icon\" : \"SUCCESS\"         \n         },\n         \"id\" : \"check2\",\n         \"isCardDone\":\"true\"\n      },\n      \n   ]\n};\nif(errorRecord > 0) {\n  card.cards.push({\n         \"card\": {\n            \"type\" : \"ACTION\",\n            \"heading\" : \" \"+errorRecord+\" of \"+total+\" records could not be synced\",\n            \"subHeading\" : \"You could fix these errors and retry sync. Or you could go ahead and sync all records. We recommend that you fix these errors and retry sync.\",\n            \"listContent\":steps.TpData.errorLog,\n            \"icon\" : \"ERROR\"         \n         },\n         \"id\" : \"check3\",\n         \"isCardDone\":\"true\"\n      });\n}\n\nlet eTtitle = \"Are you sure you want to sync all records?\";\nlet eDesc = \"All your customer and subscription data will be synced.\";\nif(errorRecord > 0) {\n  eTtitle = \"Are you sure you want to ignore the errors and sync all records?\";\n eDesc = \"All your customer and subscription data will be synced. You can fix the errors, if any, sync the data again, later.\";\n}\ncard.proceed = {\n        \"id\": \"proceed\",\n        \"display\": \"Sync all Records\",\n        \"icon\": \"ARROW\",\n        \"type\": \"POP_UP\",\n        \"popUp\": {\n            \"type\": \"SIMPLE\",\n            \"title\": eTtitle,\n            \"usecase\":\"DANGER\",\n            \"submitButton\": \"Yes, go ahead\",\n            \"cancelButton\": \"Dismiss\",\n            \"description\": eDesc,\n              \"apiEndPoint\": {\n            \"apiUrl\": steps.Props.syncProcessingCard.url,\n        \"headers\": {\n          \"Elements-Formula-Instance-Id\":  steps.Props.syncProcessingCard.id\n        },\n        \"input\": {\n          \"action\": \"run\",\n          \"type\": \"hubspot\"\n        },\n        \"type\": \"GET\"\n      }\n      \n        }\n    };\n\n\ncard.retry = {\n        \"id\": \"retry\",\n        \"display\": \"Retry Initial Sync\",\n        \"icon\": \"ARROW\",\n        \"buttonLook\":\"FILLED\",\n        \"type\": \"DIRECT_LINK\",\n        \"request\": {\n            \"type\": \"ON_CLICK_DEFAULT_ACTION\",\n            \"apiEndPoint\": {\n                \"apiUrl\": steps.Props.initialsync.url,\n                \"type\": \"GET\",\n                \"headers\": {\n                    \"Elements-Formula-Instance-Id\": steps.Props.initialsync.id\n                },\n                \"input\":{\n                    \"type\": steps.InputParams.input.type,\n                    \"retry\": \"true\",\n                    \"action\": \"run\"\n                }\n            }\n        }\n    };\n\ndone({\n  statusCode: 200,\n  result: card\n})"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "NewSyncDetails",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostUpdateTpIntegConf"
+                    ],
+                    "properties": {
+                        "body": "\n\nlet query  = {\n  'third_party_configuration[integration_name]': steps.InitParams.input.type,\n  \"context\": {\n      \"excecutionId\":steps.StartExcecution.response.body[0].id,\n      \"instance\":steps.InitParams.input.formulaInstance,\n      \"formula\":steps.InitParams.input.formulaId,\n      \"initialSync\":steps.InitParams.input.formulaInstanceBody.initialSync\n    }\n};\n\nlet url = \"https://\"+steps.InitParams.input.siteName+\".\"+steps.InitParams.input.siteDomain+\"/api/v2/third_party_sync_details\";\n\n\nlet apiKey=steps.InitParams.input.apiKey; \nlet siteName=steps.InitParams.input.siteName; \nlet siteDomain=steps.InitParams.input.siteDomain; \nlet type=steps.InitParams.input.type; \n\nlet tpConfig = steps.InitParams.input.tpIntegConf.config_json;\n\ntpConfig.cloudElements.syncData = {\n  firstSync:Math.round((new Date().getTime())/1000),\n  instance:steps.InitParams.input.formulaInstance\n};\ntpConfig.cloudElements.syncLog = {\n};\nlet tp = {\n   url: \"https://\"+siteName+\".integrations.\"+siteDomain+\"/integrations/update_tp_integ_conf\",\n   headers: {\n   \"Content-Type\": \"application/json\",\n   \"cache-control\": \"no-cache\"\n },\n body:{\n     integration_name :type,\n     site_name :siteName,\n     api_key :apiKey,\n     config_json : tpConfig\n  },\n  apiKey : apiKey\n};\n\nlet updateTpIntegConf = {\n  url: tp.url,\n  body:tp.body,\n  headers : tp.headers,\n  apiKey : apiKey,\n  siteName : siteName,\n  siteDomain : siteDomain,\n  type : type\n};\n\nlet createTpIntegSync = {\n  headers:steps.InitParams.input.config.auth,\n  url : url,\n  query : query,\n  apiKey : apiKey,\n  siteName : siteName,\n  siteDomain : siteDomain,\n  type : type\n}\n\ndone({\n  updateTpIntegConf : updateTpIntegConf,\n  createTpIntegSync : createTpIntegSync\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ProcesscardForRetry",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let eTtitle = \"Are you sure you want to sync all records?\";\nlet eDesc = \"All your customer and subscription data will be synced.\";\nlet card = {\n    \"cards\": [\n      {\n         \"card\": {\n            \"type\" : \"PROCESSING\",\n            \"processingText\": \" Syncing first 10 customers and their subscriptions\",\n            \"request\" : {\n               \"type\":\"DOC_READY_GET_CARD\",\n               \"apiEndPoint\":{\n                  \"apiUrl\": steps.InitParams.input.props.initialsync.url,\n                        \"type\": \"GET\",\n                        \"headers\": {\n                            \"Elements-Formula-Instance-Id\": steps.InitParams.input.props.initialsync.id\n                        },\n                        \"input\":{\n                            \"type\": steps.InitParams.input.type,\n                            \"action\": \"default\",\n                            \n                        }\n               }\n            }\n         },\n         \"id\" : \"check2\",\n          \"showRetry\":\"false\"\n      } \n   ],\n    \"proceed\": {\n        \"id\": \"proceed\",\n        \"display\": \"Sync all Records\",\n        \"icon\": \"ARROW\",\n        \"type\": \"POP_UP\",\n        \"popUp\": {\n            \"type\": \"SIMPLE\",\n            \"title\": eTtitle,\n            \"usecase\":\"DANGER\",\n            \"submitButton\": \"Yes, go ahead\",\n            \"cancelButton\": \"Dismiss\",\n            \"description\": eDesc,\n            \"apiEndPoint\": {\n                \"apiUrl\": steps.InitParams.input.props.syncProcessingCard.url,\n                \"type\": \"GET\",\n                \"headers\": {\n                    \"Elements-Formula-Instance-Id\": steps.InitParams.input.props.syncProcessingCard.id\n                },\n               \"input\": {\n                      \"type\": steps.InitParams.input.type,\n                      \"action\" : \"run\"\n                      \n                }\n            }\n        }\n    },\n    \"retry\": {\n      \"buttonLook\": \"FILLED\",\n      \"display\": \"Retry Initial Sync\",\n      \"icon\": \"ARROW\",\n      \"id\": \"retry\",\n     \n      \"request\": {\n        \"apiEndPoint\": {\n          \"apiUrl\":steps.InitParams.input.props.initialsync.url,\n          \"headers\": {\n            \"Elements-Formula-Instance-Id\": steps.InitParams.input.props.initialsync.id\n            },\n          \"input\": {\n            \"action\": \"retry\",\n            \"type\": steps.InitParams.input.type,\n            \n          },\n          \"type\": \"GET\"\n        },\n        \"type\": \"ON_CLICK_DEFAULT_ACTION\"\n      },\n      \"type\": \"DIRECT_LINK\"\n    }\n};\n\n\ndone({\n    statusCode: 200,\n    result: card\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "Prop",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "InitParams"
+                    ],
+                    "properties": {
+                        "body": "let props  = {\n  formulaId:30693,\n  initialsync:{\n     url :cloud + \"/elements/api-v2/initialsync/setup\",\n    id:\"408112\"\n  },\n   syncProcessingCard:{\n     url :cloud + \"/elements/api-v2/sync/run\",\n    id:\"409862\"\n  },\n  validate:{\n     url :cloud + \"/elements/api-v2/validate/proceed\",\n    id:\"399315\"\n  }\n \n  \n  \n  \n};\ndone(props);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "Props",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "InputParams"
+                    ],
+                    "properties": {
+                        "body": "let cloud = \"https://staging.cloud-elements.com\";\nlet props  = {\n  formulaId:30693,\n  initialsync:{\n     url :cloud + \"/elements/api-v2/initialsync/setup\",\n    id:\"408112\"\n  },\n   syncProcessingCard:{\n     url :cloud + \"/elements/api-v2/sync/run\",\n    id:\"409862\"\n  },\n  validate:{\n     url :cloud + \"/elements/api-v2/validate/proceed\",\n    id:\"399315\"\n  }\n \n  \n  \n  \n};\ndone(props);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "RestartExcecution",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RetrySyncDetails"
+                    ],
+                    "properties": {
+                        "api": "/formulas/instances/${steps.RetryParams.formula.instance}/executions",
+                        "body": "${steps.RetryParams.body}",
+                        "method": "POST"
+                    },
+                    "type": "request"
+                },
+                {
+                    "name": "RestartExcecution1",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RetrySyncDetails"
+                    ],
+                    "properties": {
+                        "body": "${steps.RetryParams.body}",
+                        "method": "POST",
+                        "url": "/formulas/instances/${steps.RetryParams.formula.instance}/executions"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "RetryCreateSync",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RetryRunSyncParam"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InputParams.input.config.auth}",
+                        "method": "POST",
+                        "query": "${steps.RetrySyncDetails.query}",
+                        "url": "${steps.RetrySyncDetails.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "RetryParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RestartExcecution"
+                    ],
+                    "properties": {
+                        "body": "let instance = steps.GetChargebeeConfig.response.body.third_party_configuration.config_json.cloudElements.syncData.instance;\ndone({\n  formula: {\n    instance:instance,\n  },\n  body  :{\n      \"cb-api-key\": steps.InputParams.input.apiKey,\n      \"cb-domain\": steps.InputParams.input.siteDomain,\n      \"cb-site-name\": steps.InputParams.input.siteName,\n      \"type\": steps.InputParams.input.type,\n      \"initialSync\":true,\n      \"debugLoggingEnabled\": true,\n  }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "RetryRunSyncParam",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RetryUpdateRunSync"
+                    ],
+                    "properties": {
+                        "body": "let input = {\n  error : false,\n  done: false,\n  url : \"https://\"+steps.InputParams.input.siteName+\".\"+steps.InputParams.input.siteDomain+\"/api/v2/third_party_sync_details/\" +steps.RetryCreateSync.response.body.third_party_sync_detail.id,\n  auth: steps.InputParams.input.config.auth,\n  body: steps.RetryCreateSync.response.body.third_party_sync_detail,\n};\n\ninput.body.status = \"running\";\ndone(input);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "RetrySyncDetails",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "UpdateChargebeeConfigRetry"
+                    ],
+                    "properties": {
+                        "body": "let query  = {\n  'third_party_configuration[integration_name]': steps.InputParams.input.type,\n  \"context\": {\n      \"excecutionId\":steps.RestartExcecution.response.body[0].id,\n      \"instance\":steps.RetryParams.formula.instance,\n      \"formula\":steps.Props.formulaId,\n      \"initialSync\":true\n    }\n};\n\nlet url = \"https://\"+steps.InputParams.input.siteName+\".\"+steps.InputParams.input.siteDomain+\"/api/v2/third_party_sync_details\";\n\n\nlet apiKey=steps.InputParams.input.apiKey; \nlet siteName=steps.InputParams.input.siteName; \nlet siteDomain=steps.InputParams.input.siteDomain; \nlet type=steps.InputParams.input.type; \n\nlet tpConfig = steps.GetChargebeeConfig.response.body.third_party_configuration.config_json;\n\ntpConfig.cloudElements.syncData.firstSync = Math.round((new Date().getTime())/1000);\n\ntpConfig.cloudElements.syncLog = {\n};\nlet tp = {\n   url: \"https://\"+siteName+\".integrations.\"+siteDomain+\"/integrations/update_tp_integ_conf\",\n   headers: {\n   \"Content-Type\": \"application/json\",\n   \"cache-control\": \"no-cache\"\n },\n body:{\n     integration_name :type,\n     site_name :siteName,\n     api_key :apiKey,\n     config_json : tpConfig\n  }\n \n};\n\ndone({\n  query:query,\n  url:url,\n  tp:tp\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "RetryUpdateRunSync",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ProcesscardForRetry"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InputParams.input.config.auth}",
+                        "method": "POST",
+                        "query": "${steps.RetryRunSyncParam.body}",
+                        "url": "${steps.RetryRunSyncParam.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "RunSyncParam",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostUpdateTpIntegSync"
+                    ],
+                    "properties": {
+                        "body": "let input = {\n  error : false,\n  done: false,\n  url : \"https://\"+steps.InitParams.input.siteName+\".\"+steps.InitParams.input.siteDomain+\"/api/v2/third_party_sync_details/\" +steps.ChargebeePostCreateTpIntegSync.data.third_party_sync_detail.id,\n  headers: steps.InitParams.input.config.auth,\n  query: steps.ChargebeePostCreateTpIntegSync.data.third_party_sync_detail,\n};\n\ninput.query.status = \"running\";\ndone(input);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "SendCard",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let eTtitle = \"Are you sure you want to sync all records?\";\nlet eDesc = \"All your customer and subscription data will be synced.\";\nlet card = {\n    \"cards\": [{\n        \"card\": {\n            \"type\": \"ACTION\",\n            \"heading\": \"We'll run an Initial sync\",\n            \"subHeading\": \"We'll sync the first 10 customers and their subscriptions to HubSpot. After initial sync, we recommend that you verify the data in HubSpot.\",\n            \"buttons\": [{\n                \"id\": \"direct\",\n                \"display\": \"Run Initial Sync\",\n                \"icon\": \"ARROW\",\n                \"type\": \"DIRECT_LINK\",\n                \"buttonLook\":\"FILLED\",\n                \"request\": {\n                    \"type\": \"ON_CLICK_GET_CARD\",\n                    \"apiEndPoint\": {\n                        \"apiUrl\": steps.Props.initialsync.url,\n                        \"type\": \"GET\",\n                        \"headers\": {\n                            \"Elements-Formula-Instance-Id\": steps.Props.initialsync.id\n                        },\n                        \"input\":{\n                            \"type\": \"hubspot\",\n                            \"action\": \"run\"\n                        }\n                    }\n                }\n            }]\n        },\n        \"id\": \"check2\",\n        \"showRetry\": \"false\"\n    }],\n    \"proceed\": {\n        \"id\": \"proceed\",\n        \"display\": \"Sync all Records\",\n        \"icon\": \"ARROW\",\n        \"type\": \"POP_UP\",\n        \"popUp\": {\n            \"type\": \"SIMPLE\",\n            \"title\": eTtitle,\n            \"usecase\":\"DANGER\",\n            \"submitButton\": \"Yes, go ahead\",\n            \"cancelButton\": \"Dismiss\",\n            \"description\": eDesc,\n            \"apiEndPoint\": {\n                \"apiUrl\": steps.Props.validate.url,\n                \"type\": \"GET\",\n                \"headers\": {\n                    \"Elements-Formula-Instance-Id\": steps.Props.validate.id\n                }\n            }\n        }\n    },\n    \"retry\": {\n      \"buttonLook\": \"FILLED\",\n      \"display\": \"Retry Initial Sync\",\n      \"icon\": \"ARROW\",\n      \"id\": \"retry\",\n     \n      \"request\": {\n        \"apiEndPoint\": {\n          \"apiUrl\": steps.Props.initialsync.url,\n          \"headers\": {\n            \"Elements-Formula-Instance-Id\": steps.Props.initialsync.id\n          },\n          \"input\": {\n            \"action\": \"retry\",\n            \"type\": \"hubspot\"\n          },\n          \"type\": \"GET\"\n        },\n        \"type\": \"ON_CLICK_DEFAULT_ACTION\"\n      },\n      \"type\": \"DIRECT_LINK\"\n    }\n};\ndone({\n    statusCode: 200,\n    result: card\n})"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "SendErrorCard",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let card = {\n    \"cards\": [{\n        \"card\": {\n            \"type\": \"ACTION\",\n            \"heading\": \"Error\",\n            \"subHeading\": \"An issue was encountered due to which the sync did not succeed. Please retry sync and if the issue still persists, contact support\",\n            \"icon\" : \"ERROR\",\n            \"buttons\": [{\n                \"id\": \"direct\",\n                \"display\": \"Resolve\",\n                \"icon\": \"ARROW\",\n                \"type\": \"DIRECT_LINK\",\n                \"buttonLook\":\"FILLED\",\n                \"request\": {\n                    \"type\": \"ON_CLICK_GET_CARD\",\n                    \"apiEndPoint\": {\n                        \"apiUrl\": steps.InitParams.input.props.initialsync.url,\n                        \"type\": \"GET\",\n                        \"headers\": {\n                            \"Elements-Formula-Instance-Id\": steps.InitParams.input.props.initialsync.id,\n                        },\n                        \"input\":{\n                            \"type\": steps.InitParams.input.type,\n                            \"action\": \"retry\"\n                        }\n                    }\n                }\n            }]\n        },\n        \"id\": \"check2\",\n        \"showRetry\": \"false\"\n    }],\n        \"proceed\": {\n        \"id\": \"proceed\",\n        \"display\": \"Sync all Records\",\n        \"icon\": \"ARROW\",\n        \"type\": \"POP_UP\",\n        \"popUp\": {\n            \"type\": \"SIMPLE\",\n            \"title\": \"Are you sure you want to ignore the errors and sync all records?\",\n            \"usecase\":\"DANGER\",\n            \"submitButton\": \"Yes, go ahead\",\n            \"cancelButton\": \"Dismiss\",\n            \"description\": \"All your customer and subscription data will be synced. You can fix the errors, if any, sync the data again, later.\",\n            \"apiEndPoint\": {\n                \"apiUrl\":  steps.InitParams.input.props.syncProcessingCard.url,\n                \"type\": \"GET\",\n                \"headers\": {\n                    \"Elements-Formula-Instance-Id\":  steps.InitParams.input.props.syncProcessingCard.id\n                },\n               \"input\": {\n                      \"type\": steps.InitParams.input.type,\n                      \"syncNow\": \"syncNow\"\n                      \n                }\n            }\n        }\n    },\n    \"retry\": {\n      \"buttonLook\": \"FILLED\",\n      \"display\": \"Retry Initial Sync\",\n      \"icon\": \"ARROW\",\n      \"id\": \"retry\",\n     \n      \"request\": {\n        \"apiEndPoint\": {\n          \"apiUrl\":  steps.InitParams.input.props.initialsync.url,\n          \"headers\": {\n            \"Elements-Formula-Instance-Id\":  steps.InitParams.input.props.initialsync.id,\n          },\n          \"input\": {\n            \"action\": \"retry\",\n            \"type\":  steps.InitParams.input.type\n          },\n          \"type\": \"GET\"\n        },\n        \"type\": \"ON_CLICK_DEFAULT_ACTION\"\n      },\n      \"type\": \"DIRECT_LINK\"\n    }\n};\n    \n   \n\ndone({\n  statusCode: 200,\n  result: card\n})"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "SendLastSyncDetails",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let configuration = steps.GetChargebeeConfig.response.body.third_party_configuration.config_json;\nlet portalId = configuration.cloudElements.thirdParty.portalId;\nlet successLog = [];\nlet errorLog = [];\n\n\n\nlet list = steps.GetTpData.response.body.list;\nif(list === undefined) {\n  list = [];\n}\n\nfor(var i=0;i<list.length;i++){\n  let tp = list[i].third_party_entity_mapping;\n  if(tp !== undefined) {\n    if(tp.status === \"synced\"){\n      let id = tp.entity_id;\n      let cId = tp.third_party_entity_id;\n      let pUrl = \"https://app.hubspot.com/contacts/\"+portalId+\"/contact/\"+cId;\n  let hubSpotLink = \"<a href='\"+pUrl+\"' target='blank'>\"+cId+\"</a>\";\n  let chargebee_data_url = \"https://\"+steps.InputParams.input.siteName+\".\"+steps.InputParams.input.siteDomain+\"/admin-console/customers/\"+id;\n  let cb_link = \"<a href='\"+chargebee_data_url+\"' target='blank'>\"+id+\"</a>\";\n successLog.push(\"Customer id \" + cb_link + \" is synced as \" + hubSpotLink + \" in HubSpot\\n\");\n    }else if (tp.status === \"update_failed\"){\n       errorLog.push(tp.error_message);\n    }\n  }\n \n  \n}\n\nlet sLen =successLog.length;\nlet eLen = errorLog.length;\n\nlet total = Number(sLen) + Number(eLen);\nlet card = {\n   cards:[\n      {\n         \"card\": {\n            \"type\" : \"ACTION\",\n            \"heading\" :\" \"+sLen+\" of \"+total +\" records synced successfully\",\n            \"listContent\":successLog,\n            \"icon\" : \"SUCCESS\"         \n         },\n         \"id\" : \"check2\",\n         \"isCardDone\":\"true\"\n      },\n      \n   ]\n};\nif(eLen > 0) {\n  card.cards.push({\n         \"card\": {\n            \"type\" : \"ACTION\",\n            \"heading\" : \" \"+eLen+\" of \"+total +\" records could not be synced\",\n            \"subHeading\" : \"You could fix these errors and retry sync. Or you could go ahead and sync all records. We recommend that you fix these errors and retry sync.\",\n            \"listContent\":errorLog,\n            \"icon\" : \"ERROR\"         \n         },\n         \"id\" : \"check3\",\n         \"isCardDone\":\"true\"\n      });\n}\n\nlet eTtitle = \"Are you sure you want to sync all records?\";\nlet eDesc = \"All your customer and subscription data will be synced.\";\nif(eLen > 0) {\n  eTtitle = \"Are you sure you want to ignore the errors and sync all records?\";\n eDesc = \"All your customer and subscription data will be synced. You can fix the errors, if any, sync the data again, later.\";\n}\ncard.proceed = {\n        \"id\": \"proceed\",\n        \"display\": \"Sync all Records\",\n        \"icon\": \"ARROW\",\n        \"type\": \"POP_UP\",\n        \"popUp\": {\n            \"type\": \"SIMPLE\",\n            \"title\": eTtitle,\n            \"usecase\":\"DANGER\",\n            \"submitButton\": \"Yes, go ahead\",\n            \"cancelButton\": \"Dismiss\",\n            \"description\": eDesc,\n              \"apiEndPoint\": {\n            \"apiUrl\": steps.Props.syncProcessingCard.url,\n        \"headers\": {\n          \"Elements-Formula-Instance-Id\":  steps.Props.syncProcessingCard.id\n        },\n        \"input\": {\n          \"action\": \"run\",\n          \"type\": \"hubspot\"\n        },\n        \"type\": \"GET\"\n      }\n      \n        }\n    };\n\ncard.retry = {\n        \"id\": \"retry\",\n        \"display\": \"Retry Initial Sync\",\n        \"icon\": \"ARROW\",\n        \"buttonLook\":\"FILLED\",\n        \"type\": \"DIRECT_LINK\",\n        \"request\": {\n            \"type\": \"ON_CLICK_DEFAULT_ACTION\",\n            \"apiEndPoint\": {\n                \"apiUrl\": steps.Props.initialsync.url,\n                \"type\": \"GET\",\n                \"headers\": {\n                    \"Elements-Formula-Instance-Id\": steps.Props.initialsync.id\n                },\n                \"input\":{\n                    \"type\": steps.InputParams.input.type,\n                    \"action\": \"retry\"\n                }\n            }\n        }\n    };\n\ndone({\n  statusCode: 200,\n  result: card\n})"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "StartExcecution",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "NewSyncDetails"
+                    ],
+                    "properties": {
+                        "api": "/formulas/instances/${steps.InitParams.input.formulaInstance}/executions",
+                        "body": "${steps.InitParams.input.formulaInstanceBody}",
+                        "method": "POST"
+                    },
+                    "type": "request"
+                },
+                {
+                    "name": "SyncAgain",
+                    "onFailure": [
+                        "TPMappingParam"
+                    ],
+                    "onSuccess": [
+                        "StartExcecution"
+                    ],
+                    "properties": {
+                        "body": "let action = steps.InputParams.input.action;\nlet retry = steps.InputParams.input.retry;\nlet logs =steps.UpdateSyncSetup.body.config_json.cloudElements.logs;\n\nif(action ===\"run\" || logs === undefined){\n  done(true);\n}else{\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "SyncFailed",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "UpdateSyncFailed"
+                    ],
+                    "properties": {
+                        "body": "let input = {\n  url : \"https://\"+steps.InputParams.input.siteName+\".\"+steps.InputParams.input.siteDomain+\"/api/v2/third_party_sync_details/\" +steps.GetSyncDetails.response.body.third_party_sync_detail.id,\n  body: steps.GetSyncDetails.response.body.third_party_sync_detail,\n};\n\ninput.body.status = \"failed\";\ninput.body.context.sync_context_messages = \"Excution failed\";\ndone(input);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "Test",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\"dd\":\"ddd\"});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "TpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "UpdateStatus"
+                    ],
+                    "properties": {
+                        "body": "let formula = steps.UpdateSyncSetup.body.config_json.cloudElements.formulas;\nlet configuration = steps.GetChargebeeConfig.response.body.third_party_configuration.config_json;\nlet portalId = configuration.cloudElements.thirdParty.portalId;\nlet successLog = [];\nlet errorLog = [];\n\n\n\nlet list = steps.GetTpData2.response.body.list;\nif(list === undefined) {\n  list = [];\n}\n\nfor(var i=0;i<list.length;i++){\n  let tp = list[i].third_party_entity_mapping;\n  if(tp !== undefined) {\n    if(tp.status === \"synced\"){\n      let id = tp.entity_id;\n      let cId = tp.third_party_entity_id;\n      let pUrl = \"https://app.hubspot.com/contacts/\"+portalId+\"/contact/\"+cId;\n  let hubSpotLink = \"<a href='\"+pUrl+\"' target='blank'>\"+cId+\"</a>\";\n  let chargebee_data_url = \"https://\"+steps.InputParams.input.siteName+\".\"+steps.InputParams.input.siteDomain+\"/admin-console/customers/\"+id;\n  let cb_link = \"<a href='\"+chargebee_data_url+\"' target='blank'>\"+id+\"</a>\";\n successLog.push(\"Customer id \" + cb_link + \" is synced as \" + hubSpotLink + \" in HubSpot\\n\");\n    }else if (tp.status === \"update_failed\"){\n       errorLog.push(tp.error_message);\n    }\n  }\n \n  \n}\n\nlet sLen =successLog.length;\nlet eLen = errorLog.length;\n\nlet data = {\n  successLog:successLog,\n  errorLog:errorLog,\n};\ndone(data);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "TPMappingParam",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "GetTpData"
+                    ],
+                    "properties": {
+                        "body": "let apiKey = steps.InputParams.input.apiKey;\nlet siteDomain = steps.InputParams.input.siteDomain;\nlet siteName = steps.InputParams.input.siteName;\nlet type = steps.InputParams.input.type;\nlet password = \"\";\n\nlet configuration = steps.GetChargebeeConfig.response.body.third_party_configuration.config_json;  \nconfiguration = configuration.cloudElements;\nif(configuration !==undefined ) {\n  configuration = configuration.syncData;\n}\n\nlet params = {\n   \n  \n      url: \"https://\"+siteName+\".\"+siteDomain+\"/api/v2/third_party_entity_mappings/list_all\",\n      auth:{\n        Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n      },\n      query:{\n        integration_name: type,\n        limit:10,\n        \"entity_type[is]\":\"customer\"\n      }\n\n   \n    \n  \n};\n\nif(configuration !==undefined ) {\n let after;\n let before;\n if(configuration.firstSync !== undefined) {\n   after = Number(configuration.firstSync);\n   if(isNaN(after)){\n     after = undefined;\n   }\n }\n  if(configuration.firstSyncEnd !== undefined) {\n   before = Number(configuration.firstSyncEnd);\n   if(isNaN(before)){\n     before = undefined;\n   }\n }\n if(after !== undefined) {\n   params.query[\"modified_at[after]\"] = after;\n    \n }\n if(before !== undefined) {\n   params.query[\"modified_at[before]\"] = before;\n }\n}\ndone(params);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "TPMappingParam2",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "GetTpData2"
+                    ],
+                    "properties": {
+                        "body": "let apiKey = steps.InputParams.input.apiKey;\nlet siteDomain = steps.InputParams.input.siteDomain;\nlet siteName = steps.InputParams.input.siteName;\nlet type = steps.InputParams.input.type;\nlet password = \"\";\n\nlet configuration = steps.GetChargebeeConfig.response.body.third_party_configuration.config_json;  \nconfiguration = configuration.cloudElements;\nif(configuration !==undefined ) {\n  configuration = configuration.syncData;\n}\n\nlet params = {\n  \n  \n      url: \"https://\"+siteName+\".\"+siteDomain+\"/api/v2/third_party_entity_mappings/list_all\",\n      auth:{\n        Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n      },\n      query:{\n        integration_name: type,\n        limit:10,\n        \"entity_type[is]\":\"customer\"\n        \n      }\n\n   \n    \n  \n};\n\nif(configuration !==undefined ) {\n let after;\n let before;\n if(configuration.firstSync !== undefined) {\n   after = Number(configuration.firstSync);\n   if(isNaN(after)){\n     after = undefined;\n   }\n }\n  if(configuration.firstSyncEnd !== undefined) {\n   before = Number(configuration.firstSyncEnd);\n   if(isNaN(before)){\n     before = undefined;\n   }\n }\n if(after !== undefined) {\n   params.query[\"modified_at[after]\"] = after;\n    \n }\n if(before !== undefined) {\n   params.query[\"modified_at[before]\"] = before;\n }\n}\ndone(params);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "UpdateChargebeeConfig",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "CreateSync"
+                    ],
+                    "properties": {
+                        "body": "${steps.NewSyncDetails.tp.body}",
+                        "headers": "${steps.NewSyncDetails.tp.headers}",
+                        "method": "POST",
+                        "retryAttempts": "5",
+                        "retryDelay": "200",
+                        "retryStatusCodes": "429",
+                        "url": "${steps.NewSyncDetails.tp.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "UpdateChargebeeConfigRetry",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RetryCreateSync"
+                    ],
+                    "properties": {
+                        "body": "${steps.RetrySyncDetails.tp.body}",
+                        "headers": "${steps.RetrySyncDetails.tp.headers}",
+                        "method": "POST",
+                        "url": "${steps.RetrySyncDetails.tp.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "UpdateRunSync",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ProcesscardForRetry"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InitParams.input.config.auth}",
+                        "method": "POST",
+                        "query": "${steps.RunSyncParam.body}",
+                        "retryAttempts": "5",
+                        "retryDelay": "100",
+                        "retryStatusCodes": "429",
+                        "url": "${steps.RunSyncParam.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "UpdateStatus",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "UpdateSyncSuccess"
+                    ],
+                    "properties": {
+                        "body": "let successRecord = 0;\nif(steps.TpData.successLog !== undefined) {\n  successRecord = steps.TpData.successLog.length;\n}\nlet errorRecord = 0;\nif(steps.TpData.errorLog !== undefined) {\n  errorRecord = steps.TpData.errorLog.length;\n}\n\nlet total = successRecord + errorRecord;\n\nlet input = steps.CheckStatus;\nif(input.body.context === undefined) {\n  input.body.context = {\n  };\n}\n\ninput.body.context.sync_context_messages = [ total +\" Customers processed (\"+successRecord+\" created, 0 updated, \"+errorRecord+\" not synced)\"];\ninput.body.context.initialSync = true;\n\ndone(input);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "UpdateSyncError",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "SendErrorCard"
+                    ],
+                    "properties": {
+                        "headers": "${steps.CheckStatus.auth}",
+                        "method": "POST",
+                        "query": "${steps.CheckStatus.body}",
+                        "retryAttempts": "5",
+                        "retryDelay": "100",
+                        "retryStatusCodes": "429",
+                        "url": "${steps.CheckStatus.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "UpdateSyncFailed",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "SendErrorCard"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InputParams.input.config.auth}",
+                        "method": "POST",
+                        "query": "${steps.SyncFailed.body}",
+                        "url": "${steps.SyncFailed.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "UpdateSyncSetup",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "UpdateChargebeeConfig"
+                    ],
+                    "properties": {
+                        "body": "let apiKey=steps.InputParams.input.apiKey; \nlet siteName=steps.InputParams.input.siteName; \nlet siteDomain=steps.InputParams.input.siteDomain; \nlet type=steps.InputParams.input.type; \n\nlet tpConfig = steps.GetChargebeeConfig.response.body.third_party_configuration.config_json;\n\nif(steps.CreateFormulaInstance !== undefined) {\n  tpConfig.cloudElements.formulas.formula_InitialSync = {\n    setupStatus : \"CONFIGURED\",\n    id: steps.Props.formulaId,\n        instance: steps.CreateFormulaInstance.response.body.id\n  };\n}else {\n  tpConfig.cloudElements.formulas.formula_InitialSync.setupStatus = \"CONFIGURED\";\n}\n\n\n\nlet body={\n   url: \"https://\"+siteName+\".integrations.\"+siteDomain+\"/integrations/update_tp_integ_conf\",\n   headers: {\n   \"Content-Type\": \"application/json\",\n   \"cache-control\": \"no-cache\"\n },\n body:{\n     integration_name :type,\n     site_name :siteName,\n     api_key :apiKey,\n     config_json : tpConfig\n  }\n \n};\n\n\ndone(body);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "UpdateSyncSuccess",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "MakeCard"
+                    ],
+                    "properties": {
+                        "headers": "${steps.UpdateStatus.auth}",
+                        "method": "POST",
+                        "query": "${steps.UpdateStatus.body}",
+                        "retryAttempts": "5",
+                        "retryDelay": "100",
+                        "retryStatusCodes": "429",
+                        "url": "${steps.UpdateStatus.url}"
+                    },
+                    "type": "httpRequest"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "InitParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ],
+            "uri": ""
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "Props"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/initialsync/setup"
+}

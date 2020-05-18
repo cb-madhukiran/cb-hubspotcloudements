@@ -1,0 +1,1 @@
+done(steps.Next.deletes !== undefined && steps.Next.deletes.length>0);

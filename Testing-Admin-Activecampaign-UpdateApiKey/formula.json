@@ -1,0 +1,127 @@
+{
+    "active": true,
+    "api": "POST /updateKey",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 32599,
+    "method": "POST",
+    "name": "Testing-Admin-Activecampaign-UpdateApiKey",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "isValidParam",
+            "onFailure": [
+                "Error"
+            ],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "getInstances"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getInstances",
+            "onFailure": [
+                "NoInstanceFound"
+            ],
+            "onSuccess": [
+                "getConfiguration"
+            ],
+            "properties": {
+                "api": "/instances",
+                "method": "GET",
+                "query": "${steps.InputParams.searchParams}"
+            },
+            "type": "request"
+        },
+        {
+            "name": "getConfiguration",
+            "onFailure": [
+                "request_failed"
+            ],
+            "onSuccess": [
+                "constructConfig"
+            ],
+            "properties": {
+                "api": "/instances/${steps.getInstances.response.body[0].id}",
+                "method": "GET"
+            },
+            "type": "request"
+        },
+        {
+            "name": "constructConfig",
+            "onFailure": [],
+            "onSuccess": [
+                "updateApiKey"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "updateApiKey",
+            "onFailure": [
+                "request_failed"
+            ],
+            "onSuccess": [
+                "success"
+            ],
+            "properties": {
+                "api": "/instances/${steps.getInstances.response.body[0].id}",
+                "body": "${steps.constructConfig.body}",
+                "method": "PUT"
+            },
+            "type": "request"
+        },
+        {
+            "name": "success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "request_failed",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "NoInstanceFound",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "Error",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "isValidParam"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/updateKey"
+}

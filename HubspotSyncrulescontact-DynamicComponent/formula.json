@@ -1,0 +1,40 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "debugLoggingExpires": "2020-04-22T23:36:46Z",
+    "engine": "v3",
+    "id": 34650,
+    "name": "HubspotSyncrulescontact-DynamicComponent",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "EnvProps",
+            "onFailure": [],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "EnvProps"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

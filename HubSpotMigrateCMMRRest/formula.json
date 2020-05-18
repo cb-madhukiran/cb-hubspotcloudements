@@ -1,0 +1,55 @@
+{
+    "active": true,
+    "api": "GET /hubspot/migrate/cmmr",
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31816,
+    "method": "GET",
+    "name": "HubSpotMigrateCMMRRest",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "CallMigration"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CallMigration",
+            "onFailure": [],
+            "onSuccess": [
+                "Result"
+            ],
+            "properties": {
+                "api": "${steps.InputParams.url}",
+                "body": "${steps.InputParams.body}",
+                "method": "POST"
+            },
+            "type": "request"
+        },
+        {
+            "name": "Result",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/migrate/cmmr"
+}

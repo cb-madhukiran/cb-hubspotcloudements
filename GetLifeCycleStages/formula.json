@@ -1,0 +1,39 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 34758,
+    "name": "GetLifeCycleStages",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "EnvProps",
+            "onFailure": [],
+            "onSuccess": [
+                "getLifeCycleStages"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getLifeCycleStages",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "EnvProps"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

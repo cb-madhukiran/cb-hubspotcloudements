@@ -1,0 +1,288 @@
+{
+    "active": true,
+    "api": "GET /hubspot/init",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31436,
+    "method": "GET",
+    "name": "HubSpotInitialize",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "validateParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "validateParams",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "ChargebeeConfig"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ChargebeeConfig",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateParams"
+            ],
+            "properties": {
+                "headers": "${steps.InputParams.gAuth}",
+                "method": "GET",
+                "query": "${steps.InputParams.gQuery}",
+                "url": "${steps.InputParams.gUrl}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "UpdateParams",
+            "onFailure": [],
+            "onSuccess": [
+                "thirdPartyInstance"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "thirdPartyInstance",
+            "onFailure": [],
+            "onSuccess": [
+                "queryParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "queryParams",
+            "onFailure": [],
+            "onSuccess": [
+                "getThirdPartyInstance"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getThirdPartyInstance",
+            "onFailure": [
+                "createTpInstanceParams"
+            ],
+            "onSuccess": [
+                "thirdPartyInstanceFound"
+            ],
+            "properties": {
+                "api": "/instances",
+                "method": "GET",
+                "query": "${steps.queryParams.params.thirdParty.searchParam}"
+            },
+            "type": "request"
+        },
+        {
+            "name": "thirdPartyInstanceFound",
+            "onFailure": [],
+            "onSuccess": [
+                "getThirdPartyInstanceDetails"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getThirdPartyInstanceDetails",
+            "onFailure": [],
+            "onSuccess": [
+                "updateElementInstanceParams"
+            ],
+            "properties": {
+                "api": "/instances/${steps.thirdPartyInstanceFound.id}",
+                "method": "GET"
+            },
+            "type": "request"
+        },
+        {
+            "name": "updateElementInstanceParams",
+            "onFailure": [],
+            "onSuccess": [
+                "updateThirdPartyInstance"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "updateThirdPartyInstance",
+            "onFailure": [
+                "AuthenticationError"
+            ],
+            "onSuccess": [
+                "formulaInformation"
+            ],
+            "properties": {
+                "api": "${steps.updateElementInstanceParams.updateParams.url}",
+                "body": "${steps.updateElementInstanceParams.updateParams.body}",
+                "method": "PATCH"
+            },
+            "type": "request"
+        },
+        {
+            "name": "formulaInformation",
+            "onFailure": [],
+            "onSuccess": [
+                "GetHubSpotOwner"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "GetHubSpotOwner",
+            "onFailure": [],
+            "onSuccess": [
+                "HasValidPortalId"
+            ],
+            "properties": {
+                "headers": "${steps.formulaInformation.headers}",
+                "method": "GET",
+                "url": "${steps.formulaInformation.hUrl}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HasValidPortalId",
+            "onFailure": [
+                "AuthenticationError"
+            ],
+            "onSuccess": [
+                "oauthParam"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "oauthParam",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateOauth"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "UpdateOauth",
+            "onFailure": [
+                "AuthenticationError"
+            ],
+            "onSuccess": [
+                "updateTpConfigParams"
+            ],
+            "properties": {
+                "body": "",
+                "method": "POST",
+                "query": "${steps.oauthParam.body}",
+                "url": "${steps.oauthParam.mUrl}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "updateTpConfigParams",
+            "onFailure": [],
+            "onSuccess": [
+                "updateTpConfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "updateTpConfig",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {
+                "body": "${steps.updateTpConfigParams.body}",
+                "headers": "${steps.updateTpConfigParams.headers}",
+                "method": "POST",
+                "retry": "true",
+                "retryAttempts": "5",
+                "retryDelay": "200",
+                "url": "${steps.updateTpConfigParams.updateUrl}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorCard",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "AuthenticationError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "createTpInstanceParams",
+            "onFailure": [],
+            "onSuccess": [
+                "createThirdPartyInstance"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "createThirdPartyInstance",
+            "onFailure": [
+                "AuthenticationError"
+            ],
+            "onSuccess": [
+                "thirdPartyInstanceCreated"
+            ],
+            "properties": {
+                "api": "${steps.createTpInstanceParams.createTpInstanceConfig.url}",
+                "body": "${steps.createTpInstanceParams.createTpInstanceConfig.body}",
+                "headers": "",
+                "method": "POST"
+            },
+            "type": "request"
+        },
+        {
+            "name": "thirdPartyInstanceCreated",
+            "onFailure": [],
+            "onSuccess": [
+                "formulaInformation"
+            ],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/init"
+}

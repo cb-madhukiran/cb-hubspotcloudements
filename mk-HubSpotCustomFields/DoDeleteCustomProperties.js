@@ -1,0 +1,1 @@
+done(steps.CustomGroups.deletes.length > 0);

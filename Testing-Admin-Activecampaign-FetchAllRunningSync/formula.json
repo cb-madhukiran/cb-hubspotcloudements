@@ -1,0 +1,182 @@
+{
+    "active": true,
+    "api": "GET /FetchAllRunningSync",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 32604,
+    "method": "GET",
+    "name": "Testing-Admin-Activecampaign-FetchAllRunningSync",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "isValidParam",
+            "onFailure": [
+                "InvalidParam"
+            ],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InputParams",
+            "onFailure": [
+                "Error"
+            ],
+            "onSuccess": [
+                "getInstanceList"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getInstanceList",
+            "onFailure": [
+                "NoInstanceFound"
+            ],
+            "onSuccess": [
+                "LoopOverInstance"
+            ],
+            "properties": {
+                "api": "/formulas/${steps.InputParams.syncFormulaID}/instances",
+                "method": "GET"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverInstance",
+            "onFailure": [
+                "finalJS"
+            ],
+            "onSuccess": [
+                "getExecutions"
+            ],
+            "properties": {
+                "list": "${steps.getInstanceList.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "getExecutions",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverExecutions"
+            ],
+            "properties": {
+                "api": "/formulas/${steps.LoopOverInstance.entry.formula.id}/instances/${steps.LoopOverInstance.entry.id}/executions",
+                "method": "GET"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverExecutions",
+            "onFailure": [
+                "LoopOverInstance"
+            ],
+            "onSuccess": [
+                "isRunning"
+            ],
+            "properties": {
+                "list": "${steps.getExecutions.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "isRunning",
+            "onFailure": [
+                "LoopOverExecutions"
+            ],
+            "onSuccess": [
+                "getSiteName"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "getSiteName",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverConfigurations"
+            ],
+            "properties": {
+                "api": "/instances/${LoopOverInstance.entry.configuration.chargebee}/configuration",
+                "method": "GET"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverConfigurations",
+            "onFailure": [],
+            "onSuccess": [
+                "isSiteName"
+            ],
+            "properties": {
+                "list": "${steps.getSiteName.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "isSiteName",
+            "onFailure": [
+                "LoopOverConfigurations"
+            ],
+            "onSuccess": [
+                "executionParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "executionParams",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverExecutions"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "finalJS",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "NoInstanceFound",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "Error",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InvalidParam",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "isValidParam"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/FetchAllRunningSync"
+}

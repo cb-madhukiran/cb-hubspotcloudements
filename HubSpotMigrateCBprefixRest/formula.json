@@ -1,0 +1,73 @@
+{
+    "active": true,
+    "api": "GET /hubspot/migrate/cbprefix",
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31886,
+    "method": "GET",
+    "name": "HubSpotMigrateCBprefixRest",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "IsValid"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "IsValid",
+            "onFailure": [
+                "ErrorRes"
+            ],
+            "onSuccess": [
+                "CallMigration"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "CallMigration",
+            "onFailure": [],
+            "onSuccess": [
+                "Result"
+            ],
+            "properties": {
+                "api": "${steps.InputParams.url}",
+                "body": "${steps.InputParams.body}",
+                "method": "POST"
+            },
+            "type": "request"
+        },
+        {
+            "name": "Result",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ErrorRes",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/migrate/cbprefix"
+}

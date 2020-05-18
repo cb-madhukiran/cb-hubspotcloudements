@@ -1,0 +1,1 @@
+done(steps.GetExcutionStatus.response.body.status === "pending");

@@ -1,0 +1,115 @@
+{
+    "active": true,
+    "configuration": [
+        {
+            "key": "chargebee",
+            "name": "chargebee",
+            "required": true,
+            "type": "elementInstance"
+        }
+    ],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 32675,
+    "name": "DeleteCustomerChargebee",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "query",
+            "onFailure": [],
+            "onSuccess": [
+                "getcustomers"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getcustomers",
+            "onFailure": [],
+            "onSuccess": [
+                "list"
+            ],
+            "properties": {
+                "api": "/customers",
+                "elementInstanceId": "${config.chargebee}",
+                "method": "GET",
+                "query": "${steps.query.query}"
+            },
+            "type": "elementRequest"
+        },
+        {
+            "name": "list",
+            "onFailure": [],
+            "onSuccess": [
+                "offset"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "offset",
+            "onFailure": [
+                "query"
+            ],
+            "onSuccess": [
+                "loop"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "loop",
+            "onFailure": [
+                "Success"
+            ],
+            "onSuccess": [
+                "deletePayload"
+            ],
+            "properties": {
+                "list": "${steps.list.list}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "deletePayload",
+            "onFailure": [],
+            "onSuccess": [
+                "deleteCustomer"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "deleteCustomer",
+            "onFailure": [],
+            "onSuccess": [
+                "loop"
+            ],
+            "properties": {
+                "headers": "${steps.deletePayload.payload.headers}",
+                "method": "POST",
+                "url": "${steps.deletePayload.payload.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "query"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

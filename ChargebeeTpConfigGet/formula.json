@@ -1,0 +1,55 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31789,
+    "name": "ChargebeeTpConfigGet",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "ChargebeeGetInputParams1",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetGetHttpData1"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetGetHttpData1",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeTPConfigOutput"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200-600",
+                "body": "${steps.ChargebeeGetInputParams1.bodydata}",
+                "headers": "${steps.ChargebeeGetInputParams1.headers}",
+                "method": "GET",
+                "query": "${steps.ChargebeeGetInputParams1.query}",
+                "url": "${steps.ChargebeeGetInputParams1.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ChargebeeTPConfigOutput",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetInputParams1"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

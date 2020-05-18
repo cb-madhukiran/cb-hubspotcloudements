@@ -1,0 +1,1 @@
+done(steps.getSyncDetails.cb_status==="success")

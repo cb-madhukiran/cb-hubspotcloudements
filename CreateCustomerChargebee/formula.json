@@ -1,0 +1,117 @@
+{
+    "active": true,
+    "configuration": [
+        {
+            "key": "chargebee",
+            "name": "chargebee",
+            "required": true,
+            "type": "elementInstance"
+        }
+    ],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 32674,
+    "name": "CreateCustomerChargebee",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "loopOverData"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "loopOverData",
+            "onFailure": [
+                "Success"
+            ],
+            "onSuccess": [
+                "setPayload"
+            ],
+            "properties": {
+                "list": "${steps.InputParams.data_array}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "setPayload",
+            "onFailure": [],
+            "onSuccess": [
+                "createCustomer"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "createCustomer",
+            "onFailure": [],
+            "onSuccess": [
+                "isCreateSubscription"
+            ],
+            "properties": {
+                "api": "${steps.setPayload.requestConfig.url}",
+                "body": "${steps.setPayload.requestConfig.body}",
+                "elementInstanceId": "${config.chargebee}",
+                "method": "POST",
+                "query": ""
+            },
+            "type": "elementRequest"
+        },
+        {
+            "name": "isCreateSubscription",
+            "onFailure": [
+                "loopOverData"
+            ],
+            "onSuccess": [
+                "setPayload_subscription"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "setPayload_subscription",
+            "onFailure": [],
+            "onSuccess": [
+                "createSubscription"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "createSubscription",
+            "onFailure": [],
+            "onSuccess": [
+                "loopOverData"
+            ],
+            "properties": {
+                "api": "${steps.setPayload_subscription.payload.url}",
+                "body": "${steps.setPayload_subscription.payload.body}",
+                "elementInstanceId": "${config.chargebee}",
+                "method": "POST"
+            },
+            "type": "elementRequest"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

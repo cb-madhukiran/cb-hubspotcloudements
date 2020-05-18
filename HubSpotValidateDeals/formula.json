@@ -1,0 +1,314 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 32776,
+    "name": "HubSpotValidateDeals",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "GetCBConfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "GetCBConfig",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeConfig"
+            ],
+            "properties": {
+                "headers": "${steps.InputParams.cbconfig.headers}",
+                "method": "GET",
+                "query": "${steps.InputParams.cbconfig.query}",
+                "url": "${steps.InputParams.cbconfig.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ChargebeeConfig",
+            "onFailure": [],
+            "onSuccess": [
+                "HasChargeBeeConfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HasChargeBeeConfig",
+            "onFailure": [
+                "ThrowError"
+            ],
+            "onSuccess": [
+                "CBParam"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "CBParam",
+            "onFailure": [],
+            "onSuccess": [
+                "DoNeedRefreshToken"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "DoNeedRefreshToken",
+            "onFailure": [
+                "PipeParams"
+            ],
+            "onSuccess": [
+                "RefreshToken"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "RefreshToken",
+            "onFailure": [],
+            "onSuccess": [
+                "UpdateToken"
+            ],
+            "properties": {
+                "headers": "${steps.CBParam.refresh.headers}",
+                "method": "POST",
+                "query": "${steps.CBParam.refresh.query}",
+                "url": "${steps.CBParam.refresh.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "UpdateToken",
+            "onFailure": [],
+            "onSuccess": [
+                "PipeParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "PipeParams",
+            "onFailure": [],
+            "onSuccess": [
+                "GetPipeLines"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "GetPipeLines",
+            "onFailure": [],
+            "onSuccess": [
+                "ValidatePipeLineAndStage"
+            ],
+            "properties": {
+                "headers": "${steps.PipeParams.hubspotAuth}",
+                "method": "GET",
+                "url": "${steps.PipeParams.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ValidatePipeLineAndStage",
+            "onFailure": [],
+            "onSuccess": [
+                "HasPipeLineError"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HasPipeLineError",
+            "onFailure": [
+                "createDealInHubspot"
+            ],
+            "onSuccess": [
+                "ThrowError"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ThrowError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "createDealInHubspot",
+            "onFailure": [],
+            "onSuccess": [
+                "HasDealCreated"
+            ],
+            "properties": {
+                "args": "${steps.ValidatePipeLineAndStage.dInput}",
+                "formulaId": "31333"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "HasDealCreated",
+            "onFailure": [
+                "ThrowError"
+            ],
+            "onSuccess": [
+                "DeleteDeals"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "DeleteDeals",
+            "onFailure": [
+                "ThrowError"
+            ],
+            "onSuccess": [
+                "ValidationSucess"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "204",
+                "headers": "${steps.ValidatePipeLineAndStage.deleteDeal.headers}",
+                "method": "DELETE",
+                "url": "${steps.ValidatePipeLineAndStage.deleteDeal.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ValidationSucess",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "subFormulas": [
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31333,
+            "name": "HubSpotPost",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "HubSpotPostCallAgainHttp",
+                    "onFailure": [
+                        "HubSpotPostResult2"
+                    ],
+                    "onSuccess": [
+                        "HubSpotPostCBDelay"
+                    ],
+                    "properties": {
+                        "body": "\nif(steps.HubSpotPostInputParams.intervel.length > 0 && steps.HubSpotPostInputParams.retryCode[steps.HubSpotPostPostHttpData.response.code] !== undefined) {\n  steps.HubSpotPostInputParams.delay.query.delay = steps.HubSpotPostInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HubSpotPostCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotPostPostHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.HubSpotPostInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.HubSpotPostInputParams.delay.query}",
+                        "url": "${steps.HubSpotPostInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "HubSpotPostError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"hubspot_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "HubSpotPostInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotPostIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet body = trigger.args.body;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\ndone({\n    url: url,\n    query: query,\n    body:body,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        429: true,\n        502: true,\n        504: true,\n    },\n    hardStop: {\n        401: true,\n        403: true,\n        429: true,\n        502: true,\n        504: true,\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "HubSpotPostIsValidUrl",
+                    "onFailure": [
+                        "HubSpotPostError"
+                    ],
+                    "onSuccess": [
+                        "HubSpotPostPostHttpData"
+                    ],
+                    "properties": {
+                        "body": "let inputParams = steps.HubSpotPostInputParams;\ndone(inputParams.url !== undefined && inputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HubSpotPostPostHttpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotPostCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.HubSpotPostInputParams.body}",
+                        "headers": "${steps.HubSpotPostInputParams.headers}",
+                        "method": "POST",
+                        "query": "",
+                        "url": "${steps.HubSpotPostInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "HubSpotPostResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.HubSpotPostPostHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.HubSpotPostPostHttpData.response.body,\n    cb_code:steps.HubSpotPostPostHttpData.response.code,\n  });\n}else {\n  let cb_error_code = \"hubspot_default_error\";\n\n  let hardstop = steps.HubSpotPostInputParams.hardStop[steps.HubSpotPostPostHttpData.response.code] !== undefined;\n  if(steps.HubSpotPostPostHttpData.response.body!== undefined && steps.HubSpotPostPostHttpData.response.body.category !== undefined) {\n    cb_error_code = \"hubspot_\"+steps.HubSpotPostPostHttpData.response.body.category;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    cb_code:steps.HubSpotPostPostHttpData.response.code,\n    response_body : steps.HubSpotPostPostHttpData.response\n  });\n}\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotPostInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

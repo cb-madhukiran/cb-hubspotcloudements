@@ -1,0 +1,33 @@
+{
+    "active": true,
+    "api": "GET /hubspot/goback",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31439,
+    "method": "GET",
+    "name": "HubSpotGoBack",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "Sucess",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "Sucess"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/goback"
+}

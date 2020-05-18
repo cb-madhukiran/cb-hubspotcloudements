@@ -1,0 +1,42 @@
+{
+    "active": true,
+    "api": "GET /getFormulaInfo",
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31429,
+    "method": "GET",
+    "name": "HubSpotGetFormulaDetails",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "getFormulaDetails",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorResponse",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "getFormulaDetails"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/getFormulaInfo"
+}

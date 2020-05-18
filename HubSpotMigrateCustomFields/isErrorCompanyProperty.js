@@ -1,0 +1,1 @@
+done(steps.PrepareHubSpotCreateCompanyProperty.errorFlag === true);

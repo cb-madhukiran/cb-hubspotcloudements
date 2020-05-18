@@ -1,0 +1,183 @@
+{
+    "active": true,
+    "api": "GET /get-exceptionlog-forsite",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 32600,
+    "method": "GET",
+    "name": "Testing-Admin-Activecampaign-ExceptionLogsForSite",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "isValidParams",
+            "onFailure": [
+                "request_failed"
+            ],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "constructQuery"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "constructQuery",
+            "onFailure": [],
+            "onSuccess": [
+                "getInstances"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getInstances",
+            "onFailure": [
+                "InvalidParams"
+            ],
+            "onSuccess": [
+                "LoopOverInstances"
+            ],
+            "properties": {
+                "api": "/instances",
+                "method": "GET",
+                "query": "${steps.constructQuery.searchParams}"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverInstances",
+            "onFailure": [
+                "InvalidSiteName"
+            ],
+            "onSuccess": [
+                "getsiteName"
+            ],
+            "properties": {
+                "list": "${steps.getInstances.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "getsiteName",
+            "onFailure": [
+                "LoopOverInstances"
+            ],
+            "onSuccess": [
+                "getChargebeeApiKey"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "getChargebeeApiKey",
+            "onFailure": [
+                "request_failed"
+            ],
+            "onSuccess": [
+                "LoopOverConfig"
+            ],
+            "properties": {
+                "api": "/instances/${steps.LoopOverInstances.entry.id}/configuration",
+                "method": "GET"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverConfig",
+            "onFailure": [],
+            "onSuccess": [
+                "getApiKey"
+            ],
+            "properties": {
+                "list": "${steps.getChargebeeApiKey.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "getApiKey",
+            "onFailure": [
+                "LoopOverConfig"
+            ],
+            "onSuccess": [
+                "constructUrl"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "constructUrl",
+            "onFailure": [],
+            "onSuccess": [
+                "getS3Link"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getS3Link",
+            "onFailure": [
+                "InvalidParams"
+            ],
+            "onSuccess": [
+                "getS3LinkFromConfig"
+            ],
+            "properties": {
+                "headers": "${steps.constructUrl.config.auth}",
+                "method": "GET",
+                "query": "${steps.constructUrl.config.query}",
+                "url": "${steps.constructUrl.config.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "getS3LinkFromConfig",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InvalidParams",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "request_failed",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InvalidSiteName",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "isValidParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/get-exceptionlog-forsite"
+}

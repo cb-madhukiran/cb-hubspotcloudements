@@ -1,0 +1,1 @@
+done(steps.CustomersParam.syncRulesOrders!== undefined && steps.CustomersParam.syncRulesOrders.sync==="true" &&  steps.CBData.subscription  !== undefined);

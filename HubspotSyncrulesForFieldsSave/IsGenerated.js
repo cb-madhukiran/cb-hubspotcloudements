@@ -1,0 +1,1 @@
+done(steps.ConstructFieldsApiReq['error'] === undefined);

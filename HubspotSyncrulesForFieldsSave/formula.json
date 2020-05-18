@@ -1,0 +1,508 @@
+{
+    "active": true,
+    "api": "GET /hubspot/save",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31487,
+    "method": "GET",
+    "name": "HubspotSyncrulesForFieldsSave",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "SaveFieldsInputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "ConstructFieldsApiReq"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ConstructFieldsApiReq",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "IsGenerated"
+            ],
+            "properties": {
+                "args": "${steps.SaveFieldsInputParams}",
+                "formulaId": "31380"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsGenerated",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "SaveFieldsInitOutput"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "SaveFieldsInitOutput",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "getTpIntegConfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getTpIntegConfig",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "IsSucceeded"
+            ],
+            "properties": {
+                "args": "${steps.SaveFieldsInitOutput}",
+                "formulaId": "31317"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsSucceeded",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "ParseFieldsInput"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ParseFieldsInput",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "updateTpConfigParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "updateTpConfigParams",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "ConstructUpdateConfigReq"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ConstructUpdateConfigReq",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "IsUpdateConfGenerated"
+            ],
+            "properties": {
+                "args": "${steps.updateTpConfigParams.tpConfigUpdateParams}",
+                "formulaId": "31380"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsUpdateConfGenerated",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "updateConfigApi"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "updateConfigApi",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "IsConfSucceeded"
+            ],
+            "properties": {
+                "args": "${steps.ConstructUpdateConfigReq}",
+                "formulaId": "31315"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsConfSucceeded",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorCard",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "subFormulas": [
+        {
+            "active": true,
+            "api": "GET /getCBUrl",
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "description": "Generate Chargebee url for app/integrations for the given name",
+            "engine": "v3",
+            "id": 31380,
+            "method": "GET",
+            "name": "ConstructCBApiReq",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ConstructCBApiReq",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let siteName = steps.RequestParams['siteName'];\nlet domain = steps.RequestParams['domain'];\nlet apiType = steps.RequestParams['apiType'];\nlet apiName = steps.RequestParams['apiName'];\nlet integration = steps.RequestParams['integration'];\nlet type = steps.RequestParams['type'];\nlet apiKey = steps.RequestParams['apiKey'];\nlet password = steps.RequestParams['password'];\nlet queryVal = steps.RequestParams['queryJson'];\nlet inputVal = steps.RequestParams['inputJson'];\nlet bodyVal = steps.RequestParams['bodyJson'];\nlet headerVal = steps.RequestParams['headersJson'];\nlet requestType = steps.RequestParams['requestType'];\nlet apiUrl = \"\";\nlet hdrStr = \"\";\nlet headerAuth = {};\nlet apiData = {};\n//apiType 1. APP 2.integrationV1, integrationV2 integrationV3\nif(siteName === undefined || domain === undefined)\n{\n  done({\"error\":\"Invalid siteName or domain\"});\n}\n\nif (apiType=== undefined || apiType.toUpperCase()===\"APP\")\n{\n  apiUrl = \"https://\" + siteName + \".\" + domain + \"/api/v2/\" + apiName;\n}\nelse\n{\n  //\"https://\"+siteName+\".integrations.\"+siteDomain+\"/integrations/update_tp_integ_conf\",\n  if (integration !== undefined && apiType!== undefined && apiType.toUpperCase() === \"INTEG-INTEG-V2\")\n  {\n    apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/\"+integration+\"/api/v2/\"+apiName;\n  }\n  else if (integration !== undefined && apiType !== undefined && apiType.toUpperCase() === \"INTEG-V2\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/api/v2/\" + apiName;\n  }\n  else if (apiType !== undefined && apiType.toUpperCase() === \"INTEG-INTEG\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/integrations/\" + apiName;\n  }\n  else if (apiType !== undefined && apiType.toUpperCase() === \"INTEG-INTEG-API\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/integrations/api/\" + apiName;\n  }\n  else\n  {\n    done({\"error\":\"apiType is Invalid\"});\n  }\n}\n//apiUrl is populated\n\nif (apiKey !== undefined)\n{\n   headerAuth =  {\n        Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n    };\n}\nelse\n{\n  done({\"error\":\"apiKey is Invalid\"});\n}\n\nif(inputVal === undefined)\n{\n  inputVal = {};\n}\nif (queryVal === undefined)\n{\n  queryVal = {};\n}\n// function test(fer){\n//   return fer +\"test\";\n// }\nif (Object.keys(headerAuth).length !== 0 && (requestType === undefined ) || (requestType.toUpperCase() === \"GET\"))\n{\n  apiData = {\n  url : apiUrl,\n  apiKey:apiKey,\n  auth : headerAuth,\n  query : queryVal,\n  input : inputVal,\n  siteDomain:domain,\n  siteName:siteName,\n  headers:headerVal,\n  type : type\n  // //testfunction :test\n  // apiKey: steps.ConstructCBApiReq.input.apiKey,\n  // headers: steps.ConstructCBApiReq.auth,\n  // query: steps.ConstructCBApiReq.query,\n  // siteDomain: steps.ConstructCBApiReq.input.siteDomain,\n  // siteName: steps.ConstructCBApiReq.input.siteName,\n  // type: steps.ConstructCBApiReq.type,\n  // url: steps.ConstructCBApiReq.url\n  \n}\n}\n\nelse if ((requestType !== undefined ) || (requestType.toUpperCase() === \"POST\"))\n{\n  apiData = {\n    apiKey: apiKey,\n    url: apiUrl,\n    query: queryVal,\n    body: bodyVal,\n    headers: headerVal,\n    siteName:siteName,\n    siteDomain:domain,\n    type:type\n    \n}\n}\ndone(apiData);  "
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "getCBUrl",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ConstructCBApiReq"
+                    ],
+                    "properties": {
+                        "body": "let siteName = trigger.args.siteName;\nlet domain = trigger.args.domain;\nlet type = trigger.args.type;\nlet apiName = trigger.args.apiName;\nlet integration = trigger.args.integration;\nlet apiUrl = \"\";\n\nif(siteName === undefined || domain === undefined)\n{\n  done(false);\n}\n\nif (type=== undefined || type.toUpperCase()===\"APP\")\n{\n  apiUrl = \"https://\" + siteName + \".\" + domain + \"/api/v2/\" + apiName;\n}\nelse\n{\n  if (integration!== undefined)\n  {\n    apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/\"+integration+\"/api/v2/\"+apiName;\n  }\n  else\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/api/v2/\" + apiName;\n  }\n}\nlet url = {\"url\" : apiUrl};\ndone(url);\n  \n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "RequestParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ConstructCBApiReq"
+                    ],
+                    "properties": {
+                        "body": "done(trigger.args);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "sendErrorResponse",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\"error\":\"Error while constructing api data\"});"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RequestParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ],
+            "uri": "/getCBUrl"
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31317,
+            "name": "ChargebeeGetOld",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "CallAgainCB",
+                    "onFailure": [
+                        "Result"
+                    ],
+                    "onSuccess": [
+                        "CBDelay2"
+                    ],
+                    "properties": {
+                        "body": "\nif(steps.InputParams.intervel.length > 0 && steps.InputParams.retryCode[steps.GetHttpData.response.code] !== undefined) {\n  steps.InputParams.delay.query.delay = steps.InputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "CallAgainHttp",
+                    "onFailure": [
+                        "Result2"
+                    ],
+                    "onSuccess": [
+                        "CBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.InputParams.intervel.length > 0 && steps.InputParams.retryCode[steps.GetHttpData.response.code] !== undefined) {\n  steps.InputParams.delay.query.delay = steps.InputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "CBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "GetHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.InputParams.delay.query}",
+                        "url": "${steps.InputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "CBDelay2",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "GetCBData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.InputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.InputParams.delay.query}",
+                        "url": "${steps.InputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "Error",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"formula_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "GetCBData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "CallAgainCB"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "api": "${steps.InputParams.url}",
+                        "body": "",
+                        "elementInstanceId": "${config.chargebee}",
+                        "headers": "",
+                        "method": "GET",
+                        "query": "${steps.InputParams.query}"
+                    },
+                    "type": "elementRequest"
+                },
+                {
+                    "name": "GetHttpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "CallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "",
+                        "headers": "${steps.InputParams.headers}",
+                        "method": "GET",
+                        "query": "${steps.InputParams.query}",
+                        "url": "${steps.InputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "InputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "IsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\ndone({\n    url: url,\n    query: query,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n    },\n    hardStop: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n        500:true,\n        401:true\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "IsHttp",
+                    "onFailure": [
+                        "GetCBData"
+                    ],
+                    "onSuccess": [
+                        "GetHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.InputParams.url.startsWith(\"https://\"));"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "IsValidUrl",
+                    "onFailure": [
+                        "Error"
+                    ],
+                    "onSuccess": [
+                        "IsHttp"
+                    ],
+                    "properties": {
+                        "body": "done(steps.InputParams.url !== undefined && steps.InputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "Result",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.GetCBData.response.code < 300) {\n  done({\n    cb_status:\"success\",\n    data:steps.GetCBData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.InputParams.hardStop[steps.GetCBData.response.code] !== undefined;\n  if(steps.GetCBData.response.body!== undefined && steps.GetCBData.response.body.error_code !== undefined) {\n    cb_error_code = steps.GetCBData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "Result2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.GetHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.GetHttpData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.InputParams.hardStop[steps.GetHttpData.response.code] !== undefined;\n  if(steps.GetHttpData.response.body!== undefined && steps.GetHttpData.response.body.error_code !== undefined) {\n    cb_error_code = steps.GetHttpData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "InputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31315,
+            "name": "ChargebeePostOld",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "Error",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failed\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "InputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "IsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet body = trigger.args.body;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nif(query === undefined) {\n  query = {};\n}\nif(body === undefined) {\n  body = {};\n}\nif(headers === undefined) {\n  headers = {};\n}\ndone({\n  url:url,\n  query:query,\n  body:body,\n  intervel:[5000,10000,20000,40000,80000],\n  headers:headers,\n     delay :{\n      url : \"https://app.integrations.chargebee.com/api/ipaasdelay\",\n      query:{\n        delay:2000\n      },\n      headers: {\n        \"api_key\":apiKey\n      }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "IsValidUrl",
+                    "onFailure": [
+                        "Error"
+                    ],
+                    "onSuccess": [
+                        "PostHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.InputParams.url !== undefined && steps.InputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "PostHttpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "Result2"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.InputParams.body}",
+                        "headers": "${steps.InputParams.headers}",
+                        "method": "POST",
+                        "query": "${steps.InputParams.query}",
+                        "url": "${steps.InputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "Result2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.PostHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.PostHttpData.response.body\n  });\n}else {\n  done({\n    cb_status:\"failure\",\n    msg:\" Some thing went wrong\"\n  });\n}"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "InputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "SaveFieldsInputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/save"
+}

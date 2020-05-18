@@ -1,0 +1,1 @@
+done(steps.GetCBConfigApi.cb_status === "success");

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CreateCustomerChargebee</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>
+        var callback = function(){}
+    </script>
+    <style>
+        div.mermaidTooltip {
+                    margin-left: 50px;
+                    text-align: left;
+                    max-width: none;
+                }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+                    fill: #ffffff;
+                    stroke: rgb(200,200,200);
+                    stroke-width: 2px;
+                }
+        .mermaid .label {
+                  max-width: 50px;
+                }
+        table, th, td {
+                    border: 1px solid black;
+                }
+        table {
+                    border-spacing: 5px;
+                    border-radius: 5px;
+                    margin: auto;
+                }
+        th, td {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 5px;
+                }
+        th {
+                    color: blue;
+                }
+        td {
+                    width: 180px;
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                }
+        h2 {
+                    text-align: center;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                    padding: 1em;
+                }
+        .container {
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                    font-size: 11px;
+                    font-weight: 900;
+                }
+        body {
+                    font-family: 'Arial';
+                }
+        .edgeLabel {
+                    font-size: 9px;
+                }
+    </style>
+</head>
+<body>
+    <h2>
+        CreateCustomerChargebee
+    </h2>
+    <div class="container">
+        <div class="mermaid">
+            graph TD
+
+                step-000((Trigger))
+            step-001(InputParams)
+            step-002(-loopOverData-)
+            step-003(setPayload)
+            step-004(Success)
+            step-005((END))
+            step-006>createCustomer]
+            step-007{isCreateSubscription}
+            step-008(setPayload_subscription)
+            step-009>createSubscription]
+
+                step-000== continue ==>step-001
+            step-001-- success -->step-002
+            step-002-- success -->step-003
+            step-002-- failure -->step-004
+            step-003-- success -->step-006
+            step-004-. done .->step-005
+            step-006-- success -->step-007
+            step-007-- success -->step-008
+            step-007-- failure -->step-002
+            step-008-- success -->step-009
+            step-009-- success -->step-002
+
+                style step-005 stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-006 stroke:#10a54a;
+            style step-009 stroke:#10a54a;
+
+                click step-000 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnRyaWdnZXI8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5UcmlnZ2VyIEVsZW1lbnQ6PC9iPjxicj48YnI+PHByZT4gICB0eXBlIDogbWFudWFsPGJyPiAgYXN5bmMgOiB0cnVlPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnSW5wdXRQYXJhbXMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ3R5cGUnOiAnbWFudWFsJyw8YnI+ICAnYXN5bmMnOiB0cnVlLDxicj4gICduYW1lJzogJ3RyaWdnZXInLDxicj4gICdwcm9wZXJ0aWVzJzoge308YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Trigger Element:<br><pre>   type : manual<br>  async : true</pre>"
+            click step-001 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPklucHV0UGFyYW1zPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBzdGFydEluZGV4ID0gMTs8YnI+bGV0IGNvdW50ID0gMTQ7PGJyPjxicj5sZXQgY3VzdG9tZXJfcGF5bG9hZCA9IHs8YnI+ICAnYWNjb3VudF9jcmVkaXRzJzogMCw8YnI+ICAnYWxsb3dfZGlyZWN0X2RlYml0JzogdHJ1ZSw8YnI+ICAnYXV0b19jb2xsZWN0aW9uJzogJ29mZicsPGJyPiAgJ2NhcmRfc3RhdHVzJzogJ25vX2NhcmQnLDxicj4gICdjcmVhdGVkX2F0JzogMCw8YnI+ICAnZW1haWwnOiAncXdlcnR5QGZha2UuY28nLDxicj4gICdleGNlc3NfcGF5bWVudHMnOiAwLDxicj4gICdmaXJzdF9uYW1lJzogJ1FXRVJUWScsPGJyPiAgJ2xhc3RfbmFtZSc6ICdBQkNEJyw8YnI+ICAnb2JqZWN0JzogJ2N1c3RvbWVyJyw8YnI+ICAncmVmdW5kYWJsZV9jcmVkaXRzJzogMCw8YnI+ICAndGF4YWJpbGl0eSc6ICd0YXhhYmxlJzxicj59Ozxicj48YnI+bGV0IGZpcnN0X25hbWUgPSAnS1ZhbF9DdXN0b21lcl9GTl8nOzxicj5sZXQgbGFzdF9uYW1lID0gJ0tWYWxfQ3VzdG9tZXJfTE5fJzs8YnI+PGJyPmxldCBlbWFpbCA9ICdrdmFsX2N1c3RvbWVyXyc7PGJyPjxicj5sZXQgZm5hbWVfYXJyYXkgPVtdOzxicj5sZXQgbG5hbWVfYXJyYXk9W107PGJyPmxldCBlbWFpbF9hcnJheT1bXTs8YnI+PGJyPmxldCBkYXRhX2FycmF5PVtdOzxicj5sZXQgZGF0YTs8YnI+PGJyPjxicj5mb3IodmFyIGk9c3RhcnRJbmRleDsgaSA8c3Bhbj48PC9zcGFuPj0gY291bnQ7IGkrKyl7PGJyPiAgZGF0YSA9IHs8YnI+ICAgIGZuYW1lOiBmaXJzdF9uYW1lK2ksPGJyPiAgICBsbmFtZTogbGFzdF9uYW1lK2ksPGJyPiAgICBlbWFpbDogZW1haWwraSsnQGV4YW1wbGUuY29tJyw8YnI+ICAgIHBob25lOiBNYXRoLmZsb29yKDEwMDAwMDAwMCArIE1hdGgucmFuZG9tKCkgKiA5MDAwMDAwMDApPGJyPiAgfTs8YnI+ICBkYXRhX2FycmF5LnB1c2goZGF0YSk7PGJyPn08YnI+PGJyPmRvbmUoezxicj4gIGRhdGFfYXJyYXk6IGRhdGFfYXJyYXksPGJyPiAgY3VzdG9tZXJfcGF5bG9hZDogY3VzdG9tZXJfcGF5bG9hZDxicj59KTs8YnI+PGJyPjxicj48L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdsb29wT3ZlckRhdGEnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnSW5wdXRQYXJhbXMnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgc3RhcnRJbmRleCA9IDE7XG5sZXQgY291bnQgPSAxNDtcblxubGV0IGN1c3RvbWVyX3BheWxvYWQgPSB7XG4gIFwnYWNjb3VudF9jcmVkaXRzXCc6IDAsXG4gIFwnYWxsb3dfZGlyZWN0X2RlYml0XCc6IHRydWUsXG4gIFwnYXV0b19jb2xsZWN0aW9uXCc6IFwnb2ZmXCcsXG4gIFwnY2FyZF9zdGF0dXNcJzogXCdub19jYXJkXCcsXG4gIFwnY3JlYXRlZF9hdFwnOiAwLFxuICBcJ2VtYWlsXCc6IFwncXdlcnR5QGZha2UuY29cJyxcbiAgXCdleGNlc3NfcGF5bWVudHNcJzogMCxcbiAgXCdmaXJzdF9uYW1lXCc6IFwnUVdFUlRZXCcsXG4gIFwnbGFzdF9uYW1lXCc6IFwnQUJDRFwnLFxuICBcJ29iamVjdFwnOiBcJ2N1c3RvbWVyXCcsXG4gIFwncmVmdW5kYWJsZV9jcmVkaXRzXCc6IDAsXG4gIFwndGF4YWJpbGl0eVwnOiBcJ3RheGFibGVcJ1xufTtcblxubGV0IGZpcnN0X25hbWUgPSBcJ0tWYWxfQ3VzdG9tZXJfRk5fXCc7XG5sZXQgbGFzdF9uYW1lID0gXCdLVmFsX0N1c3RvbWVyX0xOX1wnO1xuXG5sZXQgZW1haWwgPSBcJ2t2YWxfY3VzdG9tZXJfXCc7XG5cbmxldCBmbmFtZV9hcnJheSA9W107XG5sZXQgbG5hbWVfYXJyYXk9W107XG5sZXQgZW1haWxfYXJyYXk9W107XG5cbmxldCBkYXRhX2FycmF5PVtdO1xubGV0IGRhdGE7XG5cblxuZm9yKHZhciBpPXN0YXJ0SW5kZXg7IGkgPHNwYW4+PDwvc3Bhbj49IGNvdW50OyBpKyspe1xuICBkYXRhID0ge1xuICAgIGZuYW1lOiBmaXJzdF9uYW1lK2ksXG4gICAgbG5hbWU6IGxhc3RfbmFtZStpLFxuICAgIGVtYWlsOiBlbWFpbCtpK1wnQGV4YW1wbGUuY29tXCcsXG4gICAgcGhvbmU6IE1hdGguZmxvb3IoMTAwMDAwMDAwICsgTWF0aC5yYW5kb20oKSAqIDkwMDAwMDAwMClcbiAgfTtcbiAgZGF0YV9hcnJheS5wdXNoKGRhdGEpO1xufVxuXG5kb25lKHtcbiAgZGF0YV9hcnJheTogZGF0YV9hcnJheSxcbiAgY3VzdG9tZXJfcGF5bG9hZDogY3VzdG9tZXJfcGF5bG9hZFxufSk7XG5cblxuJzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>let startIndex = 1;<br>let count = 14;<br><br>let customer_payload = {<br>  'account_credits': 0,<br>  'allow_direct_debit': true,<br>  'auto_collection': 'off',<br>  'card_status': 'no_card',<br>  'created_at': 0,<br>  'email': 'qwerty@fake.co',<br>  'excess_payments': 0,<br>  'first_name': 'QWERTY',<br>  'last_name': 'ABCD',<br>  'object': 'customer',<br>  'refundable_credits': 0,<br>  'taxability': 'taxable'<br>};<br><br>let first_name = 'KVal_Customer_FN_';<br>let last_name = 'KVal_Customer_LN_';<br><br>let email = 'kval_customer_';<br><br>let fname_array =[];<br>let lname_array=[];<br>let email_array=[];<br><br>let data_array=[];<br>let data;<br><br><br>for(var i=startIndex; i <span><</span>= count; i++){<br>  data = {<br>    fname: first_name+i,<br>    lname: last_name+i,<br>    email: email+i+'@example.com',<br>    phone: Math.floor(100000000 + Math.random() * 900000000)<br>  };<br>  data_array.push(data);<br>}<br><br>done({<br>  data_array: data_array,<br>  customer_payload: customer_payload<br>});<br><br><br></pre>"
+            click step-002 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPmxvb3BPdmVyRGF0YTwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkxvb3A6PC9iPjxicj48YnI+PHByZT4gIGxpc3QgOiAke3N0ZXBzLklucHV0UGFyYW1zLmRhdGFfYXJyYXl9PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnc2V0UGF5bG9hZCc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnU3VjY2Vzcyc8YnI+ICBdLDxicj4gICduYW1lJzogJ2xvb3BPdmVyRGF0YScsPGJyPiAgJ3R5cGUnOiAnbG9vcCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnbGlzdCc6ICcke3N0ZXBzLklucHV0UGFyYW1zLmRhdGFfYXJyYXl9Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Loop:<br><pre>  list : ${steps.InputParams.data_array}</pre>"
+            click step-003 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnNldFBheWxvYWQ8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+bGV0IHBheWxvYWQgPSBzdGVwcy5JbnB1dFBhcmFtcy5jdXN0b21lcl9wYXlsb2FkOzxicj48YnI+cGF5bG9hZC5maXJzdF9uYW1lID0gc3RlcHMubG9vcE92ZXJEYXRhLmVudHJ5LmZuYW1lOzxicj5wYXlsb2FkLmxhc3RfbmFtZSA9IHN0ZXBzLmxvb3BPdmVyRGF0YS5lbnRyeS5sbmFtZTs8YnI+cGF5bG9hZC5lbWFpbCA9IHN0ZXBzLmxvb3BPdmVyRGF0YS5lbnRyeS5lbWFpbDs8YnI+cGF5bG9hZC5waG9uZSA9IHN0ZXBzLmxvb3BPdmVyRGF0YS5lbnRyeS5waG9uZTs8YnI+PGJyPmxldCByZXF1ZXN0Q29uZmlnID0gezxicj4gIHVybDogJy9jdXN0b21lcnMnLDxicj4gIGJvZHk6IHBheWxvYWQ8YnI+fTs8YnI+PGJyPjxicj5kb25lKHs8YnI+ICByZXF1ZXN0Q29uZmlnOiByZXF1ZXN0Q29uZmlnPGJyPn0pOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ2NyZWF0ZUN1c3RvbWVyJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ3NldFBheWxvYWQnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgcGF5bG9hZCA9IHN0ZXBzLklucHV0UGFyYW1zLmN1c3RvbWVyX3BheWxvYWQ7XG5cbnBheWxvYWQuZmlyc3RfbmFtZSA9IHN0ZXBzLmxvb3BPdmVyRGF0YS5lbnRyeS5mbmFtZTtcbnBheWxvYWQubGFzdF9uYW1lID0gc3RlcHMubG9vcE92ZXJEYXRhLmVudHJ5LmxuYW1lO1xucGF5bG9hZC5lbWFpbCA9IHN0ZXBzLmxvb3BPdmVyRGF0YS5lbnRyeS5lbWFpbDtcbnBheWxvYWQucGhvbmUgPSBzdGVwcy5sb29wT3ZlckRhdGEuZW50cnkucGhvbmU7XG5cbmxldCByZXF1ZXN0Q29uZmlnID0ge1xuICB1cmw6IFwnL2N1c3RvbWVyc1wnLFxuICBib2R5OiBwYXlsb2FkXG59O1xuXG5cbmRvbmUoe1xuICByZXF1ZXN0Q29uZmlnOiByZXF1ZXN0Q29uZmlnXG59KTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>let payload = steps.InputParams.customer_payload;<br><br>payload.first_name = steps.loopOverData.entry.fname;<br>payload.last_name = steps.loopOverData.entry.lname;<br>payload.email = steps.loopOverData.entry.email;<br>payload.phone = steps.loopOverData.entry.phone;<br><br>let requestConfig = {<br>  url: '/customers',<br>  body: payload<br>};<br><br><br>done({<br>  requestConfig: requestConfig<br>});</pre>"
+            click step-004 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlN1Y2Nlc3M8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+ZG9uZSh7PGJyPiAgJ21lc3NhZ2UnOiAnRmFpbGVkJzxicj59KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFtdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdTdWNjZXNzJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnZG9uZSh7XG4gIFwnbWVzc2FnZVwnOiBcJ0ZhaWxlZFwnXG59KTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>done({<br>  'message': 'Failed'<br>});</pre>"
+            click step-006 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPmNyZWF0ZUN1c3RvbWVyPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+UmVxdWVzdDo8L2I+PGJyPjxicj48cHJlPiAgZWxlbWVudEluc3RhbmNlSWQgOiAke2NvbmZpZy5jaGFyZ2ViZWV9PGJyPiAgICAgICAgICAgICAgcXVlcnkgOiA8YnI+ICAgICAgICAgICAgICAgYm9keSA6ICR7c3RlcHMuc2V0UGF5bG9hZC5yZXF1ZXN0Q29uZmlnLmJvZHl9PGJyPiAgICAgICAgICAgICAgICBhcGkgOiAke3N0ZXBzLnNldFBheWxvYWQucmVxdWVzdENvbmZpZy51cmx9PGJyPiAgICAgICAgICAgICBtZXRob2QgOiBQT1NUPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnaXNDcmVhdGVTdWJzY3JpcHRpb24nPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnY3JlYXRlQ3VzdG9tZXInLDxicj4gICd0eXBlJzogJ2VsZW1lbnRSZXF1ZXN0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdlbGVtZW50SW5zdGFuY2VJZCc6ICcke2NvbmZpZy5jaGFyZ2ViZWV9Jyw8YnI+ICAgICdxdWVyeSc6ICcnLDxicj4gICAgJ2JvZHknOiAnJHtzdGVwcy5zZXRQYXlsb2FkLnJlcXVlc3RDb25maWcuYm9keX0nLDxicj4gICAgJ2FwaSc6ICcke3N0ZXBzLnNldFBheWxvYWQucmVxdWVzdENvbmZpZy51cmx9Jyw8YnI+ICAgICdtZXRob2QnOiAnUE9TVCc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Request:<br><pre>  elementInstanceId : ${config.chargebee}<br>              query : <br>               body : ${steps.setPayload.requestConfig.body}<br>                api : ${steps.setPayload.requestConfig.url}<br>             method : POST</pre>"
+            click step-007 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPmlzQ3JlYXRlU3Vic2NyaXB0aW9uPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUodHJ1ZSk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnc2V0UGF5bG9hZF9zdWJzY3JpcHRpb24nPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ2xvb3BPdmVyRGF0YSc8YnI+ICBdLDxicj4gICduYW1lJzogJ2lzQ3JlYXRlU3Vic2NyaXB0aW9uJyw8YnI+ICAndHlwZSc6ICdmaWx0ZXInLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnZG9uZSh0cnVlKTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>done(true);</pre>"
+            click step-008 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnNldFBheWxvYWRfc3Vic2NyaXB0aW9uPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBkYXRhX3BheWxvYWQgPSB7PGJyPiAgJ3BsYW5faWQnOiAnY2JkZW1vX2h1c3RsZScsPGJyPiAgJ2F1dG9fY29sbGVjdGlvbic6ICdvZmYnLDxicj4gICdzdGFydF9kYXRlJzogKE1hdGgucm91bmQoKG5ldyBEYXRlKCkuZ2V0VGltZSgpKSAvIDEwMDApKSw8YnI+ICAndHJpYWxfZW5kJzogMCw8YnI+ICAnaW52b2ljZV9pbW1lZGlhdGVseSc6IHRydWU8YnI+fTs8YnI+PGJyPmxldCBudW1iZXIgPSBNYXRoLmZsb29yKE1hdGgucmFuZG9tKCkgKiA0KTsgLy9SZXR1cm5zIGEgcmFuZG9tIG51bWJlciB1cHRvIDQgKDQgZXhjbHVkZWQpPGJyPjxicj5zd2l0Y2gobnVtYmVyKXs8YnI+ICBjYXNlIDA6eyAvL0Z1dHVyZTxicj4gICAgZGF0YV9wYXlsb2FkLnN0YXJ0X2RhdGUgPSAoTWF0aC5yb3VuZCgobmV3IERhdGUoKS5nZXRUaW1lKCkpIC8gMTAwMCkgKyAxMDAwMDAwMCksPGJyPiAgICBkYXRhX3BheWxvYWQudHJpYWxfZW5kID0gMDs8YnI+ICB9YnJlYWs7PGJyPiAgY2FzZSAxOnsgLy9BY3RpdmU8YnI+ICAgIGRhdGFfcGF5bG9hZC5zdGFydF9kYXRlID0gKE1hdGgucm91bmQoKG5ldyBEYXRlKCkuZ2V0VGltZSgpKSAvIDEwMDApKTs8YnI+ICAgIGRhdGFfcGF5bG9hZC50cmlhbF9lbmQgPSAwOzxicj4gIH1icmVhazs8YnI+ICBjYXNlIDI6eyAvL0luIFRyaWFsPGJyPiAgICBkYXRhX3BheWxvYWQuc3RhcnRfZGF0ZSA9IChNYXRoLnJvdW5kKChuZXcgRGF0ZSgpLmdldFRpbWUoKSkgLyAxMDAwKSk7PGJyPiAgICBkYXRhX3BheWxvYWQudHJpYWxfZW5kID0gdW5kZWZpbmVkOzxicj4gIH1icmVhazs8YnI+ICBjYXNlIDM6eyAvL05vbiBSZW5ld2luZzxicj4gICAgZGF0YV9wYXlsb2FkLnN0YXJ0X2RhdGUgPSAoTWF0aC5yb3VuZCgobmV3IERhdGUoKS5nZXRUaW1lKCkpIC8gMTAwMCkgLSAxMDAwMDAwKTs8YnI+ICAgIGRhdGFfcGF5bG9hZC5iaWxsaW5nX2N5Y2xlcyA9IDE7PGJyPiAgICBkYXRhX3BheWxvYWQudHJpYWxfZW5kID0gMDs8YnI+ICB9YnJlYWs7PGJyPiAgZGVmYXVsdDp7IC8vQWN0aXZlPGJyPiAgICBkYXRhX3BheWxvYWQuc3RhcnRfZGF0ZSA9IChNYXRoLnJvdW5kKChuZXcgRGF0ZSgpLmdldFRpbWUoKSkgLyAxMDAwKSk7PGJyPiAgICBkYXRhX3BheWxvYWQudHJpYWxfZW5kID0gMDs8YnI+ICB9YnJlYWs7PGJyPn08YnI+PGJyPmxldCBzdWJQYXlsb2FkID0gezxicj4gIHVybDogJy9jdXN0b21lcnMvJytzdGVwcy5jcmVhdGVDdXN0b21lci5yZXNwb25zZS5ib2R5LmlkKycvc3Vic2NyaXB0aW9ucycsPGJyPiAgYm9keTogZGF0YV9wYXlsb2FkPGJyPn08YnI+PGJyPmRvbmUoezxicj4gIHBheWxvYWQ6IHN1YlBheWxvYWQ8YnI+fSk7PGJyPjxicj48L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdjcmVhdGVTdWJzY3JpcHRpb24nPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnc2V0UGF5bG9hZF9zdWJzY3JpcHRpb24nLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgZGF0YV9wYXlsb2FkID0ge1xuICBcJ3BsYW5faWRcJzogXCdjYmRlbW9faHVzdGxlXCcsXG4gIFwnYXV0b19jb2xsZWN0aW9uXCc6IFwnb2ZmXCcsXG4gIFwnc3RhcnRfZGF0ZVwnOiAoTWF0aC5yb3VuZCgobmV3IERhdGUoKS5nZXRUaW1lKCkpIC8gMTAwMCkpLFxuICBcJ3RyaWFsX2VuZFwnOiAwLFxuICBcJ2ludm9pY2VfaW1tZWRpYXRlbHlcJzogdHJ1ZVxufTtcblxubGV0IG51bWJlciA9IE1hdGguZmxvb3IoTWF0aC5yYW5kb20oKSAqIDQpOyAvL1JldHVybnMgYSByYW5kb20gbnVtYmVyIHVwdG8gNCAoNCBleGNsdWRlZClcblxuc3dpdGNoKG51bWJlcil7XG4gIGNhc2UgMDp7IC8vRnV0dXJlXG4gICAgZGF0YV9wYXlsb2FkLnN0YXJ0X2RhdGUgPSAoTWF0aC5yb3VuZCgobmV3IERhdGUoKS5nZXRUaW1lKCkpIC8gMTAwMCkgKyAxMDAwMDAwMCksXG4gICAgZGF0YV9wYXlsb2FkLnRyaWFsX2VuZCA9IDA7XG4gIH1icmVhaztcbiAgY2FzZSAxOnsgLy9BY3RpdmVcbiAgICBkYXRhX3BheWxvYWQuc3RhcnRfZGF0ZSA9IChNYXRoLnJvdW5kKChuZXcgRGF0ZSgpLmdldFRpbWUoKSkgLyAxMDAwKSk7XG4gICAgZGF0YV9wYXlsb2FkLnRyaWFsX2VuZCA9IDA7XG4gIH1icmVhaztcbiAgY2FzZSAyOnsgLy9JbiBUcmlhbFxuICAgIGRhdGFfcGF5bG9hZC5zdGFydF9kYXRlID0gKE1hdGgucm91bmQoKG5ldyBEYXRlKCkuZ2V0VGltZSgpKSAvIDEwMDApKTtcbiAgICBkYXRhX3BheWxvYWQudHJpYWxfZW5kID0gdW5kZWZpbmVkO1xuICB9YnJlYWs7XG4gIGNhc2UgMzp7IC8vTm9uIFJlbmV3aW5nXG4gICAgZGF0YV9wYXlsb2FkLnN0YXJ0X2RhdGUgPSAoTWF0aC5yb3VuZCgobmV3IERhdGUoKS5nZXRUaW1lKCkpIC8gMTAwMCkgLSAxMDAwMDAwKTtcbiAgICBkYXRhX3BheWxvYWQuYmlsbGluZ19jeWNsZXMgPSAxO1xuICAgIGRhdGFfcGF5bG9hZC50cmlhbF9lbmQgPSAwO1xuICB9YnJlYWs7XG4gIGRlZmF1bHQ6eyAvL0FjdGl2ZVxuICAgIGRhdGFfcGF5bG9hZC5zdGFydF9kYXRlID0gKE1hdGgucm91bmQoKG5ldyBEYXRlKCkuZ2V0VGltZSgpKSAvIDEwMDApKTtcbiAgICBkYXRhX3BheWxvYWQudHJpYWxfZW5kID0gMDtcbiAgfWJyZWFrO1xufVxuXG5sZXQgc3ViUGF5bG9hZCA9IHtcbiAgdXJsOiBcJy9jdXN0b21lcnMvXCcrc3RlcHMuY3JlYXRlQ3VzdG9tZXIucmVzcG9uc2UuYm9keS5pZCtcJy9zdWJzY3JpcHRpb25zXCcsXG4gIGJvZHk6IGRhdGFfcGF5bG9hZFxufVxuXG5kb25lKHtcbiAgcGF5bG9hZDogc3ViUGF5bG9hZFxufSk7XG5cbic8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let data_payload = {<br>  'plan_id': 'cbdemo_hustle',<br>  'auto_collection': 'off',<br>  'start_date': (Math.round((new Date().getTime()) / 1000)),<br>  'trial_end': 0,<br>  'invoice_immediately': true<br>};<br><br>let number = Math.floor(Math.random() * 4); //Returns a random number upto 4 (4 excluded)<br><br>switch(number){<br>  case 0:{ //Future<br>    data_payload.start_date = (Math.round((new Date().getTime()) / 1000) + 10000000),<br>    data_payload.trial_end = 0;<br>  }break;<br>  case 1:{ //Active<br>    data_payload.start_date = (Math.round((new Date().getTime()) / 1000));<br>    data_payload.trial_end = 0;<br>  }break;<br>  case 2:{ //In Trial<br>    data_payload.start_date = (Math.round((new Date().getTime()) / 1000));<br>    data_payload.trial_end = undefined;<br>  }break;<br>  case 3:{ //Non Renewing<br>    data_payload.start_date = (Math.round((new Date().getTime()) / 1000) - 1000000);<br>    data_payload.billing_cycles = 1;<br>    data_payload.trial_end = 0;<br>  }break;<br>  default:{ //Active<br>    data_payload.start_date = (Math.round((new Date().getTime()) / 1000));<br>    data_payload.trial_end = 0;<br>  }break;<br>}<br><br>let subPayload = {<br>  url: '/customers/'+steps.createCustomer.response.body.id+'/subscriptions',<br>  body: data_payload<br>}<br><br>done({<br>  payload: subPayload<br>});<br><br></pre>"
+            click step-009 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPmNyZWF0ZVN1YnNjcmlwdGlvbjwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPlJlcXVlc3Q6PC9iPjxicj48YnI+PHByZT4gIGVsZW1lbnRJbnN0YW5jZUlkIDogJHtjb25maWcuY2hhcmdlYmVlfTxicj4gICAgICAgICAgICAgICBib2R5IDogJHtzdGVwcy5zZXRQYXlsb2FkX3N1YnNjcmlwdGlvbi5wYXlsb2FkLmJvZHl9PGJyPiAgICAgICAgICAgICAgICBhcGkgOiAke3N0ZXBzLnNldFBheWxvYWRfc3Vic2NyaXB0aW9uLnBheWxvYWQudXJsfTxicj4gICAgICAgICAgICAgbWV0aG9kIDogUE9TVDwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ2xvb3BPdmVyRGF0YSc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdjcmVhdGVTdWJzY3JpcHRpb24nLDxicj4gICd0eXBlJzogJ2VsZW1lbnRSZXF1ZXN0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdlbGVtZW50SW5zdGFuY2VJZCc6ICcke2NvbmZpZy5jaGFyZ2ViZWV9Jyw8YnI+ICAgICdib2R5JzogJyR7c3RlcHMuc2V0UGF5bG9hZF9zdWJzY3JpcHRpb24ucGF5bG9hZC5ib2R5fScsPGJyPiAgICAnYXBpJzogJyR7c3RlcHMuc2V0UGF5bG9hZF9zdWJzY3JpcHRpb24ucGF5bG9hZC51cmx9Jyw8YnI+ICAgICdtZXRob2QnOiAnUE9TVCc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Request:<br><pre>  elementInstanceId : ${config.chargebee}<br>               body : ${steps.setPayload_subscription.payload.body}<br>                api : ${steps.setPayload_subscription.payload.url}<br>             method : POST</pre>"
+
+        </div>
+    </div>
+    <h2>
+        Formula Configuration
+    </h2>
+    <div class="container">
+        <h3>Basic</h3><table><tr><th>key</th><th>value</th></tr><tr><td>Name</td><td>CreateCustomerChargebee</td></tr><tr><td>Single Threaded?</td><td>false</td></tr><tr><td>Active?</td><td>true</td></tr><tr><td>Number of Steps</td><td>13</td></tr><tr><td>Number of Triggers</td><td>1</td></tr></table>
+    <br/><h3>Elements</h3><table><tr><th>key</th><th>name</th><th>required</th></tr><tr><td>chargebee</td><td>chargebee</td><td>true</td></tr></table>
+    <br/><h3>Values</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table><br/>
+    </div>
+    <div class="key">
+        <h2>
+            Key
+        </h2>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+            </tr>
+
+            <tr>
+                <td>Filter Steps</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A{Step Name}
+                    </div>
+                </td>
+                <td>Trigger/End</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        B((Actual))
+                        C((Generated))
+                        style C stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Request Step</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A>GET]
+                        style A stroke:#0f6ab4;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        B>POST]
+                        style B stroke:#10a54a;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PATCH]
+                        style C stroke:#D38042;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PUT]
+                        style C stroke:#C5862B;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        D>DELETE]
+                        style D stroke:#a41e22;
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Script</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(Step Name)
+                    </div>
+                </td>
+                <td>Loop</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(-Step Name-)
+                    </div>
+                </td>
+                <td>Other(TYPE)</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D[Step Name]
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Pass/Fail Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL-->BL
+                    </div>
+                </td>
+                <td>Generated Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL((B))
+                        AL-.->BL
+                        style BL stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Continue Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL==>BL
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+</body>
+</html>

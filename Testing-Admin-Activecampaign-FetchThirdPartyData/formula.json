@@ -1,0 +1,183 @@
+{
+    "active": true,
+    "api": "GET /fetchThirdPartyData",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 32605,
+    "method": "GET",
+    "name": "Testing-Admin-Activecampaign-FetchThirdPartyData",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "isValidParam",
+            "onFailure": [
+                "InvalidParams"
+            ],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "getInstances"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getInstances",
+            "onFailure": [
+                "request_failed"
+            ],
+            "onSuccess": [
+                "LoopOverInstances"
+            ],
+            "properties": {
+                "api": "/instances",
+                "method": "GET",
+                "query": "${steps.InputParams.input.config.searchParams}"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverInstances",
+            "onFailure": [
+                "siteNameIsNotPresent"
+            ],
+            "onSuccess": [
+                "getSiteName"
+            ],
+            "properties": {
+                "list": "${steps.getInstances.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "getSiteName",
+            "onFailure": [
+                "LoopOverInstances"
+            ],
+            "onSuccess": [
+                "getChargebeeApiKey"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "getChargebeeApiKey",
+            "onFailure": [
+                "request_failed"
+            ],
+            "onSuccess": [
+                "LoopOverConfig"
+            ],
+            "properties": {
+                "api": "/instances/${steps.LoopOverInstances.entry.id}/configuration",
+                "method": "GET"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverConfig",
+            "onFailure": [
+                "request_failed"
+            ],
+            "onSuccess": [
+                "getApiKey"
+            ],
+            "properties": {
+                "list": "${steps.getChargebeeApiKey.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "getApiKey",
+            "onFailure": [
+                "LoopOverConfig"
+            ],
+            "onSuccess": [
+                "fetch_detailsParam"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "fetch_detailsParam",
+            "onFailure": [],
+            "onSuccess": [
+                "fetch_details"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "fetch_details",
+            "onFailure": [
+                "InvalidEnityId"
+            ],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {
+                "headers": "${steps.fetch_detailsParam.auth}",
+                "method": "GET",
+                "query": "${steps.InputParams.input.config.query}",
+                "url": "${steps.InputParams.input.config.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InvalidEnityId",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "request_failed",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "siteNameIsNotPresent",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InvalidParams",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "isValidParam"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/fetchThirdPartyData"
+}

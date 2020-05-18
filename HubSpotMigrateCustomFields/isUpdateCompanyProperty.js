@@ -1,0 +1,1 @@
+done(steps.PrepareHubSpotCreateCompanyProperty.update === true);

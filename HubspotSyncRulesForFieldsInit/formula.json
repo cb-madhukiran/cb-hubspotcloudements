@@ -1,0 +1,267 @@
+{
+    "active": true,
+    "api": "GET /hubspot/fields",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31488,
+    "method": "GET",
+    "name": "HubspotSyncRulesForFieldsInit",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "FieldInitProps",
+            "onFailure": [],
+            "onSuccess": [
+                "getFormulaDetails"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getFormulaDetails",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "IsGenerated"
+            ],
+            "properties": {
+                "args": "{\"formulaName\":\"\"}",
+                "formulaId": "31429"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsGenerated",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "FieldInitProcessInputs"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "FieldInitProcessInputs",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "ConstructConfApiReq"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ConstructConfApiReq",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "IsConfigSucceeded"
+            ],
+            "properties": {
+                "args": "${steps.FieldInitProcessInputs.tpIntegConfParams}",
+                "formulaId": "31428"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsConfigSucceeded",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "ConstructCustomApiReq"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ConstructCustomApiReq",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "IsCustomSucceeded"
+            ],
+            "properties": {
+                "args": "${steps.FieldInitProcessInputs.customParams}",
+                "formulaId": "31428"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsCustomSucceeded",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "FieldInitOutput"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "FieldInitOutput",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorResponse",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "subFormulas": [
+        {
+            "active": true,
+            "api": "GET /getCBUrl",
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "description": "Generate Chargebee url for app/integrations for the given name",
+            "engine": "v3",
+            "id": 31428,
+            "method": "GET",
+            "name": "ConstructCBApiReq",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ConstructCBApiReq",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let siteName = steps.RequestParams['siteName'];\nlet domain = steps.RequestParams['domain'];\nlet apiType = steps.RequestParams['apiType'];\nlet apiName = steps.RequestParams['apiName'];\nlet integration = steps.RequestParams['integration'];\nlet type = steps.RequestParams['type'];\nlet apiKey = steps.RequestParams['apiKey'];\nlet password = steps.RequestParams['password'];\nlet queryVal = steps.RequestParams['queryJson'];\nlet inputVal = steps.RequestParams['inputJson'];\nlet bodyVal = steps.RequestParams['bodyJson'];\nlet headerVal = steps.RequestParams['headersJson'];\nlet requestType = steps.RequestParams['requestType'];\nlet apiUrl = \"\";\nlet hdrStr = \"\";\nlet headerAuth = {};\nlet apiData = {};\n//apiType 1. APP 2.integrationV1, integrationV2 integrationV3\nif(siteName === undefined || domain === undefined)\n{\n  done({\"error\":\"Invalid siteName or domain\"});\n}\n\nif (apiType=== undefined || apiType.toUpperCase()===\"APP\")\n{\n  apiUrl = \"https://\" + siteName + \".\" + domain + \"/api/v2/\" + apiName;\n}\nelse\n{\n  //\"https://\"+siteName+\".integrations.\"+siteDomain+\"/integrations/update_tp_integ_conf\",\n  if (integration !== undefined && apiType!== undefined && apiType.toUpperCase() === \"INTEG-INTEG-V2\")\n  {\n    apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/\"+integration+\"/api/v2/\"+apiName;\n  }\n  else if (integration !== undefined && apiType !== undefined && apiType.toUpperCase() === \"INTEG-V2\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/api/v2/\" + apiName;\n  }\n  else if (apiType !== undefined && apiType.toUpperCase() === \"INTEG-INTEG\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/integrations/\" + apiName;\n  }\n  else if (apiType !== undefined && apiType.toUpperCase() === \"INTEG-INTEG-API\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/integrations/api/\" + apiName;\n  }\n  else\n  {\n    done({\"error\":\"apiType is Invalid\"});\n  }\n}\n//apiUrl is populated\n\nif (apiKey !== undefined)\n{\n   headerAuth =  {\n        Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n    };\n}\nelse\n{\n  done({\"error\":\"apiKey is Invalid\"});\n}\n\nif(inputVal === undefined)\n{\n  inputVal = {};\n}\nif (queryVal === undefined)\n{\n  queryVal = {};\n}\n// function test(fer){\n//   return fer +\"test\";\n// }\nif (Object.keys(headerAuth).length !== 0 && (requestType === undefined ) || (requestType.toUpperCase() === \"GET\"))\n{\n  apiData = {\n  url : apiUrl,\n  apiKey:apiKey,\n  auth : headerAuth,\n  query : queryVal,\n  input : inputVal,\n  siteDomain:domain,\n  siteName:siteName,\n  headers:headerVal,\n  type : type\n  // //testfunction :test\n  // apiKey: steps.ConstructCBApiReq.input.apiKey,\n  // headers: steps.ConstructCBApiReq.auth,\n  // query: steps.ConstructCBApiReq.query,\n  // siteDomain: steps.ConstructCBApiReq.input.siteDomain,\n  // siteName: steps.ConstructCBApiReq.input.siteName,\n  // type: steps.ConstructCBApiReq.type,\n  // url: steps.ConstructCBApiReq.url\n  \n}\n}\n\nelse if ((requestType !== undefined ) || (requestType.toUpperCase() === \"POST\"))\n{\n  apiData = {\n    apiKey: apiKey,\n    url: apiUrl,\n    query: queryVal,\n    body: bodyVal,\n    headers: headerVal,\n    siteName:siteName,\n    siteDomain:domain,\n    type:type\n    \n}\n}\ndone(apiData);  "
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "getCBUrl",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ConstructCBApiReq"
+                    ],
+                    "properties": {
+                        "body": "let siteName = trigger.args.siteName;\nlet domain = trigger.args.domain;\nlet type = trigger.args.type;\nlet apiName = trigger.args.apiName;\nlet integration = trigger.args.integration;\nlet apiUrl = \"\";\n\nif(siteName === undefined || domain === undefined)\n{\n  done(false);\n}\n\nif (type=== undefined || type.toUpperCase()===\"APP\")\n{\n  apiUrl = \"https://\" + siteName + \".\" + domain + \"/api/v2/\" + apiName;\n}\nelse\n{\n  if (integration!== undefined)\n  {\n    apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/\"+integration+\"/api/v2/\"+apiName;\n  }\n  else\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/api/v2/\" + apiName;\n  }\n}\nlet url = {\"url\" : apiUrl};\ndone(url);\n  \n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "RequestParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ConstructCBApiReq"
+                    ],
+                    "properties": {
+                        "body": "done(trigger.args);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "sendErrorResponse",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\"error\":\"Error while constructing api data\"});"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "RequestParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ],
+            "uri": "/getCBUrl"
+        },
+        {
+            "active": true,
+            "api": "GET /getFormulaInfo",
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31429,
+            "method": "GET",
+            "name": "HubSpotGetFormulaDetails",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "getFormulaDetails",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "//get the formula name and send the json with name :{url:\"\",id:\"\"}\nlet cloud = \"https://staging.cloud-elements.com\";\nlet formulaName = trigger.args.formulaName;\nlet props  = {\n   getDealRules: {\n   url: cloud+\"/elements/api-v2/hubspot/syncRulesDealsSetup\"\n  },\n  saveDealRules: {\n   url: cloud+\"/elements/api-v2/hubspot/saveDealRules\",\n   id:\"412129\"\n  },\n  dynamicToggle: {\n    url: cloud+\"/elements/api-v2/hubspot/stagestoggle\",\n    id:\"435337\"\n  },\n  dealoptions:{\n    url :cloud + \"/elements/api-v2/hubspot/dealoptions\",\n    id:\"412128\"\n  },\n  gettoken:{\n     url : cloud +\"/elements/api-v2/hubspot/token\",\n     id: \"412130\",\n  },\n  //need to check with shamim\n  refresh:{\n    url: \"/formulas/instances/405771/executions\"\n  },\n  //need to confirm from old account\n  save: {\n   url: cloud+\"/elements/api-v2/hubspot/save\",\n   id:\"412153\"\n  },\n   saveconfig: {\n   url: cloud+\"/elements/api-v2/hubspot/saveconfig\",\n   id:\"412279\"\n  }\n};\nlet resultJson = {\"status\":\"error\"};\nif(formulaName !== undefined && formulaName !== \"\")\n{\n  resultJson = props[formulaName];\n}\nelse\n{\n  resultJson = props;\n}\n\n//console.log(resultJson);\ndone(resultJson);\n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "getFormulaDetailsDev",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [
+                        "getFormulaDetails"
+                    ],
+                    "properties": {
+                        "body": "//get the formula name and send the json with name :{url:\"\",id:\"\"}\nlet cloud = \"https://staging.cloud-elements.com\";\nlet formulaName = trigger.args.formulaName;\nlet props  = {\n  saveDealRules: {\n   url: cloud+\"/elements/api-v2/hubspot/saveDealRules\",\n   id:\"399307\"\n  },\n  dealoptions:{\n    url :cloud + \"/elements/api-v2/hubspot/dealoptions\",\n    id:\"399308\"\n  },\n  gettoken:{\n     url : cloud +\"/elements/api-v2/hubspot/token\",\n     id: \"401666\",\n  },\n  refresh:{\n    url: \"/formulas/instances/405771/executions\"\n  },\n  save: {\n   url: cloud+\"/elements/api-v2/hubspot/save\",\n   id:\"399311\"\n  }\n};\nlet resultJson = {\"status\":\"error\"};\nif(formulaName !== undefined && formulaName !== \"\")\n{\n  resultJson = props[formulaName];\n}\nelse\n{\n  resultJson = props;\n}\n\n//console.log(resultJson);\ndone(resultJson);\n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "sendErrorResponse",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\"error\":\"error while constructing formula\"});"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "getFormulaDetails"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ],
+            "uri": "/getFormulaInfo"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "FieldInitProps"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/fields"
+}

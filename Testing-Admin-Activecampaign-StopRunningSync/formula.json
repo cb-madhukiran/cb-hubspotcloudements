@@ -1,0 +1,126 @@
+{
+    "active": true,
+    "api": "POST /stopRunningSync",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 32601,
+    "method": "POST",
+    "name": "Testing-Admin-Activecampaign-StopRunningSync",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "isValidParam",
+            "onFailure": [
+                "InvalidParams"
+            ],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "construct_instance_details"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "construct_instance_details",
+            "onFailure": [],
+            "onSuccess": [
+                "getInstances"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getInstances",
+            "onFailure": [
+                "NoInstanceFound"
+            ],
+            "onSuccess": [
+                "LoopOverInstances"
+            ],
+            "properties": {
+                "api": "/instances",
+                "method": "GET",
+                "query": "${steps.construct_instance_details.searchParams}"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverInstances",
+            "onFailure": [
+                "Success"
+            ],
+            "onSuccess": [
+                "update_instance_details"
+            ],
+            "properties": {
+                "list": "${steps.getInstances.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "update_instance_details",
+            "onFailure": [
+                "request_failed"
+            ],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {
+                "api": "/instances/${steps.LoopOverInstances.entry.id}",
+                "body": "${steps.construct_instance_details.body}",
+                "method": "PATCH"
+            },
+            "type": "request"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "request_failed",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "NoInstanceFound",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InvalidParams",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "isValidParam"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/stopRunningSync"
+}

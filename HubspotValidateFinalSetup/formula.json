@@ -1,0 +1,42 @@
+{
+    "active": true,
+    "api": "GET /validate/final",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31483,
+    "method": "GET",
+    "name": "HubspotValidateFinalSetup",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "Props",
+            "onFailure": [],
+            "onSuccess": [
+                "SendFinalCard"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "SendFinalCard",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "Props"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/validate/final"
+}

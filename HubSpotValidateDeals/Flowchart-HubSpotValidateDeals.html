@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HubSpotValidateDeals</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>
+        var callback = function(){}
+    </script>
+    <style>
+        div.mermaidTooltip {
+                    margin-left: 50px;
+                    text-align: left;
+                    max-width: none;
+                }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+                    fill: #ffffff;
+                    stroke: rgb(200,200,200);
+                    stroke-width: 2px;
+                }
+        .mermaid .label {
+                  max-width: 50px;
+                }
+        table, th, td {
+                    border: 1px solid black;
+                }
+        table {
+                    border-spacing: 5px;
+                    border-radius: 5px;
+                    margin: auto;
+                }
+        th, td {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 5px;
+                }
+        th {
+                    color: blue;
+                }
+        td {
+                    width: 180px;
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                }
+        h2 {
+                    text-align: center;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                    padding: 1em;
+                }
+        .container {
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                    font-size: 11px;
+                    font-weight: 900;
+                }
+        body {
+                    font-family: 'Arial';
+                }
+        .edgeLabel {
+                    font-size: 9px;
+                }
+    </style>
+</head>
+<body>
+    <h2>
+        HubSpotValidateDeals
+    </h2>
+    <div class="container">
+        <div class="mermaid">
+            graph TD
+
+                step-000((Trigger))
+            step-001(InputParams)
+            step-002[GetCBConfig]
+            step-003(ChargebeeConfig)
+            step-004(HasChargeBeeConfig)
+            step-005(CBParam)
+            step-006(ThrowError)
+            step-019((END))
+            step-008{DoNeedRefreshToken}
+            step-009[RefreshToken]
+            step-010(PipeParams)
+            step-011(UpdateToken)
+            step-012[GetPipeLines]
+            step-013(ValidatePipeLineAndStage)
+            step-014{HasPipeLineError}
+            step-015[createDealInHubspot]
+            step-016{HasDealCreated}
+            step-017[DeleteDeals]
+            step-018(ValidationSucess)
+            step-019((END))
+
+                step-000== continue ==>step-001
+            step-001-- success -->step-002
+            step-002-- success -->step-003
+            step-003-- success -->step-004
+            step-004-- success -->step-005
+            step-004-- failure -->step-006
+            step-005-- success -->step-008
+            step-006-. done .->step-019
+            step-008-- success -->step-009
+            step-008-- failure -->step-010
+            step-009-- success -->step-011
+            step-010-- success -->step-012
+            step-011-- success -->step-010
+            step-012-- success -->step-013
+            step-013-- success -->step-014
+            step-014-- success -->step-006
+            step-014-- failure -->step-015
+            step-015-- success -->step-016
+            step-016-- success -->step-017
+            step-016-- failure -->step-006
+            step-017-- success -->step-018
+            step-017-- failure -->step-006
+            step-018-. done .->step-019
+
+                style step-019 stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-019 stroke-width:3px,stroke-dasharray: 5, 5;
+
+                click step-000 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnRyaWdnZXI8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5UcmlnZ2VyIEVsZW1lbnQ6PC9iPjxicj48YnI+PHByZT4gICB0eXBlIDogbWFudWFsPGJyPiAgYXN5bmMgOiB0cnVlPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnSW5wdXRQYXJhbXMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ3R5cGUnOiAnbWFudWFsJyw8YnI+ICAnYXN5bmMnOiB0cnVlLDxicj4gICduYW1lJzogJ3RyaWdnZXInLDxicj4gICdwcm9wZXJ0aWVzJzoge308YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Trigger Element:<br><pre>   type : manual<br>  async : true</pre>"
+            click step-001 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPklucHV0UGFyYW1zPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBhcGlLZXkgPSB0cmlnZ2VyLmFyZ3MuYXBpS2V5Ozxicj5sZXQgc2l0ZU5hbWUgPSB0cmlnZ2VyLmFyZ3Muc2l0ZU5hbWU7PGJyPmxldCB0eXBlID0gdHJpZ2dlci5hcmdzLnR5cGU7PGJyPmxldCBzaXRlRG9tYWluID0gdHJpZ2dlci5hcmdzLnNpdGVEb21haW47PGJyPjxicj4vKmFwaUtleSA9ICd0ZXN0X3lNQ0oxY2Q1NmNkYW0yN2lQQmZYY2RyaGNkdElpQUVsd2ZGOSc7PGJyPnNpdGVOYW1lID0gJ2FjdGtleS10ZXN0Jzs8YnI+dHlwZSA9ICdodWJzcG90Jzs8YnI+c2l0ZURvbWFpbiA9ICdwcmVkZXYzLmluJzsqLzxicj48YnI+bGV0IHBhc3N3b3JkID0gJyc7PGJyPmxldCBoZWFkZXJzID0gezxicj4gICAgICAgICAgICBBdXRob3JpemF0aW9uOiAnQmFzaWMgJyArIENFLmI2NChhcGlLZXkgKyAnOicgKyBwYXNzd29yZCksPGJyPiAgICAgICAgICAgIGFwaV9rZXkgOiBhcGlLZXk8YnI+ICAgICAgICB9Ozxicj4gICAgICAgIDxicj5sZXQgZGF0YSA9IHs8YnI+ICAgICAgYXBpS2V5OmFwaUtleSw8YnI+ICAgICAgc2l0ZU5hbWU6c2l0ZU5hbWUsPGJyPiAgICAgIHR5cGU6dHlwZSw8YnI+ICAgICAgc2l0ZURvbWFpbjpzaXRlRG9tYWluLDxicj4gICAgICBjYmNvbmZpZzogezxicj4gICAgIDxicj4gICAgICAgIHVybDogJ2h0dHBzOi8vJyArIHNpdGVOYW1lICsgJy5pbnRlZ3JhdGlvbnMuJyArIHNpdGVEb21haW4gKyAnL2FwaS90aGlyZF9wYXJ0eV9jb25maWd1cmF0aW9ucy90cG1ldGEnLDxicj4gICAgICAgIC8vdXJsOiAnaHR0cHM6Ly8nICsgc2l0ZU5hbWUgKyAnLicgKyBzaXRlRG9tYWluICsgJy9hcGkvdjIvdGhpcmRfcGFydHlfY29uZmlndXJhdGlvbnMnLDxicj4gICAgICAgIHF1ZXJ5OiB7PGJyPiAgICAgICAgICAgICdpbnRlZ3JhdGlvbl9uYW1lJzogdHlwZSw8YnI+ICAgICAgICB9LDxicj4gICAgICAgIGhlYWRlcnM6aGVhZGVycyw8YnI+ICAgICAgICBhcGlLZXk6IGFwaUtleSw8YnI+ICAgICAgICBzaXRlTmFtZTogc2l0ZU5hbWUsPGJyPiAgICAgICAgc2l0ZURvbWFpbjogc2l0ZURvbWFpbiw8YnI+ICAgICAgICB0eXBlOiB0eXBlLDxicj4gICAgfSw8YnI+fTs8YnI+ZG9uZShkYXRhKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdHZXRDQkNvbmZpZyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdJbnB1dFBhcmFtcycsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2xldCBhcGlLZXkgPSB0cmlnZ2VyLmFyZ3MuYXBpS2V5O1xubGV0IHNpdGVOYW1lID0gdHJpZ2dlci5hcmdzLnNpdGVOYW1lO1xubGV0IHR5cGUgPSB0cmlnZ2VyLmFyZ3MudHlwZTtcbmxldCBzaXRlRG9tYWluID0gdHJpZ2dlci5hcmdzLnNpdGVEb21haW47XG5cbi8qYXBpS2V5ID0gXCd0ZXN0X3lNQ0oxY2Q1NmNkYW0yN2lQQmZYY2RyaGNkdElpQUVsd2ZGOVwnO1xuc2l0ZU5hbWUgPSBcJ2FjdGtleS10ZXN0XCc7XG50eXBlID0gXCdodWJzcG90XCc7XG5zaXRlRG9tYWluID0gXCdwcmVkZXYzLmluXCc7Ki9cblxubGV0IHBhc3N3b3JkID0gXCdcJztcbmxldCBoZWFkZXJzID0ge1xuICAgICAgICAgICAgQXV0aG9yaXphdGlvbjogXCdCYXNpYyBcJyArIENFLmI2NChhcGlLZXkgKyBcJzpcJyArIHBhc3N3b3JkKSxcbiAgICAgICAgICAgIGFwaV9rZXkgOiBhcGlLZXlcbiAgICAgICAgfTtcbiAgICAgICAgXG5sZXQgZGF0YSA9IHtcbiAgICAgIGFwaUtleTphcGlLZXksXG4gICAgICBzaXRlTmFtZTpzaXRlTmFtZSxcbiAgICAgIHR5cGU6dHlwZSxcbiAgICAgIHNpdGVEb21haW46c2l0ZURvbWFpbixcbiAgICAgIGNiY29uZmlnOiB7XG4gICAgIFxuICAgICAgICB1cmw6IFwnaHR0cHM6Ly9cJyArIHNpdGVOYW1lICsgXCcuaW50ZWdyYXRpb25zLlwnICsgc2l0ZURvbWFpbiArIFwnL2FwaS90aGlyZF9wYXJ0eV9jb25maWd1cmF0aW9ucy90cG1ldGFcJyxcbiAgICAgICAgLy91cmw6IFwnaHR0cHM6Ly9cJyArIHNpdGVOYW1lICsgXCcuXCcgKyBzaXRlRG9tYWluICsgXCcvYXBpL3YyL3RoaXJkX3BhcnR5X2NvbmZpZ3VyYXRpb25zXCcsXG4gICAgICAgIHF1ZXJ5OiB7XG4gICAgICAgICAgICBcJ2ludGVncmF0aW9uX25hbWVcJzogdHlwZSxcbiAgICAgICAgfSxcbiAgICAgICAgaGVhZGVyczpoZWFkZXJzLFxuICAgICAgICBhcGlLZXk6IGFwaUtleSxcbiAgICAgICAgc2l0ZU5hbWU6IHNpdGVOYW1lLFxuICAgICAgICBzaXRlRG9tYWluOiBzaXRlRG9tYWluLFxuICAgICAgICB0eXBlOiB0eXBlLFxuICAgIH0sXG59O1xuZG9uZShkYXRhKTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>let apiKey = trigger.args.apiKey;<br>let siteName = trigger.args.siteName;<br>let type = trigger.args.type;<br>let siteDomain = trigger.args.siteDomain;<br><br>/*apiKey = 'test_yMCJ1cd56cdam27iPBfXcdrhcdtIiAElwfF9';<br>siteName = 'actkey-test';<br>type = 'hubspot';<br>siteDomain = 'predev3.in';*/<br><br>let password = '';<br>let headers = {<br>            Authorization: 'Basic ' + CE.b64(apiKey + ':' + password),<br>            api_key : apiKey<br>        };<br>        <br>let data = {<br>      apiKey:apiKey,<br>      siteName:siteName,<br>      type:type,<br>      siteDomain:siteDomain,<br>      cbconfig: {<br>     <br>        url: 'https://' + siteName + '.integrations.' + siteDomain + '/api/third_party_configurations/tpmeta',<br>        //url: 'https://' + siteName + '.' + siteDomain + '/api/v2/third_party_configurations',<br>        query: {<br>            'integration_name': type,<br>        },<br>        headers:headers,<br>        apiKey: apiKey,<br>        siteName: siteName,<br>        siteDomain: siteDomain,<br>        type: type,<br>    },<br>};<br>done(data);</pre>"
+            click step-002 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkdldENCQ29uZmlnPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+T3RoZXIgKGh0dHBSZXF1ZXN0KTo8L2I+PGJyPjxicj48cHJlPiAgICAgIHVybCA6ICR7c3RlcHMuSW5wdXRQYXJhbXMuY2Jjb25maWcudXJsfTxicj4gICAgcXVlcnkgOiAke3N0ZXBzLklucHV0UGFyYW1zLmNiY29uZmlnLnF1ZXJ5fTxicj4gIGhlYWRlcnMgOiAke3N0ZXBzLklucHV0UGFyYW1zLmNiY29uZmlnLmhlYWRlcnN9PGJyPiAgIG1ldGhvZCA6IEdFVDwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0NoYXJnZWJlZUNvbmZpZyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdHZXRDQkNvbmZpZycsPGJyPiAgJ3R5cGUnOiAnaHR0cFJlcXVlc3QnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ3VybCc6ICcke3N0ZXBzLklucHV0UGFyYW1zLmNiY29uZmlnLnVybH0nLDxicj4gICAgJ3F1ZXJ5JzogJyR7c3RlcHMuSW5wdXRQYXJhbXMuY2Jjb25maWcucXVlcnl9Jyw8YnI+ICAgICdoZWFkZXJzJzogJyR7c3RlcHMuSW5wdXRQYXJhbXMuY2Jjb25maWcuaGVhZGVyc30nLDxicj4gICAgJ21ldGhvZCc6ICdHRVQnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "Other (httpRequest):<br><pre>      url : ${steps.InputParams.cbconfig.url}<br>    query : ${steps.InputParams.cbconfig.query}<br>  headers : ${steps.InputParams.cbconfig.headers}<br>   method : GET</pre>"
+            click step-003 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNoYXJnZWJlZUNvbmZpZzwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5kb25lKHs8YnI+ICAgIGNiX3N0YXR1czonc3VjY2VzcycsPGJyPiAgICBkYXRhOnN0ZXBzLkdldENCQ29uZmlnLnJlc3BvbnNlLmJvZHk8YnI+ICB9KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdIYXNDaGFyZ2VCZWVDb25maWcnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnQ2hhcmdlYmVlQ29uZmlnJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnZG9uZSh7XG4gICAgY2Jfc3RhdHVzOlwnc3VjY2Vzc1wnLFxuICAgIGRhdGE6c3RlcHMuR2V0Q0JDb25maWcucmVzcG9uc2UuYm9keVxuICB9KTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>done({<br>    cb_status:'success',<br>    data:steps.GetCBConfig.response.body<br>  });</pre>"
+            click step-004 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkhhc0NoYXJnZUJlZUNvbmZpZzwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5pZihzdGVwcy5DaGFyZ2ViZWVDb25maWcuY2Jfc3RhdHVzPT09J3N1Y2Nlc3MnKXs8YnI+ICBkb25lKHRydWUpOzxicj59ZWxzZSB7PGJyPiAgIHN0ZXBzLklucHV0UGFyYW1zLmNiX2Vycm9yID0gJ25vX3RwX2ludGVnX2NvbmZpZyc7PGJyPiAgc3RlcHMuSW5wdXRQYXJhbXMuY2JfbWVzc2FnZSA9ICdub190cF9pbnRlZ19jb25maWcnOzxicj4gIGRvbmUoZmFsc2UpOzxicj59PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnQ0JQYXJhbSc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnVGhyb3dFcnJvcic8YnI+ICBdLDxicj4gICduYW1lJzogJ0hhc0NoYXJnZUJlZUNvbmZpZycsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2lmKHN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5jYl9zdGF0dXM9PT1cJ3N1Y2Nlc3NcJyl7XG4gIGRvbmUodHJ1ZSk7XG59ZWxzZSB7XG4gICBzdGVwcy5JbnB1dFBhcmFtcy5jYl9lcnJvciA9IFwnbm9fdHBfaW50ZWdfY29uZmlnXCc7XG4gIHN0ZXBzLklucHV0UGFyYW1zLmNiX21lc3NhZ2UgPSBcJ25vX3RwX2ludGVnX2NvbmZpZ1wnO1xuICBkb25lKGZhbHNlKTtcbn0nPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>if(steps.ChargebeeConfig.cb_status==='success'){<br>  done(true);<br>}else {<br>   steps.InputParams.cb_error = 'no_tp_integ_config';<br>  steps.InputParams.cb_message = 'no_tp_integ_config';<br>  done(false);<br>}</pre>"
+            click step-005 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNCUGFyYW08L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+bGV0IGN1clRpbWUgPSBNYXRoLnJvdW5kKChuZXcgRGF0ZSgpLmdldFRpbWUoKSkgLyAxMDAwKTs8YnI+Y3VyVGltZSA9IGN1clRpbWUgLSAxODAwOzxicj5sZXQgdGhpcmRQYXJ0eSA9IHN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5kYXRhLmNvbmZpZ19qc29uLmNsb3VkRWxlbWVudHMudGhpcmRQYXJ0eTs8YnI+bGV0IGRhdGEgPSB7PGJyPiAgdGhpcmRQYXJ0eTp0aGlyZFBhcnR5LDxicj4gIHN5bmNSdWxlc0RlYWxzOnN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5kYXRhLmNvbmZpZ19qc29uLmNsb3VkRWxlbWVudHMuc3luY1J1bGVzRGVhbHM8YnI+fTs8YnI+bGV0IGV4cGlyZXNJbiA9IE51bWJlcih0aGlyZFBhcnR5LmV4cGlyZXNJbik7PGJyPmlmIChleHBpcmVzSW4gPHNwYW4+PDwvc3Bhbj4gY3VyVGltZSkgezxicj4gIGRhdGEucmVmcmVzaCA9IHs8YnI+ICAgIHVybDogJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vb2F1dGgvdjEvdG9rZW4nLDxicj4gICAgaGVhZGVyczogezxicj4gICAgICAnQ29udGVudC1UeXBlJzogJ2FwcGxpY2F0aW9uL3gtd3d3LWZvcm0tdXJsZW5jb2RlZCc8YnI+ICAgIH0sPGJyPiAgICBxdWVyeTogezxicj4gICAgICBncmFudF90eXBlOiAncmVmcmVzaF90b2tlbicsPGJyPiAgICAgIGNsaWVudF9pZDp0aGlyZFBhcnR5LmNsaWVudElkLDxicj4gICAgICBjbGllbnRfc2VjcmV0OiB0aGlyZFBhcnR5LmNsaWVudFNlY3JldCw8YnI+ICAgICAgcmVmcmVzaF90b2tlbjogdGhpcmRQYXJ0eS5yZWZyZXNoVG9rZW4sPGJyPiAgICB9PGJyPiAgfTs8YnI+fTxicj48YnI+ZG9uZShkYXRhKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdEb05lZWRSZWZyZXNoVG9rZW4nPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnQ0JQYXJhbScsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2xldCBjdXJUaW1lID0gTWF0aC5yb3VuZCgobmV3IERhdGUoKS5nZXRUaW1lKCkpIC8gMTAwMCk7XG5jdXJUaW1lID0gY3VyVGltZSAtIDE4MDA7XG5sZXQgdGhpcmRQYXJ0eSA9IHN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5kYXRhLmNvbmZpZ19qc29uLmNsb3VkRWxlbWVudHMudGhpcmRQYXJ0eTtcbmxldCBkYXRhID0ge1xuICB0aGlyZFBhcnR5OnRoaXJkUGFydHksXG4gIHN5bmNSdWxlc0RlYWxzOnN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5kYXRhLmNvbmZpZ19qc29uLmNsb3VkRWxlbWVudHMuc3luY1J1bGVzRGVhbHNcbn07XG5sZXQgZXhwaXJlc0luID0gTnVtYmVyKHRoaXJkUGFydHkuZXhwaXJlc0luKTtcbmlmIChleHBpcmVzSW4gPHNwYW4+PDwvc3Bhbj4gY3VyVGltZSkge1xuICBkYXRhLnJlZnJlc2ggPSB7XG4gICAgdXJsOiBcJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vb2F1dGgvdjEvdG9rZW5cJyxcbiAgICBoZWFkZXJzOiB7XG4gICAgICBcJ0NvbnRlbnQtVHlwZVwnOiBcJ2FwcGxpY2F0aW9uL3gtd3d3LWZvcm0tdXJsZW5jb2RlZFwnXG4gICAgfSxcbiAgICBxdWVyeToge1xuICAgICAgZ3JhbnRfdHlwZTogXCdyZWZyZXNoX3Rva2VuXCcsXG4gICAgICBjbGllbnRfaWQ6dGhpcmRQYXJ0eS5jbGllbnRJZCxcbiAgICAgIGNsaWVudF9zZWNyZXQ6IHRoaXJkUGFydHkuY2xpZW50U2VjcmV0LFxuICAgICAgcmVmcmVzaF90b2tlbjogdGhpcmRQYXJ0eS5yZWZyZXNoVG9rZW4sXG4gICAgfVxuICB9O1xufVxuXG5kb25lKGRhdGEpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let curTime = Math.round((new Date().getTime()) / 1000);<br>curTime = curTime - 1800;<br>let thirdParty = steps.ChargebeeConfig.data.config_json.cloudElements.thirdParty;<br>let data = {<br>  thirdParty:thirdParty,<br>  syncRulesDeals:steps.ChargebeeConfig.data.config_json.cloudElements.syncRulesDeals<br>};<br>let expiresIn = Number(thirdParty.expiresIn);<br>if (expiresIn <span><</span> curTime) {<br>  data.refresh = {<br>    url: 'https://api.hubapi.com/oauth/v1/token',<br>    headers: {<br>      'Content-Type': 'application/x-www-form-urlencoded'<br>    },<br>    query: {<br>      grant_type: 'refresh_token',<br>      client_id:thirdParty.clientId,<br>      client_secret: thirdParty.clientSecret,<br>      refresh_token: thirdParty.refreshToken,<br>    }<br>  };<br>}<br><br>done(data);</pre>"
+            click step-006 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlRocm93RXJyb3I8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+ZG9uZSh7Y2JfZXJyb3IgOnN0ZXBzLklucHV0UGFyYW1zLmNiX2Vycm9yLDxicj4gY2JfbWVzc2FnZSA6IHN0ZXBzLklucHV0UGFyYW1zLmNiX21lc3NhZ2UsPGJyPiAgY2Jfc3RhdHVzOidlcnJvcic8YnI+fSk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnVGhyb3dFcnJvcicsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUoe2NiX2Vycm9yIDpzdGVwcy5JbnB1dFBhcmFtcy5jYl9lcnJvcixcbiBjYl9tZXNzYWdlIDogc3RlcHMuSW5wdXRQYXJhbXMuY2JfbWVzc2FnZSxcbiAgY2Jfc3RhdHVzOlwnZXJyb3JcJ1xufSk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done({cb_error :steps.InputParams.cb_error,<br> cb_message : steps.InputParams.cb_message,<br>  cb_status:'error'<br>});</pre>"
+            click step-008 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkRvTmVlZFJlZnJlc2hUb2tlbjwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5kb25lKHN0ZXBzLkNCUGFyYW0ucmVmcmVzaCE9PXVuZGVmaW5lZCk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnUmVmcmVzaFRva2VuJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdQaXBlUGFyYW1zJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnRG9OZWVkUmVmcmVzaFRva2VuJyw8YnI+ICAndHlwZSc6ICdmaWx0ZXInLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnZG9uZShzdGVwcy5DQlBhcmFtLnJlZnJlc2ghPT11bmRlZmluZWQpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>done(steps.CBParam.refresh!==undefined);</pre>"
+            click step-009 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlJlZnJlc2hUb2tlbjwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPk90aGVyIChodHRwUmVxdWVzdCk6PC9iPjxicj48YnI+PHByZT4gICAgICB1cmwgOiAke3N0ZXBzLkNCUGFyYW0ucmVmcmVzaC51cmx9PGJyPiAgICBxdWVyeSA6ICR7c3RlcHMuQ0JQYXJhbS5yZWZyZXNoLnF1ZXJ5fTxicj4gIGhlYWRlcnMgOiAke3N0ZXBzLkNCUGFyYW0ucmVmcmVzaC5oZWFkZXJzfTxicj4gICBtZXRob2QgOiBQT1NUPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnVXBkYXRlVG9rZW4nPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnUmVmcmVzaFRva2VuJyw8YnI+ICAndHlwZSc6ICdodHRwUmVxdWVzdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAndXJsJzogJyR7c3RlcHMuQ0JQYXJhbS5yZWZyZXNoLnVybH0nLDxicj4gICAgJ3F1ZXJ5JzogJyR7c3RlcHMuQ0JQYXJhbS5yZWZyZXNoLnF1ZXJ5fScsPGJyPiAgICAnaGVhZGVycyc6ICcke3N0ZXBzLkNCUGFyYW0ucmVmcmVzaC5oZWFkZXJzfScsPGJyPiAgICAnbWV0aG9kJzogJ1BPU1QnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "Other (httpRequest):<br><pre>      url : ${steps.CBParam.refresh.url}<br>    query : ${steps.CBParam.refresh.query}<br>  headers : ${steps.CBParam.refresh.headers}<br>   method : POST</pre>"
+            click step-010 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlBpcGVQYXJhbXM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+bGV0IGRhdGEgPSB7PGJyPiAgdXJsOidodHRwczovL2FwaS5odWJhcGkuY29tL2NybS1waXBlbGluZXMvdjEvcGlwZWxpbmVzL2RlYWxzJyw8YnI+ICBodWJzcG90QXV0aDogezxicj4gICAgICAnQXV0aG9yaXphdGlvbic6J0JlYXJlciAnK3N0ZXBzLkNCUGFyYW0udGhpcmRQYXJ0eS5hY2Nlc3NUb2tlbiw8YnI+ICAgICAgIEFjY2VwdDogJ2FwcGxpY2F0aW9uL2pzb24nPGJyPiAgICB9LDxicj59Ozxicj5kb25lKGRhdGEpOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0dldFBpcGVMaW5lcyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdQaXBlUGFyYW1zJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnbGV0IGRhdGEgPSB7XG4gIHVybDpcJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vY3JtLXBpcGVsaW5lcy92MS9waXBlbGluZXMvZGVhbHNcJyxcbiAgaHVic3BvdEF1dGg6IHtcbiAgICAgIFwnQXV0aG9yaXphdGlvblwnOlwnQmVhcmVyIFwnK3N0ZXBzLkNCUGFyYW0udGhpcmRQYXJ0eS5hY2Nlc3NUb2tlbixcbiAgICAgICBBY2NlcHQ6IFwnYXBwbGljYXRpb24vanNvblwnXG4gICAgfSxcbn07XG5kb25lKGRhdGEpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let data = {<br>  url:'https://api.hubapi.com/crm-pipelines/v1/pipelines/deals',<br>  hubspotAuth: {<br>      'Authorization':'Bearer '+steps.CBParam.thirdParty.accessToken,<br>       Accept: 'application/json'<br>    },<br>};<br>done(data);</pre>"
+            click step-011 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlVwZGF0ZVRva2VuPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPnN0ZXBzLkNCUGFyYW0udGhpcmRQYXJ0eS5hY2Nlc3NUb2tlbiA9IHN0ZXBzLlJlZnJlc2hUb2tlbi5yZXNwb25zZS5ib2R5LmFjY2Vzc190b2tlbjs8YnI+ZG9uZShzdGVwcy5DQlBhcmFtKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdQaXBlUGFyYW1zJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ1VwZGF0ZVRva2VuJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnc3RlcHMuQ0JQYXJhbS50aGlyZFBhcnR5LmFjY2Vzc1Rva2VuID0gc3RlcHMuUmVmcmVzaFRva2VuLnJlc3BvbnNlLmJvZHkuYWNjZXNzX3Rva2VuO1xuZG9uZShzdGVwcy5DQlBhcmFtKTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>steps.CBParam.thirdParty.accessToken = steps.RefreshToken.response.body.access_token;<br>done(steps.CBParam);</pre>"
+            click step-012 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkdldFBpcGVMaW5lczwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPk90aGVyIChodHRwUmVxdWVzdCk6PC9iPjxicj48YnI+PHByZT4gICAgICB1cmwgOiAke3N0ZXBzLlBpcGVQYXJhbXMudXJsfTxicj4gIGhlYWRlcnMgOiAke3N0ZXBzLlBpcGVQYXJhbXMuaHVic3BvdEF1dGh9PGJyPiAgIG1ldGhvZCA6IEdFVDwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ1ZhbGlkYXRlUGlwZUxpbmVBbmRTdGFnZSc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdHZXRQaXBlTGluZXMnLDxicj4gICd0eXBlJzogJ2h0dHBSZXF1ZXN0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICd1cmwnOiAnJHtzdGVwcy5QaXBlUGFyYW1zLnVybH0nLDxicj4gICAgJ2hlYWRlcnMnOiAnJHtzdGVwcy5QaXBlUGFyYW1zLmh1YnNwb3RBdXRofScsPGJyPiAgICAnbWV0aG9kJzogJ0dFVCc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (httpRequest):<br><pre>      url : ${steps.PipeParams.url}<br>  headers : ${steps.PipeParams.hubspotAuth}<br>   method : GET</pre>"
+            click step-013 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlZhbGlkYXRlUGlwZUxpbmVBbmRTdGFnZTwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5sZXQgZGF0YSA9IHt9Ozxicj48YnI+bGV0IHBpcHMgPSBzdGVwcy5HZXRQaXBlTGluZXMucmVzcG9uc2UuYm9keTs8YnI+PGJyPmxldCBza2lwVHJhaWwgPSB0cnVlOzxicj5sZXQgY1BpcGVMaW5lID0gc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscyAhPT0gdW5kZWZpbmVkID8gc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscy5waXBlTGluZSA6IHVuZGVmaW5lZDs8YnI+aWYgKGNQaXBlTGluZSA9PT0gdW5kZWZpbmVkKSB7PGJyPiAgICBjUGlwZUxpbmUgPSAnZGVmYXVsdCc7PGJyPn08YnI+aWYgKHBpcHMgIT09IHVuZGVmaW5lZCAmJiBwaXBzLnJlc3VsdHMgIT09IHVuZGVmaW5lZCkgezxicj4gICAgZm9yICh2YXIgaSA9IDA7IGkgPHNwYW4+PDwvc3Bhbj4gcGlwcy5yZXN1bHRzLmxlbmd0aDsgaSsrKSB7PGJyPiAgICAgICAgdmFyIHBpcGVsaW5lSWQgPSBwaXBzLnJlc3VsdHNbaV0ucGlwZWxpbmVJZDs8YnI+ICAgICAgICBpZiAocGlwZWxpbmVJZCA9PT0gY1BpcGVMaW5lKSB7PGJyPiAgICAgICAgICAgIGRhdGEucGlwZUxpbmUgPSBwaXBlbGluZUlkOzxicj4gICAgICAgICAgICB2YXIgcHN0YWdlcyA9IHBpcHMucmVzdWx0c1tpXS5zdGFnZXM7PGJyPiAgICAgICAgICAgIHZhciBzdGFnZXMgPSB7fTs8YnI+ICAgICAgICAgICAgZm9yICh2YXIgaiA9IDA7IGogPHNwYW4+PDwvc3Bhbj4gcHN0YWdlcy5sZW5ndGg7IGorKykgezxicj4gICAgICAgICAgICAgICAgc3RhZ2VzW3BzdGFnZXNbal0uc3RhZ2VJZF0gPSBwc3RhZ2VzW2pdLmxhYmVsOzxicj4gICAgICAgICAgICB9PGJyPiAgICAgICAgfTxicj4gICAgfTxicj4gICAgaWYgKHN0ZXBzLkNCUGFyYW0uc3luY1J1bGVzRGVhbHMgIT09IHVuZGVmaW5lZCAmJiBzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzLnN0YWdlX3N1YkNyZWF0ZWQgIT09IHVuZGVmaW5lZCAmJiBzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzLnN0YWdlX3N1YkNyZWF0ZWQgIT09ICcnKSB7PGJyPiAgICAgICAgaWYgKHN0YWdlc1tzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzLnN0YWdlX3N1YkNyZWF0ZWRdICE9PSB1bmRlZmluZWQpIHs8YnI+ICAgICAgICAgICAgZGF0YS5zdGFnZV9zdWJDcmVhdGVkID0gc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscy5zdGFnZV9zdWJDcmVhdGVkOzxicj4gICAgICAgIH08YnI+ICAgIH08YnI+ICAgIGlmIChzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzICE9PSB1bmRlZmluZWQgJiYgc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscy5zdGFnZV9zdWJJblRyaWFsICE9PSB1bmRlZmluZWQgJiYgc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscy5zdGFnZV9zdWJJblRyaWFsICE9PSAnJykgezxicj4gICAgICAgIHNraXBUcmFpbCA9IGZhbHNlOzxicj4gICAgICAgIGlmIChzdGFnZXNbc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscy5zdGFnZV9zdWJJblRyaWFsXSAhPT0gdW5kZWZpbmVkKSB7PGJyPiAgICAgICAgICAgIGRhdGEuc3RhZ2Vfc3ViSW5UcmlhbCA9IHN0ZXBzLkNCUGFyYW0uc3luY1J1bGVzRGVhbHMuc3RhZ2Vfc3ViSW5UcmlhbDs8YnI+ICAgICAgICB9PGJyPiAgICB9PGJyPn08YnI+PGJyPjxicj5pZiAoZGF0YSA9PT0gdW5kZWZpbmVkIHx8IGRhdGEucGlwZUxpbmUgPT09IHVuZGVmaW5lZCkgezxicj4gICAgZGF0YS5jYl9lcnJvciA9ICdub19waXBlX2xpbmUnOzxicj4gICAgZGF0YS5jYl9tZXNzYWdlID0gY1BpcGVMaW5lOzxicj59IGVsc2Ugezxicj4gICAgaWYgKGRhdGEuc3RhZ2Vfc3ViQ3JlYXRlZCA9PT0gdW5kZWZpbmVkKSB7PGJyPiAgICAgICAgZGF0YS5jYl9lcnJvciA9ICdub19zdGFnZSc7PGJyPiAgICAgICAgZGF0YS5jYl9tZXNzYWdlID0gc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscy5zdGFnZV9zdWJDcmVhdGVkOzxicj4gICAgfTxicj4gICAgaWYgKGRhdGEuc3RhZ2Vfc3ViSW5UcmlhbCA9PT0gdW5kZWZpbmVkICYmICFza2lwVHJhaWwpIHs8YnI+ICAgICAgICBkYXRhLmNiX2Vycm9yID0gJ25vX3N0YWdlJzs8YnI+ICAgICAgICBkYXRhLmNiX21lc3NhZ2UgPSBzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzLnN0YWdlX3N1YkluVHJpYWw7PGJyPiAgICB9PGJyPn08YnI+PGJyPmRhdGEuZElucHV0ID0gezxicj4gICAgdXJsOiAnaHR0cHM6Ly9hcGkuaHViYXBpLmNvbS9kZWFscy92MS9kZWFsJyw8YnI+ICAgIGhlYWRlcnM6IHs8YnI+ICAgICAgICAnQXV0aG9yaXphdGlvbic6ICdCZWFyZXIgJyArIHN0ZXBzLkNCUGFyYW0udGhpcmRQYXJ0eS5hY2Nlc3NUb2tlbjxicj4gICAgfSw8YnI+ICAgIGFwaUtleTogc3RlcHMuSW5wdXRQYXJhbXMuYXBpS2V5LDxicj4gICAgc2l0ZU5hbWU6IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVOYW1lLDxicj4gICAgc2l0ZURvbWFpbjogc3RlcHMuSW5wdXRQYXJhbXMuc2l0ZURvbWFpbiw8YnI+ICAgIHR5cGU6IHN0ZXBzLklucHV0UGFyYW1zLnR5cGUsPGJyPiAgICBib2R5OiB7PGJyPiAgICAgICAgcHJvcGVydGllczogWzxicj4gICAgICAgICAgICB7PGJyPiAgICAgICAgICAgICAgICB2YWx1ZTogJ0NoYXJnZWJlZSBUZXN0IERlYWwnLDxicj4gICAgICAgICAgICAgICAgbmFtZTogJ2RlYWxuYW1lJzxicj4gICAgICAgICAgICB9LDxicj4gICAgICAgICAgICB7PGJyPiAgICAgICAgICAgICAgICB2YWx1ZTogZGF0YS5zdGFnZV9zdWJDcmVhdGVkLDxicj4gICAgICAgICAgICAgICAgbmFtZTogJ2RlYWxzdGFnZSc8YnI+ICAgICAgICAgICAgfSw8YnI+ICAgICAgICAgICAgezxicj4gICAgICAgICAgICAgICAgdmFsdWU6IGRhdGEucGlwZUxpbmUsPGJyPiAgICAgICAgICAgICAgICBuYW1lOiAncGlwZWxpbmUnPGJyPiAgICAgICAgICAgIH08YnI+ICAgICAgICBdPGJyPiAgICB9PGJyPn07PGJyPjxicj5kb25lKGRhdGEpOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0hhc1BpcGVMaW5lRXJyb3InPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnVmFsaWRhdGVQaXBlTGluZUFuZFN0YWdlJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnbGV0IGRhdGEgPSB7fTtcblxubGV0IHBpcHMgPSBzdGVwcy5HZXRQaXBlTGluZXMucmVzcG9uc2UuYm9keTtcblxubGV0IHNraXBUcmFpbCA9IHRydWU7XG5sZXQgY1BpcGVMaW5lID0gc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscyAhPT0gdW5kZWZpbmVkID8gc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscy5waXBlTGluZSA6IHVuZGVmaW5lZDtcbmlmIChjUGlwZUxpbmUgPT09IHVuZGVmaW5lZCkge1xuICAgIGNQaXBlTGluZSA9IFwnZGVmYXVsdFwnO1xufVxuaWYgKHBpcHMgIT09IHVuZGVmaW5lZCAmJiBwaXBzLnJlc3VsdHMgIT09IHVuZGVmaW5lZCkge1xuICAgIGZvciAodmFyIGkgPSAwOyBpIDxzcGFuPjw8L3NwYW4+IHBpcHMucmVzdWx0cy5sZW5ndGg7IGkrKykge1xuICAgICAgICB2YXIgcGlwZWxpbmVJZCA9IHBpcHMucmVzdWx0c1tpXS5waXBlbGluZUlkO1xuICAgICAgICBpZiAocGlwZWxpbmVJZCA9PT0gY1BpcGVMaW5lKSB7XG4gICAgICAgICAgICBkYXRhLnBpcGVMaW5lID0gcGlwZWxpbmVJZDtcbiAgICAgICAgICAgIHZhciBwc3RhZ2VzID0gcGlwcy5yZXN1bHRzW2ldLnN0YWdlcztcbiAgICAgICAgICAgIHZhciBzdGFnZXMgPSB7fTtcbiAgICAgICAgICAgIGZvciAodmFyIGogPSAwOyBqIDxzcGFuPjw8L3NwYW4+IHBzdGFnZXMubGVuZ3RoOyBqKyspIHtcbiAgICAgICAgICAgICAgICBzdGFnZXNbcHN0YWdlc1tqXS5zdGFnZUlkXSA9IHBzdGFnZXNbal0ubGFiZWw7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG4gICAgaWYgKHN0ZXBzLkNCUGFyYW0uc3luY1J1bGVzRGVhbHMgIT09IHVuZGVmaW5lZCAmJiBzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzLnN0YWdlX3N1YkNyZWF0ZWQgIT09IHVuZGVmaW5lZCAmJiBzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzLnN0YWdlX3N1YkNyZWF0ZWQgIT09IFwnXCcpIHtcbiAgICAgICAgaWYgKHN0YWdlc1tzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzLnN0YWdlX3N1YkNyZWF0ZWRdICE9PSB1bmRlZmluZWQpIHtcbiAgICAgICAgICAgIGRhdGEuc3RhZ2Vfc3ViQ3JlYXRlZCA9IHN0ZXBzLkNCUGFyYW0uc3luY1J1bGVzRGVhbHMuc3RhZ2Vfc3ViQ3JlYXRlZDtcbiAgICAgICAgfVxuICAgIH1cbiAgICBpZiAoc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscyAhPT0gdW5kZWZpbmVkICYmIHN0ZXBzLkNCUGFyYW0uc3luY1J1bGVzRGVhbHMuc3RhZ2Vfc3ViSW5UcmlhbCAhPT0gdW5kZWZpbmVkICYmIHN0ZXBzLkNCUGFyYW0uc3luY1J1bGVzRGVhbHMuc3RhZ2Vfc3ViSW5UcmlhbCAhPT0gXCdcJykge1xuICAgICAgICBza2lwVHJhaWwgPSBmYWxzZTtcbiAgICAgICAgaWYgKHN0YWdlc1tzdGVwcy5DQlBhcmFtLnN5bmNSdWxlc0RlYWxzLnN0YWdlX3N1YkluVHJpYWxdICE9PSB1bmRlZmluZWQpIHtcbiAgICAgICAgICAgIGRhdGEuc3RhZ2Vfc3ViSW5UcmlhbCA9IHN0ZXBzLkNCUGFyYW0uc3luY1J1bGVzRGVhbHMuc3RhZ2Vfc3ViSW5UcmlhbDtcbiAgICAgICAgfVxuICAgIH1cbn1cblxuXG5pZiAoZGF0YSA9PT0gdW5kZWZpbmVkIHx8IGRhdGEucGlwZUxpbmUgPT09IHVuZGVmaW5lZCkge1xuICAgIGRhdGEuY2JfZXJyb3IgPSBcJ25vX3BpcGVfbGluZVwnO1xuICAgIGRhdGEuY2JfbWVzc2FnZSA9IGNQaXBlTGluZTtcbn0gZWxzZSB7XG4gICAgaWYgKGRhdGEuc3RhZ2Vfc3ViQ3JlYXRlZCA9PT0gdW5kZWZpbmVkKSB7XG4gICAgICAgIGRhdGEuY2JfZXJyb3IgPSBcJ25vX3N0YWdlXCc7XG4gICAgICAgIGRhdGEuY2JfbWVzc2FnZSA9IHN0ZXBzLkNCUGFyYW0uc3luY1J1bGVzRGVhbHMuc3RhZ2Vfc3ViQ3JlYXRlZDtcbiAgICB9XG4gICAgaWYgKGRhdGEuc3RhZ2Vfc3ViSW5UcmlhbCA9PT0gdW5kZWZpbmVkICYmICFza2lwVHJhaWwpIHtcbiAgICAgICAgZGF0YS5jYl9lcnJvciA9IFwnbm9fc3RhZ2VcJztcbiAgICAgICAgZGF0YS5jYl9tZXNzYWdlID0gc3RlcHMuQ0JQYXJhbS5zeW5jUnVsZXNEZWFscy5zdGFnZV9zdWJJblRyaWFsO1xuICAgIH1cbn1cblxuZGF0YS5kSW5wdXQgPSB7XG4gICAgdXJsOiBcJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vZGVhbHMvdjEvZGVhbFwnLFxuICAgIGhlYWRlcnM6IHtcbiAgICAgICAgXCdBdXRob3JpemF0aW9uXCc6IFwnQmVhcmVyIFwnICsgc3RlcHMuQ0JQYXJhbS50aGlyZFBhcnR5LmFjY2Vzc1Rva2VuXG4gICAgfSxcbiAgICBhcGlLZXk6IHN0ZXBzLklucHV0UGFyYW1zLmFwaUtleSxcbiAgICBzaXRlTmFtZTogc3RlcHMuSW5wdXRQYXJhbXMuc2l0ZU5hbWUsXG4gICAgc2l0ZURvbWFpbjogc3RlcHMuSW5wdXRQYXJhbXMuc2l0ZURvbWFpbixcbiAgICB0eXBlOiBzdGVwcy5JbnB1dFBhcmFtcy50eXBlLFxuICAgIGJvZHk6IHtcbiAgICAgICAgcHJvcGVydGllczogW1xuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHZhbHVlOiBcJ0NoYXJnZWJlZSBUZXN0IERlYWxcJyxcbiAgICAgICAgICAgICAgICBuYW1lOiBcJ2RlYWxuYW1lXCdcbiAgICAgICAgICAgIH0sXG4gICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgdmFsdWU6IGRhdGEuc3RhZ2Vfc3ViQ3JlYXRlZCxcbiAgICAgICAgICAgICAgICBuYW1lOiBcJ2RlYWxzdGFnZVwnXG4gICAgICAgICAgICB9LFxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHZhbHVlOiBkYXRhLnBpcGVMaW5lLFxuICAgICAgICAgICAgICAgIG5hbWU6IFwncGlwZWxpbmVcJ1xuICAgICAgICAgICAgfVxuICAgICAgICBdXG4gICAgfVxufTtcblxuZG9uZShkYXRhKTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>let data = {};<br><br>let pips = steps.GetPipeLines.response.body;<br><br>let skipTrail = true;<br>let cPipeLine = steps.CBParam.syncRulesDeals !== undefined ? steps.CBParam.syncRulesDeals.pipeLine : undefined;<br>if (cPipeLine === undefined) {<br>    cPipeLine = 'default';<br>}<br>if (pips !== undefined && pips.results !== undefined) {<br>    for (var i = 0; i <span><</span> pips.results.length; i++) {<br>        var pipelineId = pips.results[i].pipelineId;<br>        if (pipelineId === cPipeLine) {<br>            data.pipeLine = pipelineId;<br>            var pstages = pips.results[i].stages;<br>            var stages = {};<br>            for (var j = 0; j <span><</span> pstages.length; j++) {<br>                stages[pstages[j].stageId] = pstages[j].label;<br>            }<br>        }<br>    }<br>    if (steps.CBParam.syncRulesDeals !== undefined && steps.CBParam.syncRulesDeals.stage_subCreated !== undefined && steps.CBParam.syncRulesDeals.stage_subCreated !== '') {<br>        if (stages[steps.CBParam.syncRulesDeals.stage_subCreated] !== undefined) {<br>            data.stage_subCreated = steps.CBParam.syncRulesDeals.stage_subCreated;<br>        }<br>    }<br>    if (steps.CBParam.syncRulesDeals !== undefined && steps.CBParam.syncRulesDeals.stage_subInTrial !== undefined && steps.CBParam.syncRulesDeals.stage_subInTrial !== '') {<br>        skipTrail = false;<br>        if (stages[steps.CBParam.syncRulesDeals.stage_subInTrial] !== undefined) {<br>            data.stage_subInTrial = steps.CBParam.syncRulesDeals.stage_subInTrial;<br>        }<br>    }<br>}<br><br><br>if (data === undefined || data.pipeLine === undefined) {<br>    data.cb_error = 'no_pipe_line';<br>    data.cb_message = cPipeLine;<br>} else {<br>    if (data.stage_subCreated === undefined) {<br>        data.cb_error = 'no_stage';<br>        data.cb_message = steps.CBParam.syncRulesDeals.stage_subCreated;<br>    }<br>    if (data.stage_subInTrial === undefined && !skipTrail) {<br>        data.cb_error = 'no_stage';<br>        data.cb_message = steps.CBParam.syncRulesDeals.stage_subInTrial;<br>    }<br>}<br><br>data.dInput = {<br>    url: 'https://api.hubapi.com/deals/v1/deal',<br>    headers: {<br>        'Authorization': 'Bearer ' + steps.CBParam.thirdParty.accessToken<br>    },<br>    apiKey: steps.InputParams.apiKey,<br>    siteName: steps.InputParams.siteName,<br>    siteDomain: steps.InputParams.siteDomain,<br>    type: steps.InputParams.type,<br>    body: {<br>        properties: [<br>            {<br>                value: 'Chargebee Test Deal',<br>                name: 'dealname'<br>            },<br>            {<br>                value: data.stage_subCreated,<br>                name: 'dealstage'<br>            },<br>            {<br>                value: data.pipeLine,<br>                name: 'pipeline'<br>            }<br>        ]<br>    }<br>};<br><br>done(data);</pre>"
+            click step-014 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkhhc1BpcGVMaW5lRXJyb3I8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+aWYoc3RlcHMuVmFsaWRhdGVQaXBlTGluZUFuZFN0YWdlLmNiX2Vycm9yICE9PSB1bmRlZmluZWQpIHs8YnI+ICBzdGVwcy5JbnB1dFBhcmFtcy5jYl9lcnJvciA9IHN0ZXBzLlZhbGlkYXRlUGlwZUxpbmVBbmRTdGFnZS5jYl9lcnJvciw8YnI+ICBzdGVwcy5JbnB1dFBhcmFtcy5jYl9tZXNzYWdlID0gc3RlcHMuVmFsaWRhdGVQaXBlTGluZUFuZFN0YWdlLmNiX21lc3NhZ2UsPGJyPiAgZG9uZSh0cnVlKTs8YnI+fWVsc2Ugezxicj4gIGRvbmUoZmFsc2UpOzxicj59PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnVGhyb3dFcnJvcic8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnY3JlYXRlRGVhbEluSHVic3BvdCc8YnI+ICBdLDxicj4gICduYW1lJzogJ0hhc1BpcGVMaW5lRXJyb3InLDxicj4gICd0eXBlJzogJ2ZpbHRlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdpZihzdGVwcy5WYWxpZGF0ZVBpcGVMaW5lQW5kU3RhZ2UuY2JfZXJyb3IgIT09IHVuZGVmaW5lZCkge1xuICBzdGVwcy5JbnB1dFBhcmFtcy5jYl9lcnJvciA9IHN0ZXBzLlZhbGlkYXRlUGlwZUxpbmVBbmRTdGFnZS5jYl9lcnJvcixcbiAgc3RlcHMuSW5wdXRQYXJhbXMuY2JfbWVzc2FnZSA9IHN0ZXBzLlZhbGlkYXRlUGlwZUxpbmVBbmRTdGFnZS5jYl9tZXNzYWdlLFxuICBkb25lKHRydWUpO1xufWVsc2Uge1xuICBkb25lKGZhbHNlKTtcbn0nPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>if(steps.ValidatePipeLineAndStage.cb_error !== undefined) {<br>  steps.InputParams.cb_error = steps.ValidatePipeLineAndStage.cb_error,<br>  steps.InputParams.cb_message = steps.ValidatePipeLineAndStage.cb_message,<br>  done(true);<br>}else {<br>  done(false);<br>}</pre>"
+            click step-015 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPmNyZWF0ZURlYWxJbkh1YnNwb3Q8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5PdGhlciAoZm9ybXVsYSk6PC9iPjxicj48YnI+PHByZT4gIGZvcm11bGFJZCA6IDMxMzMzPGJyPiAgICAgICBhcmdzIDogJHtzdGVwcy5WYWxpZGF0ZVBpcGVMaW5lQW5kU3RhZ2UuZElucHV0fTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0hhc0RlYWxDcmVhdGVkJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ2NyZWF0ZURlYWxJbkh1YnNwb3QnLDxicj4gICd0eXBlJzogJ2Zvcm11bGEnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2Zvcm11bGFJZCc6ICczMTMzMycsPGJyPiAgICAnYXJncyc6ICcke3N0ZXBzLlZhbGlkYXRlUGlwZUxpbmVBbmRTdGFnZS5kSW5wdXR9Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Other (formula):<br><pre>  formulaId : 31333<br>       args : ${steps.ValidatePipeLineAndStage.dInput}</pre>"
+            click step-016 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkhhc0RlYWxDcmVhdGVkPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmlmKHN0ZXBzLmNyZWF0ZURlYWxJbkh1YnNwb3QuY2Jfc3RhdHVzID09PSAnc3VjY2VzcycpIHs8YnI+ICAgIHN0ZXBzLlZhbGlkYXRlUGlwZUxpbmVBbmRTdGFnZS5kZWxldGVEZWFsID0gezxicj4gICAgICB1cmwgOidodHRwczovL2FwaS5odWJhcGkuY29tL2RlYWxzL3YxL2RlYWwvJyArIHN0ZXBzLmNyZWF0ZURlYWxJbkh1YnNwb3QuZGF0YS5kZWFsSWQsPGJyPiAgICAgICBoZWFkZXJzOiB7PGJyPiAgICAnQXV0aG9yaXphdGlvbic6ICdCZWFyZXIgJysgc3RlcHMuQ0JQYXJhbS50aGlyZFBhcnR5LmFjY2Vzc1Rva2VuPGJyPiAgfSw8YnI+ICA8YnI+ICAgIH07PGJyPiAgIGRvbmUodHJ1ZSk7PGJyPn1lbHNlIHs8YnI+ICBzdGVwcy5JbnB1dFBhcmFtcy5jYl9lcnJvciA9ICdjcmVhdGVfZGVhbF9mYWlsZWQnOzxicj4gIHN0ZXBzLklucHV0UGFyYW1zLmNiX21lc3NhZ2UgPSAnY3JlYXRlX2RlYWxfZmFpbGVkJzs8YnI+ICBkb25lKGZhbHNlKTs8YnI+fTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0RlbGV0ZURlYWxzJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdUaHJvd0Vycm9yJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnSGFzRGVhbENyZWF0ZWQnLDxicj4gICd0eXBlJzogJ2ZpbHRlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdpZihzdGVwcy5jcmVhdGVEZWFsSW5IdWJzcG90LmNiX3N0YXR1cyA9PT0gXCdzdWNjZXNzXCcpIHtcbiAgICBzdGVwcy5WYWxpZGF0ZVBpcGVMaW5lQW5kU3RhZ2UuZGVsZXRlRGVhbCA9IHtcbiAgICAgIHVybCA6XCdodHRwczovL2FwaS5odWJhcGkuY29tL2RlYWxzL3YxL2RlYWwvXCcgKyBzdGVwcy5jcmVhdGVEZWFsSW5IdWJzcG90LmRhdGEuZGVhbElkLFxuICAgICAgIGhlYWRlcnM6IHtcbiAgICBcJ0F1dGhvcml6YXRpb25cJzogXCdCZWFyZXIgXCcrIHN0ZXBzLkNCUGFyYW0udGhpcmRQYXJ0eS5hY2Nlc3NUb2tlblxuICB9LFxuICBcbiAgICB9O1xuICAgZG9uZSh0cnVlKTtcbn1lbHNlIHtcbiAgc3RlcHMuSW5wdXRQYXJhbXMuY2JfZXJyb3IgPSBcJ2NyZWF0ZV9kZWFsX2ZhaWxlZFwnO1xuICBzdGVwcy5JbnB1dFBhcmFtcy5jYl9tZXNzYWdlID0gXCdjcmVhdGVfZGVhbF9mYWlsZWRcJztcbiAgZG9uZShmYWxzZSk7XG59Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>if(steps.createDealInHubspot.cb_status === 'success') {<br>    steps.ValidatePipeLineAndStage.deleteDeal = {<br>      url :'https://api.hubapi.com/deals/v1/deal/' + steps.createDealInHubspot.data.dealId,<br>       headers: {<br>    'Authorization': 'Bearer '+ steps.CBParam.thirdParty.accessToken<br>  },<br>  <br>    };<br>   done(true);<br>}else {<br>  steps.InputParams.cb_error = 'create_deal_failed';<br>  steps.InputParams.cb_message = 'create_deal_failed';<br>  done(false);<br>}</pre>"
+            click step-017 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkRlbGV0ZURlYWxzPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+T3RoZXIgKGh0dHBSZXF1ZXN0KTo8L2I+PGJyPjxicj48cHJlPiAgICAgICAgICAgICAgICAgICAgdXJsIDogJHtzdGVwcy5WYWxpZGF0ZVBpcGVMaW5lQW5kU3RhZ2UuZGVsZXRlRGVhbC51cmx9PGJyPiAgYWNjZXB0YWJsZVN0YXR1c0NvZGVzIDogMjA0PGJyPiAgICAgICAgICAgICAgICBoZWFkZXJzIDogJHtzdGVwcy5WYWxpZGF0ZVBpcGVMaW5lQW5kU3RhZ2UuZGVsZXRlRGVhbC5oZWFkZXJzfTxicj4gICAgICAgICAgICAgICAgIG1ldGhvZCA6IERFTEVURTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ1ZhbGlkYXRpb25TdWNlc3MnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ1Rocm93RXJyb3InPGJyPiAgXSw8YnI+ICAnbmFtZSc6ICdEZWxldGVEZWFscycsPGJyPiAgJ3R5cGUnOiAnaHR0cFJlcXVlc3QnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ3VybCc6ICcke3N0ZXBzLlZhbGlkYXRlUGlwZUxpbmVBbmRTdGFnZS5kZWxldGVEZWFsLnVybH0nLDxicj4gICAgJ2FjY2VwdGFibGVTdGF0dXNDb2Rlcyc6ICcyMDQnLDxicj4gICAgJ2hlYWRlcnMnOiAnJHtzdGVwcy5WYWxpZGF0ZVBpcGVMaW5lQW5kU3RhZ2UuZGVsZXRlRGVhbC5oZWFkZXJzfScsPGJyPiAgICAnbWV0aG9kJzogJ0RFTEVURSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (httpRequest):<br><pre>                    url : ${steps.ValidatePipeLineAndStage.deleteDeal.url}<br>  acceptableStatusCodes : 204<br>                headers : ${steps.ValidatePipeLineAndStage.deleteDeal.headers}<br>                 method : DELETE</pre>"
+            click step-018 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlZhbGlkYXRpb25TdWNlc3M8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+PGJyPi8qZG9uZSh7Y2JfZXJyb3IgOidub190cF9pbnRlZ19jb25maWcnLDxicj4gY2JfbWVzc2FnZSA6ICdub190cF9pbnRlZ19jb25maWcnLDxicj4gIGNiX3N0YXR1czonZXJyb3InPGJyPn0pOyovPGJyPmRvbmUoezxicj4gIGNiX3N0YXR1czonc3VjZXNzJzxicj59KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFtdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdWYWxpZGF0aW9uU3VjZXNzJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnXG4vKmRvbmUoe2NiX2Vycm9yIDpcJ25vX3RwX2ludGVnX2NvbmZpZ1wnLFxuIGNiX21lc3NhZ2UgOiBcJ25vX3RwX2ludGVnX2NvbmZpZ1wnLFxuICBjYl9zdGF0dXM6XCdlcnJvclwnXG59KTsqL1xuZG9uZSh7XG4gIGNiX3N0YXR1czpcJ3N1Y2Vzc1wnXG59KTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre><br>/*done({cb_error :'no_tp_integ_config',<br> cb_message : 'no_tp_integ_config',<br>  cb_status:'error'<br>});*/<br>done({<br>  cb_status:'sucess'<br>});</pre>"
+
+        </div>
+    </div>
+    <h2>
+        Formula Configuration
+    </h2>
+    <div class="container">
+        <h3>Basic</h3><table><tr><th>key</th><th>value</th></tr><tr><td>Name</td><td>HubSpotValidateDeals</td></tr><tr><td>Single Threaded?</td><td>false</td></tr><tr><td>Active?</td><td>true</td></tr><tr><td>Number of Steps</td><td>17</td></tr><tr><td>Number of Triggers</td><td>1</td></tr></table>
+    <br/><h3>Elements</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table>
+    <br/><h3>Values</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table><br/>
+    </div>
+    <div class="key">
+        <h2>
+            Key
+        </h2>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+            </tr>
+
+            <tr>
+                <td>Filter Steps</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A{Step Name}
+                    </div>
+                </td>
+                <td>Trigger/End</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        B((Actual))
+                        C((Generated))
+                        style C stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Request Step</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A>GET]
+                        style A stroke:#0f6ab4;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        B>POST]
+                        style B stroke:#10a54a;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PATCH]
+                        style C stroke:#D38042;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PUT]
+                        style C stroke:#C5862B;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        D>DELETE]
+                        style D stroke:#a41e22;
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Script</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(Step Name)
+                    </div>
+                </td>
+                <td>Loop</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(-Step Name-)
+                    </div>
+                </td>
+                <td>Other(TYPE)</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D[Step Name]
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Pass/Fail Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL-->BL
+                    </div>
+                </td>
+                <td>Generated Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL((B))
+                        AL-.->BL
+                        style BL stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Continue Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL==>BL
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+</body>
+</html>

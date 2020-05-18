@@ -1,0 +1,1 @@
+done(steps.PrepareHubSpotCreatesContactSubscription.errorFlag === true);

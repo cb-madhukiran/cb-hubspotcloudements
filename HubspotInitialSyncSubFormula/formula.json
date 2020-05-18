@@ -1,0 +1,239 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "debugLoggingExpires": "2019-11-15T14:10:07Z",
+    "description": "Sync SubFormula",
+    "engine": "v3",
+    "id": 31419,
+    "name": "HubspotInitialSyncSubFormula",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InitParams",
+            "onFailure": [],
+            "onSuccess": [
+                "StartExcecution"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "StartExcecution",
+            "onFailure": [],
+            "onSuccess": [
+                "NewSyncDetails"
+            ],
+            "properties": {
+                "api": "/formulas/instances/${steps.InitParams.input.formulaInstance}/executions",
+                "body": "${steps.InitParams.input.formulaInstanceBody}",
+                "method": "POST"
+            },
+            "type": "request"
+        },
+        {
+            "name": "NewSyncDetails",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeePostUpdateTpIntegConf"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeePostUpdateTpIntegConf",
+            "onFailure": [],
+            "onSuccess": [
+                "IsTpIntegConfUpdated"
+            ],
+            "properties": {
+                "args": "${steps.NewSyncDetails.updateTpIntegConf}",
+                "formulaId": "31331"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsTpIntegConfUpdated",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeePostCreateTpIntegSync"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ChargebeePostCreateTpIntegSync",
+            "onFailure": [],
+            "onSuccess": [
+                "IsTpIntegSyncCreated"
+            ],
+            "properties": {
+                "args": "${steps.NewSyncDetails.createTpIntegSync}",
+                "formulaId": "31331"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsTpIntegSyncCreated",
+            "onFailure": [],
+            "onSuccess": [
+                "RunSyncParam"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "RunSyncParam",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeePostUpdateTpIntegSync"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeePostUpdateTpIntegSync",
+            "onFailure": [],
+            "onSuccess": [
+                "IsTpIntegSyncUpdated"
+            ],
+            "properties": {
+                "args": "${steps.RunSyncParam}",
+                "formulaId": "31331"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsTpIntegSyncUpdated",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "filter"
+        }
+    ],
+    "subFormulas": [
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31331,
+            "name": "ChargebeePost",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ChargebeePostCallAgainHttp",
+                    "onFailure": [
+                        "ChargebeePostResult2"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostInputParams.intervel.length > 0 && steps.ChargebeePostInputParams.retryCode[steps.ChargebeePostPostHttpData.response.code] !== undefined) {\n  steps.ChargebeePostInputParams.delay.query.delay = steps.ChargebeePostInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeePostCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostPostHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeePostInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeePostInputParams.delay.query}",
+                        "url": "${steps.ChargebeePostInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeePostError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"formula_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeePostInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet body = trigger.args.body;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\nif(body === undefined) {\n  body = {};\n}\ndone({\n    url: url,\n    query: query,\n    body:body,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n    },\n    hardStop: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n        500:true,\n        401:true\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeePostIsValidUrl",
+                    "onFailure": [
+                        "ChargebeePostError"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostPostHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeePostInputParams.url !== undefined && steps.ChargebeePostInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeePostPostHttpData",
+                    "onFailure": [
+                        "ChargebeePostCallAgainHttp"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.ChargebeePostInputParams.body}",
+                        "headers": "${steps.ChargebeePostInputParams.headers}",
+                        "method": "POST",
+                        "query": "${steps.ChargebeePostInputParams.query}",
+                        "url": "${steps.ChargebeePostInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeePostResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostPostHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeePostPostHttpData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeePostInputParams.hardStop[steps.ChargebeePostPostHttpData.response.code] !== undefined;\n  if(steps.ChargebeePostPostHttpData.response.body!== undefined && steps.ChargebeePostPostHttpData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeePostPostHttpData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    rbody:steps.ChargebeePostPostHttpData.response.body\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InitParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": ""
+}

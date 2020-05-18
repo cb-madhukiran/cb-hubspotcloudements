@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HubspotValidateFinalSetup</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>
+        var callback = function(){}
+    </script>
+    <style>
+        div.mermaidTooltip {
+                    margin-left: 50px;
+                    text-align: left;
+                    max-width: none;
+                }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+                    fill: #ffffff;
+                    stroke: rgb(200,200,200);
+                    stroke-width: 2px;
+                }
+        .mermaid .label {
+                  max-width: 50px;
+                }
+        table, th, td {
+                    border: 1px solid black;
+                }
+        table {
+                    border-spacing: 5px;
+                    border-radius: 5px;
+                    margin: auto;
+                }
+        th, td {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 5px;
+                }
+        th {
+                    color: blue;
+                }
+        td {
+                    width: 180px;
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                }
+        h2 {
+                    text-align: center;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                    padding: 1em;
+                }
+        .container {
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                    font-size: 11px;
+                    font-weight: 900;
+                }
+        body {
+                    font-family: 'Arial';
+                }
+        .edgeLabel {
+                    font-size: 9px;
+                }
+    </style>
+</head>
+<body>
+    <h2>
+        HubspotValidateFinalSetup
+    </h2>
+    <div class="container">
+        <div class="mermaid">
+            graph TD
+
+                step-000((Trigger))
+            step-001(Props)
+            step-002(SendFinalCard)
+            step-003((END))
+
+                step-000== continue ==>step-001
+            step-001-- success -->step-002
+            step-002-. done .->step-003
+
+                style step-003 stroke-width:3px,stroke-dasharray: 5, 5;
+
+                click step-000 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnRyaWdnZXI8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5UcmlnZ2VyIEVsZW1lbnQ6PC9iPjxicj48YnI+PHByZT4gICB0eXBlIDogbWFudWFsPGJyPiAgYXN5bmMgOiB0cnVlPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnUHJvcHMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ3R5cGUnOiAnbWFudWFsJyw8YnI+ICAnYXN5bmMnOiB0cnVlLDxicj4gICduYW1lJzogJ3RyaWdnZXInLDxicj4gICdwcm9wZXJ0aWVzJzoge308YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Trigger Element:<br><pre>   type : manual<br>  async : true</pre>"
+            click step-001 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlByb3BzPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBjbG91ZCA9ICdodHRwczovL3N0YWdpbmcuY2xvdWQtZWxlbWVudHMuY29tJzs8YnI+bGV0IHByb3BzICA9IHs8YnI+ICB2YWxpZGF0ZTp7PGJyPiAgICAgdXJsIDpjbG91ZCArICcvZWxlbWVudHMvYXBpLXYyL2h1YnNwb3QvdmFsaWRhdGUnLDxicj4gICAgaWQ6JzQxMjA4Mic8YnI+ICB9LDxicj4gIHByb2NlZWQ6ezxicj4gICAgIHVybCA6Y2xvdWQgKyAnL2VsZW1lbnRzL2FwaS12Mi92YWxpZGF0ZS9wcm9jZWVkJyw8YnI+ICAgIGlkOic0MTIxNDgnPGJyPiAgfTxicj4gICA8YnI+ICA8YnI+ICA8YnI+ICA8YnI+fTs8YnI+ZG9uZShwcm9wcyk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnU2VuZEZpbmFsQ2FyZCc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdQcm9wcycsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2xldCBjbG91ZCA9IFwnaHR0cHM6Ly9zdGFnaW5nLmNsb3VkLWVsZW1lbnRzLmNvbVwnO1xubGV0IHByb3BzICA9IHtcbiAgdmFsaWRhdGU6e1xuICAgICB1cmwgOmNsb3VkICsgXCcvZWxlbWVudHMvYXBpLXYyL2h1YnNwb3QvdmFsaWRhdGVcJyxcbiAgICBpZDpcJzQxMjA4MlwnXG4gIH0sXG4gIHByb2NlZWQ6e1xuICAgICB1cmwgOmNsb3VkICsgXCcvZWxlbWVudHMvYXBpLXYyL3ZhbGlkYXRlL3Byb2NlZWRcJyxcbiAgICBpZDpcJzQxMjE0OFwnXG4gIH1cbiAgIFxuICBcbiAgXG4gIFxufTtcbmRvbmUocHJvcHMpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let cloud = 'https://staging.cloud-elements.com';<br>let props  = {<br>  validate:{<br>     url :cloud + '/elements/api-v2/hubspot/validate',<br>    id:'412082'<br>  },<br>  proceed:{<br>     url :cloud + '/elements/api-v2/validate/proceed',<br>    id:'412148'<br>  }<br>   <br>  <br>  <br>  <br>};<br>done(props);</pre>"
+            click step-002 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlNlbmRGaW5hbENhcmQ8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+PGJyPmxldCBjYXJkID0gezxicj4gICAnY2FyZHMnOls8YnI+ICAgICAgezxicj4gICAgICAgICAnaWQnIDogJ2NoZWNrMicsPGJyPiAgICAgICAgICdjYXJkJzogezxicj4gICAgICAgICAgICAndHlwZScgOiAnQUNUSU9OJyw8YnI+ICAgICAgICAgICAgJ2hlYWRpbmcnIDogJ1lvdSd2ZSBpZ25vcmVkIGVycm9ycyBmb3VuZCBkdXJpbmcgZGF0YSB2YWxpZGF0aW9uLicsPGJyPiAgICAgICAgICAgICdpY29uJyA6ICdXQVJOSU5HJyw8YnI+ICAgICAgICAgfSw8YnI+ICAgICAgICAgJ2lzQ2FyZERvbmUnOid0cnVlJzxicj4gICAgICB9PGJyPiAgIF0sPGJyPiAgICdwcm9jZWVkJyA6IHs8YnI+ICAgICAgICAnaWQnOiAncHJvY2VlZCcsPGJyPiAgICAgICAgJ2Rpc3BsYXknOiAnUHJvY2VlZCcsPGJyPiAgICAgICAgJ2ljb24nOiAnQVJST1cnLDxicj4gICAgICAgICdidXR0b25Mb29rJzogJ0ZJTExFRCcsPGJyPiAgICAgICAgJ3R5cGUnOiAnRElSRUNUX0xJTksnLDxicj4gICAgICAgICdyZXF1ZXN0Jzogezxicj4gICAgICAgICAgICAndHlwZSc6ICdPTl9DTElDS19TRU5EX0lOUFVUJyw8YnI+ICAgICAgICAgICAgJ2FwaUVuZFBvaW50Jzogezxicj4gICAgICAgICAgICAgICAgJ2FwaVVybCc6IHN0ZXBzLlByb3BzLnByb2NlZWQudXJsLDxicj4gICAgICAgICAgICAgICAgJ3R5cGUnOiAnR0VUJyw8YnI+ICAgICAgICAgICAgICAgICdoZWFkZXJzJzogezxicj4gICAgICAgICAgICAgICAgICAgICdFbGVtZW50cy1Gb3JtdWxhLUluc3RhbmNlLUlkJzpzdGVwcy5Qcm9wcy5wcm9jZWVkLmlkPGJyPiAgICAgICAgICAgICAgICB9PGJyPiAgICAgICAgICAgIH08YnI+ICAgICAgICB9PGJyPiAgICB9LDxicj4gICAncmV0cnknOiB7PGJyPiAgICAnYnV0dG9uTG9vayc6ICdGSUxMRUQnLDxicj4gICAgJ2Rpc3BsYXknOiAnUmV0cnkgRGF0YSBWYWxpZGF0aW9uJyw8YnI+ICAgICdpY29uJzogJ0FSUk9XJyw8YnI+ICAgICdpZCc6ICdyZXRyeScsPGJyPiAgICAncmVxdWVzdCc6IHs8YnI+ICAgICAgJ2FwaUVuZFBvaW50Jzogezxicj4gICAgICAgICdhcGlVcmwnOiBzdGVwcy5Qcm9wcy52YWxpZGF0ZS51cmwsPGJyPiAgICAgICAgJ2hlYWRlcnMnOiB7PGJyPiAgICAgICAgICAnRWxlbWVudHMtRm9ybXVsYS1JbnN0YW5jZS1JZCc6IHN0ZXBzLlByb3BzLnZhbGlkYXRlLmlkPGJyPiAgICAgICAgfSw8YnI+ICAgICAgICAnaW5wdXQnOiB7PGJyPiAgICAgICAgICAncmV0cnknOiAndHJ1ZScsPGJyPiAgICAgICAgICAnc2l0ZURvbWFpbic6ICdjaGFyZ2ViZWUtbGFicy5jb20nLDxicj4gICAgICAgICAgJ3R5cGUnOiAnaHVic3BvdCc8YnI+ICAgICAgICB9LDxicj4gICAgICAgICd0eXBlJzogJ0dFVCc8YnI+ICAgICAgfSw8YnI+ICAgICAgJ3R5cGUnOiAnT05fQ0xJQ0tfREVGQVVMVF9BQ1RJT04nPGJyPiAgICB9LDxicj4gICAgJ3R5cGUnOiAnRElSRUNUX0xJTksnPGJyPiAgfTxicj59PGJyPmRvbmUoezxicj4gc3RhdHVzQ29kZTogMjAwLDxicj4gcmVzdWx0OiBjYXJkPGJyPn0pPGJyPjwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogW10sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ1NlbmRGaW5hbENhcmQnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdcbmxldCBjYXJkID0ge1xuICAgXCdjYXJkc1wnOltcbiAgICAgIHtcbiAgICAgICAgIFwnaWRcJyA6IFwnY2hlY2syXCcsXG4gICAgICAgICBcJ2NhcmRcJzoge1xuICAgICAgICAgICAgXCd0eXBlXCcgOiBcJ0FDVElPTlwnLFxuICAgICAgICAgICAgXCdoZWFkaW5nXCcgOiBcJ1lvdSd2ZSBpZ25vcmVkIGVycm9ycyBmb3VuZCBkdXJpbmcgZGF0YSB2YWxpZGF0aW9uLlwnLFxuICAgICAgICAgICAgXCdpY29uXCcgOiBcJ1dBUk5JTkdcJyxcbiAgICAgICAgIH0sXG4gICAgICAgICBcJ2lzQ2FyZERvbmVcJzpcJ3RydWVcJ1xuICAgICAgfVxuICAgXSxcbiAgIFwncHJvY2VlZFwnIDoge1xuICAgICAgICBcJ2lkXCc6IFwncHJvY2VlZFwnLFxuICAgICAgICBcJ2Rpc3BsYXlcJzogXCdQcm9jZWVkXCcsXG4gICAgICAgIFwnaWNvblwnOiBcJ0FSUk9XXCcsXG4gICAgICAgIFwnYnV0dG9uTG9va1wnOiBcJ0ZJTExFRFwnLFxuICAgICAgICBcJ3R5cGVcJzogXCdESVJFQ1RfTElOS1wnLFxuICAgICAgICBcJ3JlcXVlc3RcJzoge1xuICAgICAgICAgICAgXCd0eXBlXCc6IFwnT05fQ0xJQ0tfU0VORF9JTlBVVFwnLFxuICAgICAgICAgICAgXCdhcGlFbmRQb2ludFwnOiB7XG4gICAgICAgICAgICAgICAgXCdhcGlVcmxcJzogc3RlcHMuUHJvcHMucHJvY2VlZC51cmwsXG4gICAgICAgICAgICAgICAgXCd0eXBlXCc6IFwnR0VUXCcsXG4gICAgICAgICAgICAgICAgXCdoZWFkZXJzXCc6IHtcbiAgICAgICAgICAgICAgICAgICAgXCdFbGVtZW50cy1Gb3JtdWxhLUluc3RhbmNlLUlkXCc6c3RlcHMuUHJvcHMucHJvY2VlZC5pZFxuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgIH0sXG4gICBcJ3JldHJ5XCc6IHtcbiAgICBcJ2J1dHRvbkxvb2tcJzogXCdGSUxMRURcJyxcbiAgICBcJ2Rpc3BsYXlcJzogXCdSZXRyeSBEYXRhIFZhbGlkYXRpb25cJyxcbiAgICBcJ2ljb25cJzogXCdBUlJPV1wnLFxuICAgIFwnaWRcJzogXCdyZXRyeVwnLFxuICAgIFwncmVxdWVzdFwnOiB7XG4gICAgICBcJ2FwaUVuZFBvaW50XCc6IHtcbiAgICAgICAgXCdhcGlVcmxcJzogc3RlcHMuUHJvcHMudmFsaWRhdGUudXJsLFxuICAgICAgICBcJ2hlYWRlcnNcJzoge1xuICAgICAgICAgIFwnRWxlbWVudHMtRm9ybXVsYS1JbnN0YW5jZS1JZFwnOiBzdGVwcy5Qcm9wcy52YWxpZGF0ZS5pZFxuICAgICAgICB9LFxuICAgICAgICBcJ2lucHV0XCc6IHtcbiAgICAgICAgICBcJ3JldHJ5XCc6IFwndHJ1ZVwnLFxuICAgICAgICAgIFwnc2l0ZURvbWFpblwnOiBcJ2NoYXJnZWJlZS1sYWJzLmNvbVwnLFxuICAgICAgICAgIFwndHlwZVwnOiBcJ2h1YnNwb3RcJ1xuICAgICAgICB9LFxuICAgICAgICBcJ3R5cGVcJzogXCdHRVRcJ1xuICAgICAgfSxcbiAgICAgIFwndHlwZVwnOiBcJ09OX0NMSUNLX0RFRkFVTFRfQUNUSU9OXCdcbiAgICB9LFxuICAgIFwndHlwZVwnOiBcJ0RJUkVDVF9MSU5LXCdcbiAgfVxufVxuZG9uZSh7XG4gc3RhdHVzQ29kZTogMjAwLFxuIHJlc3VsdDogY2FyZFxufSlcbic8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre><br>let card = {<br>   'cards':[<br>      {<br>         'id' : 'check2',<br>         'card': {<br>            'type' : 'ACTION',<br>            'heading' : 'You've ignored errors found during data validation.',<br>            'icon' : 'WARNING',<br>         },<br>         'isCardDone':'true'<br>      }<br>   ],<br>   'proceed' : {<br>        'id': 'proceed',<br>        'display': 'Proceed',<br>        'icon': 'ARROW',<br>        'buttonLook': 'FILLED',<br>        'type': 'DIRECT_LINK',<br>        'request': {<br>            'type': 'ON_CLICK_SEND_INPUT',<br>            'apiEndPoint': {<br>                'apiUrl': steps.Props.proceed.url,<br>                'type': 'GET',<br>                'headers': {<br>                    'Elements-Formula-Instance-Id':steps.Props.proceed.id<br>                }<br>            }<br>        }<br>    },<br>   'retry': {<br>    'buttonLook': 'FILLED',<br>    'display': 'Retry Data Validation',<br>    'icon': 'ARROW',<br>    'id': 'retry',<br>    'request': {<br>      'apiEndPoint': {<br>        'apiUrl': steps.Props.validate.url,<br>        'headers': {<br>          'Elements-Formula-Instance-Id': steps.Props.validate.id<br>        },<br>        'input': {<br>          'retry': 'true',<br>          'siteDomain': 'chargebee-labs.com',<br>          'type': 'hubspot'<br>        },<br>        'type': 'GET'<br>      },<br>      'type': 'ON_CLICK_DEFAULT_ACTION'<br>    },<br>    'type': 'DIRECT_LINK'<br>  }<br>}<br>done({<br> statusCode: 200,<br> result: card<br>})<br></pre>"
+
+        </div>
+    </div>
+    <h2>
+        Formula Configuration
+    </h2>
+    <div class="container">
+        <h3>Basic</h3><table><tr><th>key</th><th>value</th></tr><tr><td>Name</td><td>HubspotValidateFinalSetup</td></tr><tr><td>Single Threaded?</td><td>false</td></tr><tr><td>Active?</td><td>true</td></tr><tr><td>Number of Steps</td><td>2</td></tr><tr><td>Number of Triggers</td><td>1</td></tr></table>
+    <br/><h3>Elements</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table>
+    <br/><h3>Values</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table><br/>
+    </div>
+    <div class="key">
+        <h2>
+            Key
+        </h2>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+            </tr>
+
+            <tr>
+                <td>Filter Steps</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A{Step Name}
+                    </div>
+                </td>
+                <td>Trigger/End</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        B((Actual))
+                        C((Generated))
+                        style C stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Request Step</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A>GET]
+                        style A stroke:#0f6ab4;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        B>POST]
+                        style B stroke:#10a54a;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PATCH]
+                        style C stroke:#D38042;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PUT]
+                        style C stroke:#C5862B;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        D>DELETE]
+                        style D stroke:#a41e22;
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Script</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(Step Name)
+                    </div>
+                </td>
+                <td>Loop</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(-Step Name-)
+                    </div>
+                </td>
+                <td>Other(TYPE)</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D[Step Name]
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Pass/Fail Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL-->BL
+                    </div>
+                </td>
+                <td>Generated Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL((B))
+                        AL-.->BL
+                        style BL stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Continue Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL==>BL
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+</body>
+</html>

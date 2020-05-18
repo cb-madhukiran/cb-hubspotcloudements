@@ -1,0 +1,30 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 35330,
+    "name": "getPropertiesForHubspot",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "getProperties",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "getProperties"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

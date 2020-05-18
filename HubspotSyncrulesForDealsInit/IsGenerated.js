@@ -1,0 +1,1 @@
+done(steps.getFormulaDetails['error'] === undefined);

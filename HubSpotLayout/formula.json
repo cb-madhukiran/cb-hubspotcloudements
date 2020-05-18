@@ -1,0 +1,102 @@
+{
+    "active": true,
+    "api": "GET /hubspot/layout",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31433,
+    "method": "GET",
+    "name": "HubSpotLayout",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "Props",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "noError"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "noError",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "GetCBOrder"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "GetCBOrder",
+            "onFailure": [],
+            "onSuccess": [
+                "HasOrderEnabled"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200,400",
+                "headers": "${steps.InputParams.order.auth}",
+                "method": "GET",
+                "query": "${steps.InputParams.order.query}",
+                "url": "${steps.InputParams.order.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HasOrderEnabled",
+            "onFailure": [
+                "NoOrderResponse"
+            ],
+            "onSuccess": [
+                "OrderResponse"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "OrderResponse",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "NoOrderResponse",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorCard",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "Props"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/layout"
+}

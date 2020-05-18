@@ -1,0 +1,636 @@
+{
+    "active": true,
+    "api": "GET /hubspot/fields",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31486,
+    "method": "GET",
+    "name": "HubspotSyncRulesForFields",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "Props",
+            "onFailure": [],
+            "onSuccess": [
+                "InitParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InitParams",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "IsInitialized"
+            ],
+            "properties": {
+                "args": "",
+                "formulaId": "31488"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsInitialized",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "getCustomFieldApi"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "getCustomFieldApi",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "IsSucceeded"
+            ],
+            "properties": {
+                "args": "${steps.InitParams.getCustomReq}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsSucceeded",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "getTpIntegConfig"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "getTpIntegConfig",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "IsGetConfSucceeded"
+            ],
+            "properties": {
+                "args": "${steps.InitParams.getConfReq}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "IsGetConfSucceeded",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "Success",
+            "onFailure": [
+                "sendErrorResponse"
+            ],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorResponse",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "subFormulas": [
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31330,
+            "name": "ChargebeeGet",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ChargebeeGetCallAgainCB",
+                    "onFailure": [
+                        "ChargebeeGetResult"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCBDelay2"
+                    ],
+                    "properties": {
+                        "body": "let code = \"\";\nif(steps.ChargebeeGetGetCBData !== undefined && steps.ChargebeeGetGetCBData.response !== undefined) {\n  code = steps.ChargebeeGetGetCBData.response.code;\n}\nif(steps.ChargebeeGetInputParams.intervel.length > 0 && steps.ChargebeeGetInputParams.retryCode[code] !== undefined) {\n  steps.ChargebeeGetInputParams.delay.query.delay = steps.ChargebeeGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetCallAgainHttp",
+                    "onFailure": [
+                        "ChargebeeGetResult2"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeeGetInputParams.intervel.length > 0 && steps.ChargebeeGetInputParams.retryCode[steps.ChargebeeGetGetHttpData.response.code] !== undefined) {\n  steps.ChargebeeGetInputParams.delay.query.delay = steps.ChargebeeGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetGetHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429",
+                        "url": "${steps.ChargebeeGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetCBDelay2",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetGetCBData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429",
+                        "url": "${steps.ChargebeeGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"formula_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetGetCBData",
+                    "onFailure": [
+                        "ChargebeeGetCallAgainCB"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCallAgainCB"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "api": "${steps.ChargebeeGetInputParams.url}",
+                        "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                        "elementInstanceId": "${config.chargebee}",
+                        "headers": "",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429"
+                    },
+                    "type": "elementRequest"
+                },
+                {
+                    "name": "ChargebeeGetGetHttpData",
+                    "onFailure": [
+                        "ChargebeeGetCallAgainHttp"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                        "headers": "${steps.ChargebeeGetInputParams.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.query}",
+                        "url": "${steps.ChargebeeGetInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\nlet bodydata = trigger.args.bodydata;\nif (bodydata === undefined)\n{\n  bodydata = {};\n}\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\ndone({\n    url: url,\n    query: query,\n    bodydata: bodydata,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n    },\n    hardStop: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n        500:true,\n        401:true\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetIsHttp",
+                    "onFailure": [
+                        "ChargebeeGetGetCBData"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetGetHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeeGetInputParams.url.startsWith(\"https://\"));"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetIsValidUrl",
+                    "onFailure": [
+                        "ChargebeeGetError"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetIsHttp"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeeGetInputParams.url !== undefined && steps.ChargebeeGetInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetResult",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let code = 600;\nif(steps.ChargebeeGetGetCBData !== undefined && steps.ChargebeeGetGetCBData.response !== undefined) {\n  code = steps.ChargebeeGetGetCBData.response.code;\n}\nif(code < 300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeeGetGetCBData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeeGetInputParams.hardStop[code] !== undefined;\n  if(steps.ChargebeeGetGetCBData!== undefined && steps.ChargebeeGetGetCBData.response!== undefined && steps.ChargebeeGetGetCBData.response.body!== undefined && steps.ChargebeeGetGetCBData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeeGetGetCBData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    msg:steps.ChargebeeGetGetCBData.response,\n    cb_status_code:code\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.ChargebeeGetGetHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeeGetGetHttpData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeeGetInputParams.hardStop[steps.ChargebeeGetGetHttpData.response.code] !== undefined;\n  if(steps.ChargebeeGetGetHttpData.response.body!== undefined && steps.ChargebeeGetGetHttpData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeeGetGetHttpData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    cb_status_code:steps.ChargebeeGetGetHttpData.response.code\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "api": "GET /hubspot/fields",
+            "configuration": [],
+            "debugLoggingEnabled": true,
+            "engine": "v1",
+            "id": 31488,
+            "method": "GET",
+            "name": "HubspotSyncRulesForFieldsInit",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ConstructConfApiReq",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [
+                        "IsConfigSucceeded"
+                    ],
+                    "properties": {
+                        "args": "${steps.FieldInitProcessInputs.tpIntegConfParams}",
+                        "formulaId": "31428"
+                    },
+                    "type": "formula"
+                },
+                {
+                    "name": "ConstructCustomApiReq",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [
+                        "IsCustomSucceeded"
+                    ],
+                    "properties": {
+                        "args": "${steps.FieldInitProcessInputs.customParams}",
+                        "formulaId": "31428"
+                    },
+                    "type": "formula"
+                },
+                {
+                    "name": "FieldInitOutput",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let params = {\n  ConfApiReq: steps.ConstructConfApiReq,\n  CustomApiReq:steps.ConstructCustomApiReq,\n  getFormulaDetails : steps.getFormulaDetails,\n  getConfReq :{\n  apiKey: steps.ConstructConfApiReq.input.apiKey,\n  headers: steps.ConstructConfApiReq.auth,\n  query: steps.ConstructConfApiReq.query,\n  siteDomain: steps.ConstructConfApiReq.input.siteDomain,\n  siteName: steps.ConstructConfApiReq.input.siteName,\n  type: steps.ConstructConfApiReq.type,\n  url: steps.ConstructConfApiReq.url\n},\ngetCustomReq :{\n  apiKey: steps.ConstructCustomApiReq.input.apiKey,\n  headers: steps.ConstructCustomApiReq.auth,\n  query: steps.ConstructCustomApiReq.query,\n  siteDomain: steps.ConstructCustomApiReq.input.siteDomain,\n  siteName: steps.ConstructCustomApiReq.input.siteName,\n  type: steps.ConstructCustomApiReq.type,\n  url: steps.ConstructCustomApiReq.url\n}\n  \n}\n\ndone(params);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "FieldInitProcessInputs",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [
+                        "ConstructConfApiReq"
+                    ],
+                    "properties": {
+                        "body": "let apiKey = steps.FieldInitProps.request.query['cb-api-key'];\nlet siteName = steps.FieldInitProps.request.query['cb-site-name'];\nlet siteDomain = steps.FieldInitProps.request.query['cb-domain'];\nlet integrationName = steps.FieldInitProps.request.query['type'];\nlet apiName1 = \"third_party_configurations\";\nlet apiName2 =\"get_custom_field_list\";\nlet password = \"\";\nlet apiType2 = \"INTEG-INTEG-API\";\n\nlet tpIntegConfParams = {\n    apiKey : apiKey,\n    apiName : apiName1,\n    domain: siteDomain,\n    siteName: siteName,\n    password: password,\n    type:integrationName,\n  inputJson :{\n    apiKey:apiKey,\n    siteName:siteName,\n    siteDomain:siteDomain,\n    integrationName:integrationName\n  },\n  // url: \"https://\"+siteName+\".\"+siteDomain+\"/api/v2/third_party_configurations\",\n  //   auth:{\n  //     Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n  //   },\n    queryJson:{\n      integration_name: integrationName\n    }\n};\nlet customParams ={\n   apiKey : apiKey,\n    apiName : apiName2,\n    domain: siteDomain,\n    siteName: siteName,\n    password: password,\n    type:integrationName,\n    apiType: apiType2,\n  // url: \"https://\"+siteName+\".integrations.\"+siteDomain+\"/integrations/api/get_custom_field_list\",\n  // headers:{\n  //   Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n  // },\n  queryJson:{\n    site_name: siteName,\n    api_key: apiKey\n  }\n};\n \n\ndone({tpIntegConfParams:tpIntegConfParams,\n      customParams:customParams\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "FieldInitProps",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "getFormulaDetails"
+                    ],
+                    "properties": {
+                        "body": "done(trigger.args);"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "GetCustomFields",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "getTpConfig"
+                    ],
+                    "properties": {
+                        "headers": "${steps.FieldInitProcessInputs.custom.headers}",
+                        "method": "GET",
+                        "query": "${steps.FieldInitProcessInputs.custom.query}",
+                        "url": "${steps.FieldInitProcessInputs.custom.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "getFormulaDetails",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [
+                        "IsGenerated"
+                    ],
+                    "properties": {
+                        "args": "{\"formulaName\":\"\"}",
+                        "formulaId": "31429"
+                    },
+                    "type": "formula"
+                },
+                {
+                    "name": "getTpConfig",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "Success"
+                    ],
+                    "properties": {
+                        "headers": "${steps.FieldInitProcessInputs.auth}",
+                        "method": "GET",
+                        "query": "${steps.FieldInitProcessInputs.query}",
+                        "url": "${steps.FieldInitProcessInputs.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "IsConfigSucceeded",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [
+                        "ConstructCustomApiReq"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ConstructConfApiReq['error'] === undefined);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "IsCustomSucceeded",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [
+                        "FieldInitOutput"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ConstructCustomApiReq['error'] === undefined);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "IsGenerated",
+                    "onFailure": [
+                        "sendErrorResponse"
+                    ],
+                    "onSuccess": [
+                        "FieldInitProcessInputs"
+                    ],
+                    "properties": {
+                        "body": "done(steps.getFormulaDetails['error'] === undefined);"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "sendErrorResponse",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\"error\":\"Error while Initialising\"});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "Success",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let configJson = steps.getTpConfig.response.body.third_party_configuration.config_json.cloudElements;\nlet company;\nlet contact;\nlet deal;\nlet syncFields=\"false\";\n\nif(configJson.syncRulesFields !== undefined){\n  company = configJson.syncRulesFields.company;\n  contact= configJson.syncRulesFields.contact;\n  deal= configJson.syncRulesFields.deal;\n  syncFields = configJson.syncRulesFields.sync;\n}\n\nif(company === undefined) {\n  company = {};\n}\nif(deal === undefined) {\n  deal = {};\n}\nif(contact === undefined) {\n  contact ={};\n}\n\nlet customefields = [\n    {\n        label: \"Subscription\",\n        key: \"subcst\",\n        fields: [\n            ['currency_code', 'string', 'text'],\n            ['plan_unit_price', 'number', 'text','currency'],\n            ['plan_amount', 'number', 'text','currency'],\n            ['billing_period', 'number', 'text'],\n            ['billing_period_unit', 'string', 'text'],\n            ['plan_free_quantity', 'number', 'text'],\n            ['start_date', 'datetime', 'date'],\n            ['trial_start', 'datetime', 'date'],\n            ['trial_end', 'datetime', 'date'],\n            ['current_term_start', 'datetime', 'date'],\n            ['current_term_end', 'datetime', 'date'],            \n            ['created_at', 'datetime', 'date'],\n            ['started_at', 'datetime', 'date'],\n            ['activated_at', 'datetime', 'date'],\n            ['gift_id', 'string', 'text'],\n            ['override_relationship', 'string', 'text'],\n            ['pause_date', 'datetime', 'date'],\n            ['resume_date', 'datetime', 'date'],\n            ['cancelled_at', 'datetime', 'date'],\n            ['cancel_reason', 'string', 'text'],\n            ['affiliate_token', 'string', 'text'],\n            ['created_from_ip', 'string', 'text'],\n            ['resource_version', 'number', 'text'],\n            ['updated_at', 'datetime', 'date'],\n            ['has_scheduled_changes', 'string', 'text'],\n            ['payment_source_id', 'string', 'text'],           \n            ['exchange_rate', 'number', 'text'],\n            ['base_currency_code', 'string', 'text']\n        ]\n    },\n    {\n        label: \"Customer\",\n        key: \"custcst\",\n        fields: [\n            ['vat_number', 'string', 'text'],\n            ['vat_number_validated_time', 'datetime', 'date'],\n            ['vat_number_status', 'string', 'text'],\n            ['allow_direct_debit', 'string', 'text'],\n            ['is_location_valid', 'string', 'text'],\n            ['created_at', 'datetime', 'date'],\n            ['created_from_ip', 'string', 'text'],\n            ['taxability', 'string', 'text'],\n            ['entity_code', 'string', 'text'],\n            ['exempt_number', 'string', 'text'],\n            ['resource_version', 'number', 'text'],\n            ['updated_at', 'datetime', 'date'],\n            ['locale', 'string', 'text'],\n            ['consolidated_invoicing', 'string', 'text'],\n            ['billing_date_mode', 'string', 'text'],\n            ['billing_day_of_week', 'string', 'text'],\n            ['billing_day_of_week_mode', 'string', 'text'],\n            ['pii_cleared', 'string', 'text'],\n            ['fraud_flag', 'string', 'text'],\n            ['primary_payment_source_id', 'string', 'text'],\n            ['backup_payment_source_id', 'string', 'text'],           \n            ['promotional_credits', 'number', 'text','currency'],\n            ['unbilled_charges', 'number', 'text','currency'],\n            ['refundable_credits', 'number', 'text','currency'],\n            ['excess_payments', 'number', 'text','currency'],\n            ['deleted', 'string', 'text'],\n            ['registered_for_gst', 'string', 'text'],\n            ['business_customer_without_vat_number', 'string', 'text'],\n            ['customer_type', 'string', 'text'],\n            ['client_profile_id', 'string', 'text'],           \n        ]\n    },\n    {\n        label: \"Order\",\n        key: \"ordercst\",\n        fields: [\n            ['document_number', 'string', 'text'],\n            ['invoice_id', 'string', 'text'],\n            ['cancellation_reason', 'string', 'text'],\n            ['payment_status', 'string', 'text'],\n            ['order_type', 'string', 'text'],\n            ['price_type', 'string', 'text'],\n            ['reference_id', 'string', 'text'],\n            ['fulfillment_status', 'string', 'text'],\n            ['shipping_date', 'datetime', 'date'],\n            ['tracking_id', 'string', 'text'],\n            ['batch_id', 'string', 'text'],\n            ['created_by', 'string', 'text'],\n            ['shipment_carrier', 'string', 'text'],\n            ['invoice_round_off_amount', 'number', 'text','currency'],\n            ['tax', 'number', 'text','currency'],\n            ['amount_adjusted', 'number', 'text','currency'],\n            ['refundable_credits_issued', 'number', 'text','currency'],\n            ['refundable_credits', 'number', 'text','currency'],\n            ['rounding_adjustement', 'number', 'text','currency'],\n            ['paid_on', 'datetime', 'date'],\n            ['shipping_cut_off_date', 'datetime', 'date'],\n            ['created_at', 'datetime', 'date'],\n            ['status_update_at', 'datetime', 'date'],\n            ['delivered_at', 'datetime', 'date'],\n            ['shipped_at', 'datetime', 'date'],\n            ['resource_version', 'number', 'text'],\n            ['updated_at', 'datetime', 'date'],\n            ['cancelled_at', 'datetime', 'date'],\n            ['discount', 'number', 'text','currency'],\n            ['sub_total', 'number', 'text','currency'],\n            ['total', 'number', 'text','currency'],\n            ['deleted', 'string', 'text'],\n            ['currency_code', 'string', 'text'],\n            ['is_gifted', 'string', 'text'],\n            ['gift_id', 'string', 'text']      \n        ]\n    },\n];\n\nlet customCompanyFields = [\n    {\n        label: \"Subscription\",\n        key: \"subcst\",\n        fields: [            \n            ['plan_quantity', 'number', 'text'],\n            ['plan_unit_price', 'number', 'text','currency'],\n            ['plan_amount', 'number', 'text','currency'],         \n            ['plan_free_quantity', 'number', 'text']         \n          \n        ]\n    },\n    {\n        label: \"Customer\",\n        key: \"custcst\",\n        fields: [                 \n            ['promotional_credits', 'number', 'text','currency'],\n            ['unbilled_charges', 'number', 'text','currency'],\n            ['refundable_credits', 'number', 'text','currency'],\n            ['excess_payments', 'number', 'text','currency'],               \n        ]\n    },\n    {\n        label: \"Order\",\n        key: \"ordercst\",\n        fields: [\n            ['invoice_round_off_amount', 'number', 'text','currency'],\n            ['tax', 'number', 'text','currency'],\n            ['amount_adjusted', 'number', 'text','currency'],\n            ['refundable_credits_issued', 'number', 'text','currency'],\n            ['refundable_credits', 'number', 'text','currency'],\n            ['rounding_adjustement', 'number', 'text','currency'],\n            ['discount', 'number', 'text','currency'],\n            ['sub_total', 'number', 'text','currency'],\n            ['total', 'number', 'text','currency']            \n        ]\n    },\n];\n\nlet cbcustomFields=steps.GetCustomFields.response.body;\nif(cbcustomFields!==undefined && cbcustomFields.response !== undefined) {\n  cbcustomFields = JSON.parse(cbcustomFields.response);\n}\n\nif(cbcustomFields !== undefined) {\n  let cbsubKeys = Object.keys(cbcustomFields.customer_custom_fields);\n  if(cbsubKeys.length >0) {\n    for(var j=0;j<cbsubKeys.length;j++){\n      customefields[1][\"fields\"].push([cbsubKeys[j],'string','text']);\n    }\n  }\n  let cbsubKeys2 = Object.keys(cbcustomFields.subscription_custom_fields);\n  if(cbsubKeys2.length >0) {\n    for(var j=0;j<cbsubKeys2.length;j++){\n      customefields[0][\"fields\"].push([cbsubKeys2[j],'string','text']);\n    }\n  }\n}\n\nlet card = {\n    \"cards\": [\n        {\n            \"card\": {\n                \"type\": \"EMPTY_BACKGROUND\",\n                \"heading\": \"Sync Rules for Fields\",\n                \"contents\": [\n                    \"Set rules to sync fields from Chargebee to HubSpot. <a href='https://www.chargebee.com/docs/hubspot.html' target='blank'>Learn more</a>\"\n                ]\n            },\n            \"isCardDone\": true,\n            \"id\": \"check26\",\n        },\n        \n    ],\n    \"proceed\": {\n        \"id\": \"proceed\",\n        \"display\": \"Proceed\",\n        \"icon\": \"ARROW\",\n        \"buttonLook\": \"FILLED\",\n        \"type\": \"DIRECT_LINK\",\n        \"request\": {\n            \"type\": \"ON_CLICK_SEND_INPUT\",\n            \"apiEndPoint\": {\n                \"apiUrl\": steps.FieldInitProps.save.url,\n                \"type\": \"GET\",\n                \"headers\": {\n                    \"Elements-Formula-Instance-Id\": steps.FieldInitProps.save.id\n                },\n                \"input\": {\n                    \"id\": \"chargebee\",\n                    \"type\": \"hubspot\"\n                }\n            }\n        }\n    }\n}\nlet fCard = {\n    \"card\": {\n        \"message\": {\n            \"message\": \"If you need to sync additional fields from Chargebee to HubSpot, you may enable this option\",\n            \"icon\": \"INFO\",\n            \"messageLook\": \"INFO\",\n            \"button\": {\n                \"display\": \"View Fields\",\n                \"icon\": \"ARROW\",\n                \"url\": \"https://www.chargebee.com/docs/index.html\",\n                \"id\": \"viewFields\",\n                \"type\": \"DIRECT_LINK\",\n                \"newTab\": \"true\"\n            }\n        },\n        \"type\": \"TOGGLE_HIDE_INPUT\",\n        \"params\": [\n            {\n                \"dispName\": \"Sync additional fields from Chargebee to HubSpot\",\n                \"type\": \"TOGGLE\",\n                \"id\": \"syncMoreFields\",\n                \"defaultVal\":syncFields\n\n            },\n            {\n                \"dispName\": \"Choose the Chargebee fields you'd like to sync with each HubSpot object\",\n                \"req\": \"false\",\n                \"type\": \"TEXTLABEL\",\n                \"id\": \"HubSpotContactMatch-id\"\n            }            \n        ]\n    },\n    \"id\": \"check4\",\n    \"isCardDone\": true,\n};\n\n\n\n\nlet dealFields = {\n    \"dispName\": \"Deal\",\n    \"type\": \"MODELBOX_INPUT_FIELDS\",\n    \"helptext\": \"Choose the fields you'd like to sync\",\n    \"id\": \"deal\",\n    \"inputFields\": [\n        {\n            \"type\": \"SEARCH_CHECK_BOX\",\n            \"id\": \"dealFields\",\n            \"checkboxes\": [      \n            ]\n        }\n    ]\n};\n\nlet contactFields = {\n    \"dispName\": \"Contact\",\n    \"type\": \"MODELBOX_INPUT_FIELDS\",\n    \"id\": \"contact\",\n    \"inputFields\": [\n        {\n            \"type\": \"SEARCH_CHECK_BOX\",\n            \"id\": \"contactFields\",\n            \"checkboxes\": [      \n            ]\n        }\n    ]\n};\nlet companyFields = {\n    \"dispName\": \"Company\",\n    \"type\": \"MODELBOX_INPUT_FIELDS\",\n    \"id\": \"company\",\n    \"inputFields\": [\n        {\n            \"type\": \"SEARCH_CHECK_BOX\",\n            \"id\": \"companyFields\",\n            \"checkboxes\": [      \n            ]\n        }\n    ]\n};\n\n\n\n\n\nfor(var i=0;i<customefields.length;i++){\n    let fld = customefields[i];\n\n    for(var j=0;j<fld.fields.length;j++){\n        var es = fld.fields[j];\n        var desc =  fld.label + \" \" + es[0].replace(/_/g, \" \");\n        var id = fld.key+\"_\"+es[0];   \n        if(fld.key === \"subcst\"){\n           let dealObj = {\n            \"type\": \"CHECKBOX\",\n            \"id\": id,\n            \"desc\": desc,\n        };\n        if(deal[id] !== undefined) {\n          dealObj.defaultVal = \"on\";\n        }\n        \n        dealFields.inputFields[0].checkboxes.push(dealObj);\n        }\n       \n        \n        let contactObj = {\n            \"type\": \"CHECKBOX\",\n            \"id\": id,\n            \"desc\": desc,\n        };\n        if(contact[id] !== undefined) {\n          contactObj.defaultVal = \"on\";\n        }\n        contactFields.inputFields[0].checkboxes.push(contactObj);\n\n    }\n}\nfor(var i=0;i<customCompanyFields.length;i++){\n    let fld = customCompanyFields[i];\n\n    for(var j=0;j<fld.fields.length;j++){\n        var es = fld.fields[j];\n        var desc =  fld.label + \" \" + es[0].replace(/_/g, \" \");\n        var id = fld.key+\"_\"+es[0];    \n        let companyObj = {\n            \"type\": \"CHECKBOX\",\n            \"id\": id,\n            \"desc\": desc\n        };\n        if(company[id] !== undefined) {\n          companyObj.defaultVal = \"on\";\n        }\n        companyFields.inputFields[0].checkboxes.push(companyObj);     \n\n    }\n}\nfCard.card.params.push(dealFields);\nfCard.card.params.push(contactFields);\nfCard.card.params.push(companyFields);\ncard.cards.push(fCard);\n\ndone(card);"
+                    },
+                    "type": "script"
+                }
+            ],
+            "subFormulas": [
+                {
+                    "active": true,
+                    "api": "GET /getCBUrl",
+                    "configuration": [],
+                    "debugLoggingEnabled": false,
+                    "description": "Generate Chargebee url for app/integrations for the given name",
+                    "engine": "v3",
+                    "id": 31428,
+                    "method": "GET",
+                    "name": "ConstructCBApiReq",
+                    "singleThreaded": false,
+                    "steps": [
+                        {
+                            "name": "ConstructCBApiReq",
+                            "onFailure": [
+                                "sendErrorResponse"
+                            ],
+                            "onSuccess": [],
+                            "properties": {
+                                "body": "let siteName = steps.RequestParams['siteName'];\nlet domain = steps.RequestParams['domain'];\nlet apiType = steps.RequestParams['apiType'];\nlet apiName = steps.RequestParams['apiName'];\nlet integration = steps.RequestParams['integration'];\nlet type = steps.RequestParams['type'];\nlet apiKey = steps.RequestParams['apiKey'];\nlet password = steps.RequestParams['password'];\nlet queryVal = steps.RequestParams['queryJson'];\nlet inputVal = steps.RequestParams['inputJson'];\nlet bodyVal = steps.RequestParams['bodyJson'];\nlet headerVal = steps.RequestParams['headersJson'];\nlet requestType = steps.RequestParams['requestType'];\nlet apiUrl = \"\";\nlet hdrStr = \"\";\nlet headerAuth = {};\nlet apiData = {};\n//apiType 1. APP 2.integrationV1, integrationV2 integrationV3\nif(siteName === undefined || domain === undefined)\n{\n  done({\"error\":\"Invalid siteName or domain\"});\n}\n\nif (apiType=== undefined || apiType.toUpperCase()===\"APP\")\n{\n  apiUrl = \"https://\" + siteName + \".\" + domain + \"/api/v2/\" + apiName;\n}\nelse\n{\n  //\"https://\"+siteName+\".integrations.\"+siteDomain+\"/integrations/update_tp_integ_conf\",\n  if (integration !== undefined && apiType!== undefined && apiType.toUpperCase() === \"INTEG-INTEG-V2\")\n  {\n    apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/\"+integration+\"/api/v2/\"+apiName;\n  }\n  else if (integration !== undefined && apiType !== undefined && apiType.toUpperCase() === \"INTEG-V2\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/api/v2/\" + apiName;\n  }\n  else if (apiType !== undefined && apiType.toUpperCase() === \"INTEG-INTEG\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/integrations/\" + apiName;\n  }\n  else if (apiType !== undefined && apiType.toUpperCase() === \"INTEG-INTEG-API\")\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/integrations/api/\" + apiName;\n  }\n  else\n  {\n    done({\"error\":\"apiType is Invalid\"});\n  }\n}\n//apiUrl is populated\n\nif (apiKey !== undefined)\n{\n   headerAuth =  {\n        Authorization: \"Basic \" + CE.b64(apiKey + \":\" + password)\n    };\n}\nelse\n{\n  done({\"error\":\"apiKey is Invalid\"});\n}\n\nif(inputVal === undefined)\n{\n  inputVal = {};\n}\nif (queryVal === undefined)\n{\n  queryVal = {};\n}\n// function test(fer){\n//   return fer +\"test\";\n// }\nif (Object.keys(headerAuth).length !== 0 && (requestType === undefined ) || (requestType.toUpperCase() === \"GET\"))\n{\n  apiData = {\n  url : apiUrl,\n  apiKey:apiKey,\n  auth : headerAuth,\n  query : queryVal,\n  input : inputVal,\n  siteDomain:domain,\n  siteName:siteName,\n  headers:headerVal,\n  type : type\n  // //testfunction :test\n  // apiKey: steps.ConstructCBApiReq.input.apiKey,\n  // headers: steps.ConstructCBApiReq.auth,\n  // query: steps.ConstructCBApiReq.query,\n  // siteDomain: steps.ConstructCBApiReq.input.siteDomain,\n  // siteName: steps.ConstructCBApiReq.input.siteName,\n  // type: steps.ConstructCBApiReq.type,\n  // url: steps.ConstructCBApiReq.url\n  \n}\n}\n\nelse if ((requestType !== undefined ) || (requestType.toUpperCase() === \"POST\"))\n{\n  apiData = {\n    apiKey: apiKey,\n    url: apiUrl,\n    query: queryVal,\n    body: bodyVal,\n    headers: headerVal,\n    siteName:siteName,\n    siteDomain:domain,\n    type:type\n    \n}\n}\ndone(apiData);  "
+                            },
+                            "type": "script"
+                        },
+                        {
+                            "name": "getCBUrl",
+                            "onFailure": [],
+                            "onSuccess": [
+                                "ConstructCBApiReq"
+                            ],
+                            "properties": {
+                                "body": "let siteName = trigger.args.siteName;\nlet domain = trigger.args.domain;\nlet type = trigger.args.type;\nlet apiName = trigger.args.apiName;\nlet integration = trigger.args.integration;\nlet apiUrl = \"\";\n\nif(siteName === undefined || domain === undefined)\n{\n  done(false);\n}\n\nif (type=== undefined || type.toUpperCase()===\"APP\")\n{\n  apiUrl = \"https://\" + siteName + \".\" + domain + \"/api/v2/\" + apiName;\n}\nelse\n{\n  if (integration!== undefined)\n  {\n    apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/\"+integration+\"/api/v2/\"+apiName;\n  }\n  else\n  {\n     apiUrl = \"https://\" + siteName + \".integrations.\" + domain + \"/api/v2/\" + apiName;\n  }\n}\nlet url = {\"url\" : apiUrl};\ndone(url);\n  \n\n"
+                            },
+                            "type": "script"
+                        },
+                        {
+                            "name": "RequestParams",
+                            "onFailure": [],
+                            "onSuccess": [
+                                "ConstructCBApiReq"
+                            ],
+                            "properties": {
+                                "body": "done(trigger.args);"
+                            },
+                            "type": "script"
+                        },
+                        {
+                            "name": "sendErrorResponse",
+                            "onFailure": [],
+                            "onSuccess": [],
+                            "properties": {
+                                "body": "done({\"error\":\"Error while constructing api data\"});"
+                            },
+                            "type": "script"
+                        }
+                    ],
+                    "triggers": [
+                        {
+                            "async": true,
+                            "name": "trigger",
+                            "onFailure": [],
+                            "onSuccess": [
+                                "RequestParams"
+                            ],
+                            "properties": {},
+                            "type": "manual"
+                        }
+                    ],
+                    "uri": "/getCBUrl"
+                },
+                {
+                    "active": true,
+                    "api": "GET /getFormulaInfo",
+                    "configuration": [],
+                    "debugLoggingEnabled": false,
+                    "engine": "v3",
+                    "id": 31429,
+                    "method": "GET",
+                    "name": "HubSpotGetFormulaDetails",
+                    "singleThreaded": false,
+                    "steps": [
+                        {
+                            "name": "getFormulaDetails",
+                            "onFailure": [
+                                "sendErrorResponse"
+                            ],
+                            "onSuccess": [],
+                            "properties": {
+                                "body": "//get the formula name and send the json with name :{url:\"\",id:\"\"}\nlet cloud = \"https://staging.cloud-elements.com\";\nlet formulaName = trigger.args.formulaName;\nlet props  = {\n   getDealRules: {\n   url: cloud+\"/elements/api-v2/hubspot/syncRulesDealsSetup\"\n  },\n  saveDealRules: {\n   url: cloud+\"/elements/api-v2/hubspot/saveDealRules\",\n   id:\"412129\"\n  },\n  dynamicToggle: {\n    url: cloud+\"/elements/api-v2/hubspot/stagestoggle\",\n    id:\"435337\"\n  },\n  dealoptions:{\n    url :cloud + \"/elements/api-v2/hubspot/dealoptions\",\n    id:\"412128\"\n  },\n  gettoken:{\n     url : cloud +\"/elements/api-v2/hubspot/token\",\n     id: \"412130\",\n  },\n  //need to check with shamim\n  refresh:{\n    url: \"/formulas/instances/405771/executions\"\n  },\n  //need to confirm from old account\n  save: {\n   url: cloud+\"/elements/api-v2/hubspot/save\",\n   id:\"412153\"\n  },\n   saveconfig: {\n   url: cloud+\"/elements/api-v2/hubspot/saveconfig\",\n   id:\"412279\"\n  }\n};\nlet resultJson = {\"status\":\"error\"};\nif(formulaName !== undefined && formulaName !== \"\")\n{\n  resultJson = props[formulaName];\n}\nelse\n{\n  resultJson = props;\n}\n\n//console.log(resultJson);\ndone(resultJson);\n\n"
+                            },
+                            "type": "script"
+                        },
+                        {
+                            "name": "getFormulaDetailsDev",
+                            "onFailure": [
+                                "sendErrorResponse"
+                            ],
+                            "onSuccess": [
+                                "getFormulaDetails"
+                            ],
+                            "properties": {
+                                "body": "//get the formula name and send the json with name :{url:\"\",id:\"\"}\nlet cloud = \"https://staging.cloud-elements.com\";\nlet formulaName = trigger.args.formulaName;\nlet props  = {\n  saveDealRules: {\n   url: cloud+\"/elements/api-v2/hubspot/saveDealRules\",\n   id:\"399307\"\n  },\n  dealoptions:{\n    url :cloud + \"/elements/api-v2/hubspot/dealoptions\",\n    id:\"399308\"\n  },\n  gettoken:{\n     url : cloud +\"/elements/api-v2/hubspot/token\",\n     id: \"401666\",\n  },\n  refresh:{\n    url: \"/formulas/instances/405771/executions\"\n  },\n  save: {\n   url: cloud+\"/elements/api-v2/hubspot/save\",\n   id:\"399311\"\n  }\n};\nlet resultJson = {\"status\":\"error\"};\nif(formulaName !== undefined && formulaName !== \"\")\n{\n  resultJson = props[formulaName];\n}\nelse\n{\n  resultJson = props;\n}\n\n//console.log(resultJson);\ndone(resultJson);\n\n"
+                            },
+                            "type": "script"
+                        },
+                        {
+                            "name": "sendErrorResponse",
+                            "onFailure": [],
+                            "onSuccess": [],
+                            "properties": {
+                                "body": "done({\"error\":\"error while constructing formula\"});"
+                            },
+                            "type": "script"
+                        }
+                    ],
+                    "triggers": [
+                        {
+                            "async": true,
+                            "name": "trigger",
+                            "onFailure": [],
+                            "onSuccess": [
+                                "getFormulaDetails"
+                            ],
+                            "properties": {},
+                            "type": "manual"
+                        }
+                    ],
+                    "uri": "/getFormulaInfo"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "FieldInitProps"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ],
+            "uri": "/hubspot/fields"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "Props"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/fields"
+}

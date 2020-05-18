@@ -1,0 +1,1 @@
+done(steps.HubSpotGetInputParams.url !== undefined && steps.HubSpotGetInputParams.url!== "");

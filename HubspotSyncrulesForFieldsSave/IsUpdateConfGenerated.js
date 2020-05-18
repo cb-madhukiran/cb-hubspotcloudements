@@ -1,0 +1,1 @@
+done(steps.ConstructUpdateConfigReq['error'] === undefined);

@@ -1,0 +1,1 @@
+done(steps.SyncRunNewInputParams.input.ignoreAll);

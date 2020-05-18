@@ -1,0 +1,100 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31331,
+    "name": "ChargebeePost",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "ChargebeePostInputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeePostIsValidUrl"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeePostIsValidUrl",
+            "onFailure": [
+                "ChargebeePostError"
+            ],
+            "onSuccess": [
+                "ChargebeePostPostHttpData"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ChargebeePostPostHttpData",
+            "onFailure": [
+                "ChargebeePostCallAgainHttp"
+            ],
+            "onSuccess": [
+                "ChargebeePostCallAgainHttp"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200-600",
+                "body": "${steps.ChargebeePostInputParams.body}",
+                "headers": "${steps.ChargebeePostInputParams.headers}",
+                "method": "POST",
+                "query": "${steps.ChargebeePostInputParams.query}",
+                "url": "${steps.ChargebeePostInputParams.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ChargebeePostCallAgainHttp",
+            "onFailure": [
+                "ChargebeePostResult2"
+            ],
+            "onSuccess": [
+                "ChargebeePostCBDelay"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "ChargebeePostCBDelay",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeePostPostHttpData"
+            ],
+            "properties": {
+                "headers": "${steps.ChargebeePostInputParams.delay.headers}",
+                "method": "GET",
+                "query": "${steps.ChargebeePostInputParams.delay.query}",
+                "url": "${steps.ChargebeePostInputParams.delay.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "ChargebeePostResult2",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeePostError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeePostInputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

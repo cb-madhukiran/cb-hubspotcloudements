@@ -1,0 +1,1 @@
+done(steps.InitParams['error'] === undefined);

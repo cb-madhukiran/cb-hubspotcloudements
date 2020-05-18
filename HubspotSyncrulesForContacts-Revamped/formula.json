@@ -1,0 +1,693 @@
+{
+    "active": true,
+    "api": "GET /hubspot/syncRulesContactsSetup",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "debugLoggingExpires": "2019-11-15T20:14:03Z",
+    "engine": "v1",
+    "id": 34776,
+    "method": "GET",
+    "name": "HubspotSyncrulesForContacts-Revamped",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "Props",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "setupCBConfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "setupCBConfig",
+            "onFailure": [],
+            "onSuccess": [
+                "getChargebeeConfigs"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getChargebeeConfigs",
+            "onFailure": [],
+            "onSuccess": [
+                "validateGetChargebeeConfigAPIResponse"
+            ],
+            "properties": {
+                "args": "${steps.setupCBConfig}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "validateGetChargebeeConfigAPIResponse",
+            "onFailure": [
+                "getChargebeeConfigError"
+            ],
+            "onSuccess": [
+                "HasHubSpotStages"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HasHubSpotStages",
+            "onFailure": [
+                "StageParam"
+            ],
+            "onSuccess": [
+                "getCustomFieldParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "getCustomFieldParams",
+            "onFailure": [],
+            "onSuccess": [
+                "ChargebeeGetCustomFields"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ChargebeeGetCustomFields",
+            "onFailure": [],
+            "onSuccess": [
+                "gotCustomFields"
+            ],
+            "properties": {
+                "args": "${steps.getCustomFieldParams.getCustomFieldApi}",
+                "formulaId": "31330"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "gotCustomFields",
+            "onFailure": [
+                "gotChargebeeCustomFieldsError"
+            ],
+            "onSuccess": [
+                "InputParamsForStages"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InputParamsForStages",
+            "onFailure": [],
+            "onSuccess": [
+                "getLifeCycleStages"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getLifeCycleStages",
+            "onFailure": [],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {
+                "args": "${steps.InputParamsForStages.params}",
+                "formulaId": "34758"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "gotChargebeeCustomFieldsError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "StageParam",
+            "onFailure": [],
+            "onSuccess": [
+                "getHubspotPipeline"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getHubspotPipeline",
+            "onFailure": [],
+            "onSuccess": [
+                "validateGetHubspotPipelineAPIResponse"
+            ],
+            "properties": {
+                "args": "${steps.StageParam}",
+                "formulaId": "31332"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "validateGetHubspotPipelineAPIResponse",
+            "onFailure": [
+                "getHubspotPipelineError"
+            ],
+            "onSuccess": [
+                "Stages"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "Stages",
+            "onFailure": [],
+            "onSuccess": [
+                "updateChargebeeConfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "updateChargebeeConfig",
+            "onFailure": [],
+            "onSuccess": [
+                "getStagesAPIResponse"
+            ],
+            "properties": {
+                "args": "${steps.Stages}",
+                "formulaId": "31331"
+            },
+            "type": "formula"
+        },
+        {
+            "name": "getStagesAPIResponse",
+            "onFailure": [
+                "getStagesError"
+            ],
+            "onSuccess": [
+                "getCustomFieldParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "getStagesError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getHubspotPipelineError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getChargebeeConfigError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "subFormulas": [
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31330,
+            "name": "ChargebeeGet",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ChargebeeGetCallAgainCB",
+                    "onFailure": [
+                        "ChargebeeGetResult"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCBDelay2"
+                    ],
+                    "properties": {
+                        "body": "let code = \"\";\nif(steps.ChargebeeGetGetCBData !== undefined && steps.ChargebeeGetGetCBData.response !== undefined) {\n  code = steps.ChargebeeGetGetCBData.response.code;\n}\nif(steps.ChargebeeGetInputParams.intervel.length > 0 && steps.ChargebeeGetInputParams.retryCode[code] !== undefined) {\n  steps.ChargebeeGetInputParams.delay.query.delay = steps.ChargebeeGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetCallAgainHttp",
+                    "onFailure": [
+                        "ChargebeeGetResult2"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeeGetInputParams.intervel.length > 0 && steps.ChargebeeGetInputParams.retryCode[steps.ChargebeeGetGetHttpData.response.code] !== undefined) {\n  steps.ChargebeeGetInputParams.delay.query.delay = steps.ChargebeeGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetGetHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429",
+                        "url": "${steps.ChargebeeGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetCBDelay2",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetGetCBData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeeGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.delay.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429",
+                        "url": "${steps.ChargebeeGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"formula_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetGetCBData",
+                    "onFailure": [
+                        "ChargebeeGetCallAgainCB"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCallAgainCB"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "api": "${steps.ChargebeeGetInputParams.url}",
+                        "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                        "elementInstanceId": "${config.chargebee}",
+                        "headers": "",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.query}",
+                        "retry": "true",
+                        "retryAttempts": "5",
+                        "retryDelay": "500",
+                        "retryStatusCodes": "500-599,429"
+                    },
+                    "type": "elementRequest"
+                },
+                {
+                    "name": "ChargebeeGetGetHttpData",
+                    "onFailure": [
+                        "ChargebeeGetCallAgainHttp"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.ChargebeeGetInputParams.bodydata}",
+                        "headers": "${steps.ChargebeeGetInputParams.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeeGetInputParams.query}",
+                        "url": "${steps.ChargebeeGetInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeeGetInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\nlet bodydata = trigger.args.bodydata;\nif (bodydata === undefined)\n{\n  bodydata = {};\n}\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\ndone({\n    url: url,\n    query: query,\n    bodydata: bodydata,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n    },\n    hardStop: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n        500:true,\n        401:true\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetIsHttp",
+                    "onFailure": [
+                        "ChargebeeGetGetCBData"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetGetHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeeGetInputParams.url.startsWith(\"https://\"));"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetIsValidUrl",
+                    "onFailure": [
+                        "ChargebeeGetError"
+                    ],
+                    "onSuccess": [
+                        "ChargebeeGetIsHttp"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeeGetInputParams.url !== undefined && steps.ChargebeeGetInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeeGetResult",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let code = 600;\nif(steps.ChargebeeGetGetCBData !== undefined && steps.ChargebeeGetGetCBData.response !== undefined) {\n  code = steps.ChargebeeGetGetCBData.response.code;\n}\nif(code < 300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeeGetGetCBData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeeGetInputParams.hardStop[code] !== undefined;\n  if(steps.ChargebeeGetGetCBData!== undefined && steps.ChargebeeGetGetCBData.response!== undefined && steps.ChargebeeGetGetCBData.response.body!== undefined && steps.ChargebeeGetGetCBData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeeGetGetCBData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    msg:steps.ChargebeeGetGetCBData.response,\n    cb_status_code:code\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeeGetResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.ChargebeeGetGetHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeeGetGetHttpData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeeGetInputParams.hardStop[steps.ChargebeeGetGetHttpData.response.code] !== undefined;\n  if(steps.ChargebeeGetGetHttpData.response.body!== undefined && steps.ChargebeeGetGetHttpData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeeGetGetHttpData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    cb_status_code:steps.ChargebeeGetGetHttpData.response.code\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeeGetInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31332,
+            "name": "HubSpotGet",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "HubSpotGetCallAgainHttp",
+                    "onFailure": [
+                        "HubSpotGetResult2"
+                    ],
+                    "onSuccess": [
+                        "HubSpotGetCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.HubSpotGetInputParams.intervel.length > 0 && steps.HubSpotGetInputParams.retryCode[steps.HubSpotGetGetHttpData.response.code] !== undefined) {\n  steps.HubSpotGetInputParams.delay.query.delay = steps.HubSpotGetInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HubSpotGetCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotGetGetHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.HubSpotGetInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.HubSpotGetInputParams.delay.query}",
+                        "url": "${steps.HubSpotGetInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "HubSpotGetError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"hubspot_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "HubSpotGetGetHttpData",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotGetCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "",
+                        "headers": "${steps.HubSpotGetInputParams.headers}",
+                        "method": "GET",
+                        "query": "${steps.HubSpotGetInputParams.query}",
+                        "url": "${steps.HubSpotGetInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "HubSpotGetInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotGetIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\ndone({\n    url: url,\n    query: query,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        429: true,\n        502: true,\n        504: true,\n    },\n    hardStop: {\n        401: true,\n        403: true,\n        429: true,\n        502: true,\n        504: true,\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "HubSpotGetIsValidUrl",
+                    "onFailure": [
+                        "HubSpotGetError"
+                    ],
+                    "onSuccess": [
+                        "HubSpotGetGetHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.HubSpotGetInputParams.url !== undefined && steps.HubSpotGetInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "HubSpotGetResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "let response  = steps.HubSpotGetGetHttpData.response;\nif(response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:response.body,\n    cb_code:response.code,\n  });\n}else {\n  let cb_error_code = \"hubspot_default_error\";\n\n  let hardstop = steps.HubSpotGetInputParams.hardStop[response.code] !== undefined;\n  if(response.body!== undefined && response.body.category !== undefined) {\n    cb_error_code = \"hubspot_\" +response.body.category;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    cb_code:response.code,\n  });\n}\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "HubSpotGetInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 34758,
+            "name": "GetLifeCycleStages",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "EnvProps",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "getLifeCycleStages"
+                    ],
+                    "properties": {
+                        "body": "let cloudElementsUrl = \"https://staging.cloud-elements.com/elements/api-v2\";\nlet DynamicToggleFormulaInstanceId = 435337\ndone({\n  cloudElementsUrl: cloudElementsUrl,\n  id : DynamicToggleFormulaInstanceId\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "getLifeCycleStages",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "const _ = require('lodash');\n\nlet getRequestArgs = (arg)=>{\n    let triggerArgument = trigger.args[arg];\n        if(triggerArgument !== undefined) \n            return triggerArgument;\n        else{\n            return \"select\";\n        }\n    }\n\nlet NoSubscription = getRequestArgs('NoSubscription');\nlet TrialSubscription = getRequestArgs('TrialSubscription');\nlet ActiveSubscription = getRequestArgs('ActiveSubscription');\nlet CanceledSubscription = getRequestArgs('CanceledSubscription');\n\nlet cloudElementsUrl = steps.EnvProps.cloudElementsUrl;\n\nlet instanceId = steps.EnvProps.id;\n\n//Please ensure the keys order\nlet allowedStageDropDownKeys = [\n  \"select\",\n  \"subscriber\",\n  \"lead\",\n  \"marketingqualifiedlead\",\n  \"salesqualifiedlead\",\n  \"opportunity\",\n  \"customer\",\n  \"evangelist\",\n  \"other\",\n];\n let allowedStageDropDownValues = {\n  select: \"Select\",\n  subscriber: \"Subscriber\",\n  lead: \"Lead\",\n  marketingqualifiedlead: \"Marketing Qualified lead\",\n  salesqualifiedlead: \"Sales Qualified lead\",\n  opportunity: \"Opportunity\",\n  customer: \"Customer\",\n  evangelist: \"Evangelist\",\n  other: \"Other\"\n}\n\nlet getIndexKey = (subscriptionStatus)=> {\n    if(subscriptionStatus.toLowerCase() === 'select'){\n        return -1;\n    }\n    else{\n        return allowedStageDropDownKeys.indexOf(subscriptionStatus) ;\n    }\n}\n\n\nlet NoSubscriptionIndex = getIndexKey(NoSubscription);\nlet TrialSubscriptionIndex = getIndexKey(TrialSubscription);\nlet ActiveSubscriptionIndex = getIndexKey(ActiveSubscription);\nlet CancelledSubscriptionIndex = getIndexKey(CanceledSubscription);\n\nlet SubscriptionStatusOptions = ['NoSubscription', 'TrialSubscription', 'ActiveSubscription', 'CanceledSubscription' ];\n\nlet arr = [ NoSubscriptionIndex, TrialSubscriptionIndex, ActiveSubscriptionIndex, CancelledSubscriptionIndex];\n\n//Logic to reset if any incorrect order\n// Eg arr = [5, 4 , 4 , 3] => arr = [5, -1, -1, -1]\nfor(var i = arr.length-1 ; i > 0; i--){\n    for(var j = i-1 ; j>=0; j-- ){\n        if(arr[j] >= arr[i]){\n            arr[i] = -1;\n        }\n    }\n}\n\n\nif(arr[SubscriptionStatusOptions.indexOf('TrialSubscription')] == -1){\n    TrialSubscription = 'select';\n}\n  \nif(arr[SubscriptionStatusOptions.indexOf('ActiveSubscription')] == -1){\n    ActiveSubscription = 'select' ;\n}\n  \nif(arr[SubscriptionStatusOptions.indexOf('CanceledSubscription')] == -1){ \n    CanceledSubscription = 'select';\n}\n\n//There are two steps to compute this index\n// first we find the first available index from the array\n// and compute the allowed values for corresponding drop down\n\nvar getIndex =  (subscriptionStatus)=>{\n    for(var i = SubscriptionStatusOptions.indexOf(subscriptionStatus)-1; i>=0;i--){\n      if(arr[i] == -1){\n          continue;\n      } else{\n          return arr[i] +1;\n      }\n  }\n  return -1;\n}\n\nvar getDropDownValues = (index)=>{  \n  var allValues = _.partition(allowedStageDropDownKeys,(i)=>allowedStageDropDownKeys.indexOf(i)<index);\n  var allowedValues = allValues[1];\n\n  var result = {select : 'Select'}\n\n    allowedValues.forEach((element)=>{\n      result[element]=allowedStageDropDownValues[element];\n    })\n    return result;\n}\n\n\nvar NoSubscriptionStageDropDownMap = getDropDownValues(0) // can contain all values for No subscription\n\nvar TrialSubscriptionStageDropDownMap = getDropDownValues(getIndex('TrialSubscription'));  \n\nvar ActiveSubscriptionStageDropDownMap = getDropDownValues(getIndex('ActiveSubscription'));\n\nvar CancelledSubscriptionStageDropDownMap = getDropDownValues(getIndex('CanceledSubscription'));\n\nlet dynamicRequest =  {\n  type: \"ON_CHANGE_FETCH_INPUT\",\n  apiEndPoint: {\n    apiUrl: cloudElementsUrl+\"/hubspot/stagestoggle\",\n    type: \"GET\",\n    headers: {\n      \"Elements-Formula-Instance-Id\": instanceId,\n    }\n  },\n};\n\nlet stages = [\n  {\n    dispName:\n      \"Choose the Lifecycle Stage in HubSpot you'd like to create/update the contact in, when the Chargebee customer\",\n    req: \"false\",\n    type: \"TEXTLABEL\",\n    id: \"HubSpotContactMatch-id\",\n  },\n  {\n    dispName: '<p style=\"padding-left: 10px;\">  Has no subscription',\n    req: \"false\",\n    type: \"DROPDOWN\",\n    id: \"NoSubscription\",\n    isMuted: \"true\",\n    allowedValues: NoSubscriptionStageDropDownMap,\n    defaultVal: NoSubscription,\n    isDynamic : \"true\",\n    request : dynamicRequest\n  },\n  {\n    dispName: '<p style=\"padding-left: 10px;\"> Has an In-Trial subscription',\n    req: \"false\",\n    type: \"DROPDOWN\",\n    id: \"TrialSubscription\",\n    isMuted: \"true\",\n    allowedValues: TrialSubscriptionStageDropDownMap,\n    defaultVal: TrialSubscription,\n    isDynamic : \"true\",\n    request : dynamicRequest\n  },\n  {\n    dispName: '<p style=\"padding-left: 10px;\"> Has an Active subscription',\n    req: \"false\",\n    type: \"DROPDOWN\",\n    id: \"ActiveSubscription\",\n    isMuted: \"true\",\n    allowedValues: ActiveSubscriptionStageDropDownMap,\n    defaultVal: ActiveSubscription,\n    isDynamic : \"true\",\n    request : dynamicRequest\n  },\n  {\n    dispName: '<p style=\"padding-left: 10px;\"> Has a Cancelled subscription',\n    req: \"false\",\n    type: \"DROPDOWN\",\n    id: \"CanceledSubscription\",\n    isMuted: \"true\",\n    allowedValues: CancelledSubscriptionStageDropDownMap,\n    defaultVal: CanceledSubscription,\n    isDynamic : \"true\",\n    request : dynamicRequest\n  },\n];\ndone({stages:stages});"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "EnvProps"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        },
+        {
+            "active": true,
+            "configuration": [],
+            "debugLoggingEnabled": false,
+            "engine": "v3",
+            "id": 31331,
+            "name": "ChargebeePost",
+            "singleThreaded": false,
+            "steps": [
+                {
+                    "name": "ChargebeePostCallAgainHttp",
+                    "onFailure": [
+                        "ChargebeePostResult2"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostCBDelay"
+                    ],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostInputParams.intervel.length > 0 && steps.ChargebeePostInputParams.retryCode[steps.ChargebeePostPostHttpData.response.code] !== undefined) {\n  steps.ChargebeePostInputParams.delay.query.delay = steps.ChargebeePostInputParams.intervel.pop();\n  done(true);\n}else {\n  done(false);\n}\n"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeePostCBDelay",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostPostHttpData"
+                    ],
+                    "properties": {
+                        "headers": "${steps.ChargebeePostInputParams.delay.headers}",
+                        "method": "GET",
+                        "query": "${steps.ChargebeePostInputParams.delay.query}",
+                        "url": "${steps.ChargebeePostInputParams.delay.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeePostError",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "done({\n  cb_status:\"failure\",\n  cb_error_code:\"formula_invalid_url\"\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeePostInputParams",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostIsValidUrl"
+                    ],
+                    "properties": {
+                        "body": "let url = trigger.args.url;\nlet query = trigger.args.query;\nlet body = trigger.args.body;\nlet apiKey = trigger.args.apiKey;\nlet headers = trigger.args.headers;\nlet siteDomain = trigger.args.siteDomain;\nlet siteName = trigger.args.siteName;\nlet type = trigger.args.type;\n\n\nlet intervel = [];\nintervel.push(5000);\nintervel.push(4000);\nintervel.push(3000);\nintervel.push(2000);\nintervel.push(1000);\n\nif (query === undefined) {\n    query = {};\n}\nif (headers === undefined) {\n    headers = {};\n}\nif(body === undefined) {\n  body = {};\n}\ndone({\n    url: url,\n    query: query,\n    body:body,\n    //intervel:[5000,10000,20000,40000,80000],\n    intervel: intervel,\n    retryCode: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n    },\n    hardStop: {\n        503: true,\n        429: true,\n        502: true,\n        403: true,\n        400: true,\n        500:true,\n        401:true\n    },\n    headers: headers,\n    delay: {\n        url: \"https://\" + siteName + \".integrations.\" + siteDomain + \"/api/ipaasdelay\",\n        query: {\n            delay: 2000\n        },\n        headers: {\n            \"api_key\": apiKey\n        }\n    }\n});"
+                    },
+                    "type": "script"
+                },
+                {
+                    "name": "ChargebeePostIsValidUrl",
+                    "onFailure": [
+                        "ChargebeePostError"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostPostHttpData"
+                    ],
+                    "properties": {
+                        "body": "done(steps.ChargebeePostInputParams.url !== undefined && steps.ChargebeePostInputParams.url!== \"\");"
+                    },
+                    "type": "filter"
+                },
+                {
+                    "name": "ChargebeePostPostHttpData",
+                    "onFailure": [
+                        "ChargebeePostCallAgainHttp"
+                    ],
+                    "onSuccess": [
+                        "ChargebeePostCallAgainHttp"
+                    ],
+                    "properties": {
+                        "acceptableStatusCodes": "200-600",
+                        "body": "${steps.ChargebeePostInputParams.body}",
+                        "headers": "${steps.ChargebeePostInputParams.headers}",
+                        "method": "POST",
+                        "query": "${steps.ChargebeePostInputParams.query}",
+                        "url": "${steps.ChargebeePostInputParams.url}"
+                    },
+                    "type": "httpRequest"
+                },
+                {
+                    "name": "ChargebeePostResult2",
+                    "onFailure": [],
+                    "onSuccess": [],
+                    "properties": {
+                        "body": "if(steps.ChargebeePostPostHttpData.response.code <300) {\n  done({\n    cb_status:\"success\",\n    data:steps.ChargebeePostPostHttpData.response.body\n  });\n}else {\n  let cb_error_code = \"formula_default_error\";\n\n  let hardstop = steps.ChargebeePostInputParams.hardStop[steps.ChargebeePostPostHttpData.response.code] !== undefined;\n  if(steps.ChargebeePostPostHttpData.response.body!== undefined && steps.ChargebeePostPostHttpData.response.body.error_code !== undefined) {\n    cb_error_code = steps.ChargebeePostPostHttpData.response.body.error_code;\n  }\n  done({\n    cb_status:\"failure\",\n    cb_error_code:cb_error_code,\n    cb_exit:hardstop,\n    rbody:steps.ChargebeePostPostHttpData.response.body\n  });\n}\n\n"
+                    },
+                    "type": "script"
+                }
+            ],
+            "triggers": [
+                {
+                    "async": true,
+                    "name": "trigger",
+                    "onFailure": [],
+                    "onSuccess": [
+                        "ChargebeePostInputParams"
+                    ],
+                    "properties": {},
+                    "type": "manual"
+                }
+            ]
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "Props"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/syncRulesContactsSetup"
+}

@@ -1,0 +1,97 @@
+{
+    "active": true,
+    "api": "GET /hubspot/save",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31485,
+    "method": "GET",
+    "name": "HubspotSyncrulesForOrdersSave",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "getTpConfig"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "getTpConfig",
+            "onFailure": [
+                "sendErrorCard"
+            ],
+            "onSuccess": [
+                "updateTpConfigParams"
+            ],
+            "properties": {
+                "headers": "${steps.InputParams.auth}",
+                "method": "GET",
+                "query": "${steps.InputParams.query}",
+                "retry": "true",
+                "retryAttempts": "5",
+                "retryDelay": "200",
+                "url": "${steps.InputParams.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "updateTpConfigParams",
+            "onFailure": [],
+            "onSuccess": [
+                "updateTp"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "updateTp",
+            "onFailure": [],
+            "onSuccess": [
+                "Success"
+            ],
+            "properties": {
+                "body": "${steps.updateTpConfigParams.tpConfigUpdateParams.body}",
+                "form": "",
+                "headers": "${steps.updateTpConfigParams.tpConfigUpdateParams.headers}",
+                "method": "POST",
+                "path": "",
+                "query": "",
+                "retry": "true",
+                "retryAttempts": "5",
+                "retryDelay": "200",
+                "url": "${steps.updateTpConfigParams.tpConfigUpdateParams.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "sendErrorCard",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/hubspot/save"
+}

@@ -1,0 +1,98 @@
+{
+    "active": true,
+    "configuration": [],
+    "debugLoggingEnabled": false,
+    "engine": "v3",
+    "id": 31332,
+    "name": "HubSpotGet",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "HubSpotGetInputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotGetIsValidUrl"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HubSpotGetIsValidUrl",
+            "onFailure": [
+                "HubSpotGetError"
+            ],
+            "onSuccess": [
+                "HubSpotGetGetHttpData"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HubSpotGetGetHttpData",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotGetCallAgainHttp"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200-600",
+                "body": "",
+                "headers": "${steps.HubSpotGetInputParams.headers}",
+                "method": "GET",
+                "query": "${steps.HubSpotGetInputParams.query}",
+                "url": "${steps.HubSpotGetInputParams.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HubSpotGetCallAgainHttp",
+            "onFailure": [
+                "HubSpotGetResult2"
+            ],
+            "onSuccess": [
+                "HubSpotGetCBDelay"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "HubSpotGetCBDelay",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotGetGetHttpData"
+            ],
+            "properties": {
+                "headers": "${steps.HubSpotGetInputParams.delay.headers}",
+                "method": "GET",
+                "query": "${steps.HubSpotGetInputParams.delay.query}",
+                "url": "${steps.HubSpotGetInputParams.delay.url}"
+            },
+            "type": "httpRequest"
+        },
+        {
+            "name": "HubSpotGetResult2",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "HubSpotGetError",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "HubSpotGetInputParams"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

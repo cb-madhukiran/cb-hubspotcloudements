@@ -1,0 +1,242 @@
+{
+    "active": true,
+    "api": "POST /DeleteMerchantIntegration",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 32607,
+    "method": "POST",
+    "name": "Testing-Admin-Activecampaign-DeleteMerchantIntegration",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "IsValidParam",
+            "onFailure": [
+                "Error"
+            ],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "InputParams",
+            "onFailure": [],
+            "onSuccess": [
+                "GetAllInstance"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "GetAllInstance",
+            "onFailure": [
+                "Error2"
+            ],
+            "onSuccess": [
+                "loopOverInstances"
+            ],
+            "properties": {
+                "api": "/instances",
+                "method": "GET",
+                "query": "${steps.InputParams}"
+            },
+            "type": "request"
+        },
+        {
+            "name": "loopOverInstances",
+            "onFailure": [
+                "ElementsNextPageToken"
+            ],
+            "onSuccess": [
+                "ElementList"
+            ],
+            "properties": {
+                "list": "${steps.GetAllInstance.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "ElementList",
+            "onFailure": [],
+            "onSuccess": [
+                "loopOverInstances"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "ElementsNextPageToken",
+            "onFailure": [
+                "LoopOverElements"
+            ],
+            "onSuccess": [
+                "InputParams"
+            ],
+            "properties": {},
+            "type": "filter"
+        },
+        {
+            "name": "LoopOverElements",
+            "onFailure": [
+                "LoopOverFormulaList"
+            ],
+            "onSuccess": [
+                "FormulaParams"
+            ],
+            "properties": {
+                "list": "${steps.ElementList.elements}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "FormulaParams",
+            "onFailure": [],
+            "onSuccess": [
+                "GetAllFormula"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "GetAllFormula",
+            "onFailure": [
+                "LoopOverElementsAgain"
+            ],
+            "onSuccess": [
+                "LoopOverFormulas"
+            ],
+            "properties": {
+                "api": "/formulas/instances",
+                "method": "GET",
+                "query": "${steps.FormulaParams}"
+            },
+            "type": "request"
+        },
+        {
+            "name": "LoopOverFormulas",
+            "onFailure": [
+                "LoopOverElements"
+            ],
+            "onSuccess": [
+                "FormulaList"
+            ],
+            "properties": {
+                "list": "${steps.GetAllFormula.response.body}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "FormulaList",
+            "onFailure": [],
+            "onSuccess": [
+                "LoopOverFormulas"
+            ],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "LoopOverElementsAgain",
+            "onFailure": [
+                "Success"
+            ],
+            "onSuccess": [
+                "DeleteElement"
+            ],
+            "properties": {
+                "list": "${steps.ElementList.elements}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "DeleteElement",
+            "onFailure": [
+                "Error4"
+            ],
+            "onSuccess": [
+                "LoopOverElementsAgain"
+            ],
+            "properties": {
+                "api": "/instances/${steps.LoopOverElementsAgain.entry.id}",
+                "method": "DELETE"
+            },
+            "type": "request"
+        },
+        {
+            "name": "Error4",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "Success",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "LoopOverFormulaList",
+            "onFailure": [
+                "LoopOverElementsAgain"
+            ],
+            "onSuccess": [
+                "DeleteFormula"
+            ],
+            "properties": {
+                "list": "${steps.FormulaList.formula}"
+            },
+            "type": "loop"
+        },
+        {
+            "name": "DeleteFormula",
+            "onFailure": [
+                "Error3"
+            ],
+            "onSuccess": [
+                "LoopOverFormulaList"
+            ],
+            "properties": {
+                "api": "/formulas/${steps.LoopOverFormulaList.entry.id}/instances/${steps.LoopOverFormulaList.entry.instance}",
+                "method": "DELETE"
+            },
+            "type": "request"
+        },
+        {
+            "name": "Error3",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "Error2",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        },
+        {
+            "name": "Error",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "IsValidParam"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/DeleteMerchantIntegration"
+}

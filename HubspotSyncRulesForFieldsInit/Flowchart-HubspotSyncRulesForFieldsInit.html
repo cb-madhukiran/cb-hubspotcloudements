@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HubspotSyncRulesForFieldsInit</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>
+        var callback = function(){}
+    </script>
+    <style>
+        div.mermaidTooltip {
+                    margin-left: 50px;
+                    text-align: left;
+                    max-width: none;
+                }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+                    fill: #ffffff;
+                    stroke: rgb(200,200,200);
+                    stroke-width: 2px;
+                }
+        .mermaid .label {
+                  max-width: 50px;
+                }
+        table, th, td {
+                    border: 1px solid black;
+                }
+        table {
+                    border-spacing: 5px;
+                    border-radius: 5px;
+                    margin: auto;
+                }
+        th, td {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 5px;
+                }
+        th {
+                    color: blue;
+                }
+        td {
+                    width: 180px;
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                }
+        h2 {
+                    text-align: center;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                    padding: 1em;
+                }
+        .container {
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                    font-size: 11px;
+                    font-weight: 900;
+                }
+        body {
+                    font-family: 'Arial';
+                }
+        .edgeLabel {
+                    font-size: 9px;
+                }
+    </style>
+</head>
+<body>
+    <h2>
+        HubspotSyncRulesForFieldsInit
+    </h2>
+    <div class="container">
+        <div class="mermaid">
+            graph TD
+
+                step-000((Trigger))
+            step-001(FieldInitProps)
+            step-002[getFormulaDetails]
+            step-003{IsGenerated}
+            step-004(sendErrorResponse)
+            step-005((END))
+            step-006(FieldInitProcessInputs)
+            step-007[ConstructConfApiReq]
+            step-008{IsConfigSucceeded}
+            step-009[ConstructCustomApiReq]
+            step-010{IsCustomSucceeded}
+            step-011(FieldInitOutput)
+            step-012(sendErrorResponse)
+            step-013(sendErrorResponse)
+            step-014(sendErrorResponse)
+            step-015(sendErrorResponse)
+            step-016(sendErrorResponse)
+            step-017(sendErrorResponse)
+            step-018(sendErrorResponse)
+            step-019(sendErrorResponse)
+
+                step-000== continue ==>step-001
+            step-001-- success -->step-002
+            step-002-- success -->step-003
+            step-002-- failure -->step-012
+            step-003-- success -->step-006
+            step-003-- failure -->step-013
+            step-004-. done .->step-005
+            step-006-- success -->step-007
+            step-006-- failure -->step-014
+            step-007-- success -->step-008
+            step-007-- failure -->step-015
+            step-008-- success -->step-009
+            step-008-- failure -->step-016
+            step-009-- success -->step-010
+            step-009-- failure -->step-017
+            step-010-- success -->step-011
+            step-010-- failure -->step-018
+            step-011-- failure -->step-019
+
+                style step-004 fill:#dda7f9;
+            style step-005 stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-012 fill:#dda7f9,stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-013 fill:#dda7f9,stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-014 fill:#dda7f9,stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-015 fill:#dda7f9,stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-016 fill:#dda7f9,stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-017 fill:#dda7f9,stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-018 fill:#dda7f9,stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-019 fill:#dda7f9,stroke-width:3px,stroke-dasharray: 5, 5;
+
+                click step-000 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnRyaWdnZXI8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5UcmlnZ2VyIEVsZW1lbnQ6PC9iPjxicj48YnI+PHByZT4gICB0eXBlIDogbWFudWFsPGJyPiAgYXN5bmMgOiB0cnVlPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnRmllbGRJbml0UHJvcHMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ3R5cGUnOiAnbWFudWFsJyw8YnI+ICAnYXN5bmMnOiB0cnVlLDxicj4gICduYW1lJzogJ3RyaWdnZXInLDxicj4gICdwcm9wZXJ0aWVzJzoge308YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Trigger Element:<br><pre>   type : manual<br>  async : true</pre>"
+            click step-001 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkZpZWxkSW5pdFByb3BzPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUodHJpZ2dlci5hcmdzKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdnZXRGb3JtdWxhRGV0YWlscyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdGaWVsZEluaXRQcm9wcycsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUodHJpZ2dlci5hcmdzKTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>done(trigger.args);</pre>"
+            click step-002 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPmdldEZvcm11bGFEZXRhaWxzPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+T3RoZXIgKGZvcm11bGEpOjwvYj48YnI+PGJyPjxwcmU+ICBmb3JtdWxhSWQgOiAzMTQyOTxicj4gICAgICAgYXJncyA6IHsnZm9ybXVsYU5hbWUiOiIifTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0lzR2VuZXJhdGVkJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdzZW5kRXJyb3JSZXNwb25zZSc8YnI+ICBdLDxicj4gICduYW1lJzogJ2dldEZvcm11bGFEZXRhaWxzJyw8YnI+ICAndHlwZSc6ICdmb3JtdWxhJyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdmb3JtdWxhSWQnOiAnMzE0MjknLDxicj4gICAgJ2FyZ3MnOiAne1wnZm9ybXVsYU5hbWVcJzpcJ1wnfSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (formula):<br><pre>  formulaId : 31429<br>       args : {'formulaName":""}</pre>"
+            click step-003 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPklzR2VuZXJhdGVkPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUoc3RlcHMuZ2V0Rm9ybXVsYURldGFpbHNbJ2Vycm9yJ10gPT09IHVuZGVmaW5lZCk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnRmllbGRJbml0UHJvY2Vzc0lucHV0cyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnc2VuZEVycm9yUmVzcG9uc2UnPGJyPiAgXSw8YnI+ICAnbmFtZSc6ICdJc0dlbmVyYXRlZCcsPGJyPiAgJ3R5cGUnOiAnZmlsdGVyJyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUoc3RlcHMuZ2V0Rm9ybXVsYURldGFpbHNbJ2Vycm9yJ10gPT09IHVuZGVmaW5lZCk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done(steps.getFormulaDetails['error'] === undefined);</pre>"
+            click step-004 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnNlbmRFcnJvclJlc3BvbnNlPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUoeydlcnJvcic6J0Vycm9yIHdoaWxlIEluaXRpYWxpc2luZyd9KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFtdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdzZW5kRXJyb3JSZXNwb25zZScsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUoe1wnZXJyb3JcJzpcJ0Vycm9yIHdoaWxlIEluaXRpYWxpc2luZ1wnfSk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done({'error':'Error while Initialising'});</pre>"
+            click step-006 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkZpZWxkSW5pdFByb2Nlc3NJbnB1dHM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+bGV0IGFwaUtleSA9IHN0ZXBzLkZpZWxkSW5pdFByb3BzLnJlcXVlc3QucXVlcnlbJ2NiLWFwaS1rZXknXTs8YnI+bGV0IHNpdGVOYW1lID0gc3RlcHMuRmllbGRJbml0UHJvcHMucmVxdWVzdC5xdWVyeVsnY2Itc2l0ZS1uYW1lJ107PGJyPmxldCBzaXRlRG9tYWluID0gc3RlcHMuRmllbGRJbml0UHJvcHMucmVxdWVzdC5xdWVyeVsnY2ItZG9tYWluJ107PGJyPmxldCBpbnRlZ3JhdGlvbk5hbWUgPSBzdGVwcy5GaWVsZEluaXRQcm9wcy5yZXF1ZXN0LnF1ZXJ5Wyd0eXBlJ107PGJyPmxldCBhcGlOYW1lMSA9ICd0aGlyZF9wYXJ0eV9jb25maWd1cmF0aW9ucyc7PGJyPmxldCBhcGlOYW1lMiA9J2dldF9jdXN0b21fZmllbGRfbGlzdCc7PGJyPmxldCBwYXNzd29yZCA9ICcnOzxicj5sZXQgYXBpVHlwZTIgPSAnSU5URUctSU5URUctQVBJJzs8YnI+PGJyPmxldCB0cEludGVnQ29uZlBhcmFtcyA9IHs8YnI+ICAgIGFwaUtleSA6IGFwaUtleSw8YnI+ICAgIGFwaU5hbWUgOiBhcGlOYW1lMSw8YnI+ICAgIGRvbWFpbjogc2l0ZURvbWFpbiw8YnI+ICAgIHNpdGVOYW1lOiBzaXRlTmFtZSw8YnI+ICAgIHBhc3N3b3JkOiBwYXNzd29yZCw8YnI+ICAgIHR5cGU6aW50ZWdyYXRpb25OYW1lLDxicj4gIGlucHV0SnNvbiA6ezxicj4gICAgYXBpS2V5OmFwaUtleSw8YnI+ICAgIHNpdGVOYW1lOnNpdGVOYW1lLDxicj4gICAgc2l0ZURvbWFpbjpzaXRlRG9tYWluLDxicj4gICAgaW50ZWdyYXRpb25OYW1lOmludGVncmF0aW9uTmFtZTxicj4gIH0sPGJyPiAgLy8gdXJsOiAnaHR0cHM6Ly8nK3NpdGVOYW1lKycuJytzaXRlRG9tYWluKycvYXBpL3YyL3RoaXJkX3BhcnR5X2NvbmZpZ3VyYXRpb25zJyw8YnI+ICAvLyAgIGF1dGg6ezxicj4gIC8vICAgICBBdXRob3JpemF0aW9uOiAnQmFzaWMgJyArIENFLmI2NChhcGlLZXkgKyAnOicgKyBwYXNzd29yZCk8YnI+ICAvLyAgIH0sPGJyPiAgICBxdWVyeUpzb246ezxicj4gICAgICBpbnRlZ3JhdGlvbl9uYW1lOiBpbnRlZ3JhdGlvbk5hbWU8YnI+ICAgIH08YnI+fTs8YnI+bGV0IGN1c3RvbVBhcmFtcyA9ezxicj4gICBhcGlLZXkgOiBhcGlLZXksPGJyPiAgICBhcGlOYW1lIDogYXBpTmFtZTIsPGJyPiAgICBkb21haW46IHNpdGVEb21haW4sPGJyPiAgICBzaXRlTmFtZTogc2l0ZU5hbWUsPGJyPiAgICBwYXNzd29yZDogcGFzc3dvcmQsPGJyPiAgICB0eXBlOmludGVncmF0aW9uTmFtZSw8YnI+ICAgIGFwaVR5cGU6IGFwaVR5cGUyLDxicj4gIC8vIHVybDogJ2h0dHBzOi8vJytzaXRlTmFtZSsnLmludGVncmF0aW9ucy4nK3NpdGVEb21haW4rJy9pbnRlZ3JhdGlvbnMvYXBpL2dldF9jdXN0b21fZmllbGRfbGlzdCcsPGJyPiAgLy8gaGVhZGVyczp7PGJyPiAgLy8gICBBdXRob3JpemF0aW9uOiAnQmFzaWMgJyArIENFLmI2NChhcGlLZXkgKyAnOicgKyBwYXNzd29yZCk8YnI+ICAvLyB9LDxicj4gIHF1ZXJ5SnNvbjp7PGJyPiAgICBzaXRlX25hbWU6IHNpdGVOYW1lLDxicj4gICAgYXBpX2tleTogYXBpS2V5PGJyPiAgfTxicj59Ozxicj4gPGJyPjxicj5kb25lKHt0cEludGVnQ29uZlBhcmFtczp0cEludGVnQ29uZlBhcmFtcyw8YnI+ICAgICAgY3VzdG9tUGFyYW1zOmN1c3RvbVBhcmFtczxicj59KTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdDb25zdHJ1Y3RDb25mQXBpUmVxJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdzZW5kRXJyb3JSZXNwb25zZSc8YnI+ICBdLDxicj4gICduYW1lJzogJ0ZpZWxkSW5pdFByb2Nlc3NJbnB1dHMnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgYXBpS2V5ID0gc3RlcHMuRmllbGRJbml0UHJvcHMucmVxdWVzdC5xdWVyeVsnY2ItYXBpLWtleSddO1xubGV0IHNpdGVOYW1lID0gc3RlcHMuRmllbGRJbml0UHJvcHMucmVxdWVzdC5xdWVyeVsnY2Itc2l0ZS1uYW1lJ107XG5sZXQgc2l0ZURvbWFpbiA9IHN0ZXBzLkZpZWxkSW5pdFByb3BzLnJlcXVlc3QucXVlcnlbJ2NiLWRvbWFpbiddO1xubGV0IGludGVncmF0aW9uTmFtZSA9IHN0ZXBzLkZpZWxkSW5pdFByb3BzLnJlcXVlc3QucXVlcnlbJ3R5cGUnXTtcbmxldCBhcGlOYW1lMSA9IFwndGhpcmRfcGFydHlfY29uZmlndXJhdGlvbnNcJztcbmxldCBhcGlOYW1lMiA9XCdnZXRfY3VzdG9tX2ZpZWxkX2xpc3RcJztcbmxldCBwYXNzd29yZCA9IFwnXCc7XG5sZXQgYXBpVHlwZTIgPSBcJ0lOVEVHLUlOVEVHLUFQSVwnO1xuXG5sZXQgdHBJbnRlZ0NvbmZQYXJhbXMgPSB7XG4gICAgYXBpS2V5IDogYXBpS2V5LFxuICAgIGFwaU5hbWUgOiBhcGlOYW1lMSxcbiAgICBkb21haW46IHNpdGVEb21haW4sXG4gICAgc2l0ZU5hbWU6IHNpdGVOYW1lLFxuICAgIHBhc3N3b3JkOiBwYXNzd29yZCxcbiAgICB0eXBlOmludGVncmF0aW9uTmFtZSxcbiAgaW5wdXRKc29uIDp7XG4gICAgYXBpS2V5OmFwaUtleSxcbiAgICBzaXRlTmFtZTpzaXRlTmFtZSxcbiAgICBzaXRlRG9tYWluOnNpdGVEb21haW4sXG4gICAgaW50ZWdyYXRpb25OYW1lOmludGVncmF0aW9uTmFtZVxuICB9LFxuICAvLyB1cmw6IFwnaHR0cHM6Ly9cJytzaXRlTmFtZStcJy5cJytzaXRlRG9tYWluK1wnL2FwaS92Mi90aGlyZF9wYXJ0eV9jb25maWd1cmF0aW9uc1wnLFxuICAvLyAgIGF1dGg6e1xuICAvLyAgICAgQXV0aG9yaXphdGlvbjogXCdCYXNpYyBcJyArIENFLmI2NChhcGlLZXkgKyBcJzpcJyArIHBhc3N3b3JkKVxuICAvLyAgIH0sXG4gICAgcXVlcnlKc29uOntcbiAgICAgIGludGVncmF0aW9uX25hbWU6IGludGVncmF0aW9uTmFtZVxuICAgIH1cbn07XG5sZXQgY3VzdG9tUGFyYW1zID17XG4gICBhcGlLZXkgOiBhcGlLZXksXG4gICAgYXBpTmFtZSA6IGFwaU5hbWUyLFxuICAgIGRvbWFpbjogc2l0ZURvbWFpbixcbiAgICBzaXRlTmFtZTogc2l0ZU5hbWUsXG4gICAgcGFzc3dvcmQ6IHBhc3N3b3JkLFxuICAgIHR5cGU6aW50ZWdyYXRpb25OYW1lLFxuICAgIGFwaVR5cGU6IGFwaVR5cGUyLFxuICAvLyB1cmw6IFwnaHR0cHM6Ly9cJytzaXRlTmFtZStcJy5pbnRlZ3JhdGlvbnMuXCcrc2l0ZURvbWFpbitcJy9pbnRlZ3JhdGlvbnMvYXBpL2dldF9jdXN0b21fZmllbGRfbGlzdFwnLFxuICAvLyBoZWFkZXJzOntcbiAgLy8gICBBdXRob3JpemF0aW9uOiBcJ0Jhc2ljIFwnICsgQ0UuYjY0KGFwaUtleSArIFwnOlwnICsgcGFzc3dvcmQpXG4gIC8vIH0sXG4gIHF1ZXJ5SnNvbjp7XG4gICAgc2l0ZV9uYW1lOiBzaXRlTmFtZSxcbiAgICBhcGlfa2V5OiBhcGlLZXlcbiAgfVxufTtcbiBcblxuZG9uZSh7dHBJbnRlZ0NvbmZQYXJhbXM6dHBJbnRlZ0NvbmZQYXJhbXMsXG4gICAgICBjdXN0b21QYXJhbXM6Y3VzdG9tUGFyYW1zXG59KTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>let apiKey = steps.FieldInitProps.request.query['cb-api-key'];<br>let siteName = steps.FieldInitProps.request.query['cb-site-name'];<br>let siteDomain = steps.FieldInitProps.request.query['cb-domain'];<br>let integrationName = steps.FieldInitProps.request.query['type'];<br>let apiName1 = 'third_party_configurations';<br>let apiName2 ='get_custom_field_list';<br>let password = '';<br>let apiType2 = 'INTEG-INTEG-API';<br><br>let tpIntegConfParams = {<br>    apiKey : apiKey,<br>    apiName : apiName1,<br>    domain: siteDomain,<br>    siteName: siteName,<br>    password: password,<br>    type:integrationName,<br>  inputJson :{<br>    apiKey:apiKey,<br>    siteName:siteName,<br>    siteDomain:siteDomain,<br>    integrationName:integrationName<br>  },<br>  // url: 'https://'+siteName+'.'+siteDomain+'/api/v2/third_party_configurations',<br>  //   auth:{<br>  //     Authorization: 'Basic ' + CE.b64(apiKey + ':' + password)<br>  //   },<br>    queryJson:{<br>      integration_name: integrationName<br>    }<br>};<br>let customParams ={<br>   apiKey : apiKey,<br>    apiName : apiName2,<br>    domain: siteDomain,<br>    siteName: siteName,<br>    password: password,<br>    type:integrationName,<br>    apiType: apiType2,<br>  // url: 'https://'+siteName+'.integrations.'+siteDomain+'/integrations/api/get_custom_field_list',<br>  // headers:{<br>  //   Authorization: 'Basic ' + CE.b64(apiKey + ':' + password)<br>  // },<br>  queryJson:{<br>    site_name: siteName,<br>    api_key: apiKey<br>  }<br>};<br> <br><br>done({tpIntegConfParams:tpIntegConfParams,<br>      customParams:customParams<br>});</pre>"
+            click step-007 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNvbnN0cnVjdENvbmZBcGlSZXE8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5PdGhlciAoZm9ybXVsYSk6PC9iPjxicj48YnI+PHByZT4gIGZvcm11bGFJZCA6IDMxNDI4PGJyPiAgICAgICBhcmdzIDogJHtzdGVwcy5GaWVsZEluaXRQcm9jZXNzSW5wdXRzLnRwSW50ZWdDb25mUGFyYW1zfTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0lzQ29uZmlnU3VjY2VlZGVkJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdzZW5kRXJyb3JSZXNwb25zZSc8YnI+ICBdLDxicj4gICduYW1lJzogJ0NvbnN0cnVjdENvbmZBcGlSZXEnLDxicj4gICd0eXBlJzogJ2Zvcm11bGEnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2Zvcm11bGFJZCc6ICczMTQyOCcsPGJyPiAgICAnYXJncyc6ICcke3N0ZXBzLkZpZWxkSW5pdFByb2Nlc3NJbnB1dHMudHBJbnRlZ0NvbmZQYXJhbXN9Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Other (formula):<br><pre>  formulaId : 31428<br>       args : ${steps.FieldInitProcessInputs.tpIntegConfParams}</pre>"
+            click step-008 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPklzQ29uZmlnU3VjY2VlZGVkPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUoc3RlcHMuQ29uc3RydWN0Q29uZkFwaVJlcVsnZXJyb3InXSA9PT0gdW5kZWZpbmVkKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdDb25zdHJ1Y3RDdXN0b21BcGlSZXEnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ3NlbmRFcnJvclJlc3BvbnNlJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnSXNDb25maWdTdWNjZWVkZWQnLDxicj4gICd0eXBlJzogJ2ZpbHRlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdkb25lKHN0ZXBzLkNvbnN0cnVjdENvbmZBcGlSZXFbJ2Vycm9yJ10gPT09IHVuZGVmaW5lZCk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done(steps.ConstructConfApiReq['error'] === undefined);</pre>"
+            click step-009 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNvbnN0cnVjdEN1c3RvbUFwaVJlcTwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPk90aGVyIChmb3JtdWxhKTo8L2I+PGJyPjxicj48cHJlPiAgZm9ybXVsYUlkIDogMzE0Mjg8YnI+ICAgICAgIGFyZ3MgOiAke3N0ZXBzLkZpZWxkSW5pdFByb2Nlc3NJbnB1dHMuY3VzdG9tUGFyYW1zfTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0lzQ3VzdG9tU3VjY2VlZGVkJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdzZW5kRXJyb3JSZXNwb25zZSc8YnI+ICBdLDxicj4gICduYW1lJzogJ0NvbnN0cnVjdEN1c3RvbUFwaVJlcScsPGJyPiAgJ3R5cGUnOiAnZm9ybXVsYScsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnZm9ybXVsYUlkJzogJzMxNDI4Jyw8YnI+ICAgICdhcmdzJzogJyR7c3RlcHMuRmllbGRJbml0UHJvY2Vzc0lucHV0cy5jdXN0b21QYXJhbXN9Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Other (formula):<br><pre>  formulaId : 31428<br>       args : ${steps.FieldInitProcessInputs.customParams}</pre>"
+            click step-010 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPklzQ3VzdG9tU3VjY2VlZGVkPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUoc3RlcHMuQ29uc3RydWN0Q3VzdG9tQXBpUmVxWydlcnJvciddID09PSB1bmRlZmluZWQpOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0ZpZWxkSW5pdE91dHB1dCc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnc2VuZEVycm9yUmVzcG9uc2UnPGJyPiAgXSw8YnI+ICAnbmFtZSc6ICdJc0N1c3RvbVN1Y2NlZWRlZCcsPGJyPiAgJ3R5cGUnOiAnZmlsdGVyJyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUoc3RlcHMuQ29uc3RydWN0Q3VzdG9tQXBpUmVxWydlcnJvciddID09PSB1bmRlZmluZWQpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>done(steps.ConstructCustomApiReq['error'] === undefined);</pre>"
+            click step-011 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkZpZWxkSW5pdE91dHB1dDwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5sZXQgcGFyYW1zID0gezxicj4gIENvbmZBcGlSZXE6IHN0ZXBzLkNvbnN0cnVjdENvbmZBcGlSZXEsPGJyPiAgQ3VzdG9tQXBpUmVxOnN0ZXBzLkNvbnN0cnVjdEN1c3RvbUFwaVJlcSw8YnI+ICBnZXRGb3JtdWxhRGV0YWlscyA6IHN0ZXBzLmdldEZvcm11bGFEZXRhaWxzLDxicj4gIGdldENvbmZSZXEgOns8YnI+ICBhcGlLZXk6IHN0ZXBzLkNvbnN0cnVjdENvbmZBcGlSZXEuaW5wdXQuYXBpS2V5LDxicj4gIGhlYWRlcnM6IHN0ZXBzLkNvbnN0cnVjdENvbmZBcGlSZXEuYXV0aCw8YnI+ICBxdWVyeTogc3RlcHMuQ29uc3RydWN0Q29uZkFwaVJlcS5xdWVyeSw8YnI+ICBzaXRlRG9tYWluOiBzdGVwcy5Db25zdHJ1Y3RDb25mQXBpUmVxLmlucHV0LnNpdGVEb21haW4sPGJyPiAgc2l0ZU5hbWU6IHN0ZXBzLkNvbnN0cnVjdENvbmZBcGlSZXEuaW5wdXQuc2l0ZU5hbWUsPGJyPiAgdHlwZTogc3RlcHMuQ29uc3RydWN0Q29uZkFwaVJlcS50eXBlLDxicj4gIHVybDogc3RlcHMuQ29uc3RydWN0Q29uZkFwaVJlcS51cmw8YnI+fSw8YnI+Z2V0Q3VzdG9tUmVxIDp7PGJyPiAgYXBpS2V5OiBzdGVwcy5Db25zdHJ1Y3RDdXN0b21BcGlSZXEuaW5wdXQuYXBpS2V5LDxicj4gIGhlYWRlcnM6IHN0ZXBzLkNvbnN0cnVjdEN1c3RvbUFwaVJlcS5hdXRoLDxicj4gIHF1ZXJ5OiBzdGVwcy5Db25zdHJ1Y3RDdXN0b21BcGlSZXEucXVlcnksPGJyPiAgc2l0ZURvbWFpbjogc3RlcHMuQ29uc3RydWN0Q3VzdG9tQXBpUmVxLmlucHV0LnNpdGVEb21haW4sPGJyPiAgc2l0ZU5hbWU6IHN0ZXBzLkNvbnN0cnVjdEN1c3RvbUFwaVJlcS5pbnB1dC5zaXRlTmFtZSw8YnI+ICB0eXBlOiBzdGVwcy5Db25zdHJ1Y3RDdXN0b21BcGlSZXEudHlwZSw8YnI+ICB1cmw6IHN0ZXBzLkNvbnN0cnVjdEN1c3RvbUFwaVJlcS51cmw8YnI+fTxicj4gIDxicj59PGJyPjxicj5kb25lKHBhcmFtcyk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ3NlbmRFcnJvclJlc3BvbnNlJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnRmllbGRJbml0T3V0cHV0Jyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnbGV0IHBhcmFtcyA9IHtcbiAgQ29uZkFwaVJlcTogc3RlcHMuQ29uc3RydWN0Q29uZkFwaVJlcSxcbiAgQ3VzdG9tQXBpUmVxOnN0ZXBzLkNvbnN0cnVjdEN1c3RvbUFwaVJlcSxcbiAgZ2V0Rm9ybXVsYURldGFpbHMgOiBzdGVwcy5nZXRGb3JtdWxhRGV0YWlscyxcbiAgZ2V0Q29uZlJlcSA6e1xuICBhcGlLZXk6IHN0ZXBzLkNvbnN0cnVjdENvbmZBcGlSZXEuaW5wdXQuYXBpS2V5LFxuICBoZWFkZXJzOiBzdGVwcy5Db25zdHJ1Y3RDb25mQXBpUmVxLmF1dGgsXG4gIHF1ZXJ5OiBzdGVwcy5Db25zdHJ1Y3RDb25mQXBpUmVxLnF1ZXJ5LFxuICBzaXRlRG9tYWluOiBzdGVwcy5Db25zdHJ1Y3RDb25mQXBpUmVxLmlucHV0LnNpdGVEb21haW4sXG4gIHNpdGVOYW1lOiBzdGVwcy5Db25zdHJ1Y3RDb25mQXBpUmVxLmlucHV0LnNpdGVOYW1lLFxuICB0eXBlOiBzdGVwcy5Db25zdHJ1Y3RDb25mQXBpUmVxLnR5cGUsXG4gIHVybDogc3RlcHMuQ29uc3RydWN0Q29uZkFwaVJlcS51cmxcbn0sXG5nZXRDdXN0b21SZXEgOntcbiAgYXBpS2V5OiBzdGVwcy5Db25zdHJ1Y3RDdXN0b21BcGlSZXEuaW5wdXQuYXBpS2V5LFxuICBoZWFkZXJzOiBzdGVwcy5Db25zdHJ1Y3RDdXN0b21BcGlSZXEuYXV0aCxcbiAgcXVlcnk6IHN0ZXBzLkNvbnN0cnVjdEN1c3RvbUFwaVJlcS5xdWVyeSxcbiAgc2l0ZURvbWFpbjogc3RlcHMuQ29uc3RydWN0Q3VzdG9tQXBpUmVxLmlucHV0LnNpdGVEb21haW4sXG4gIHNpdGVOYW1lOiBzdGVwcy5Db25zdHJ1Y3RDdXN0b21BcGlSZXEuaW5wdXQuc2l0ZU5hbWUsXG4gIHR5cGU6IHN0ZXBzLkNvbnN0cnVjdEN1c3RvbUFwaVJlcS50eXBlLFxuICB1cmw6IHN0ZXBzLkNvbnN0cnVjdEN1c3RvbUFwaVJlcS51cmxcbn1cbiAgXG59XG5cbmRvbmUocGFyYW1zKTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>let params = {<br>  ConfApiReq: steps.ConstructConfApiReq,<br>  CustomApiReq:steps.ConstructCustomApiReq,<br>  getFormulaDetails : steps.getFormulaDetails,<br>  getConfReq :{<br>  apiKey: steps.ConstructConfApiReq.input.apiKey,<br>  headers: steps.ConstructConfApiReq.auth,<br>  query: steps.ConstructConfApiReq.query,<br>  siteDomain: steps.ConstructConfApiReq.input.siteDomain,<br>  siteName: steps.ConstructConfApiReq.input.siteName,<br>  type: steps.ConstructConfApiReq.type,<br>  url: steps.ConstructConfApiReq.url<br>},<br>getCustomReq :{<br>  apiKey: steps.ConstructCustomApiReq.input.apiKey,<br>  headers: steps.ConstructCustomApiReq.auth,<br>  query: steps.ConstructCustomApiReq.query,<br>  siteDomain: steps.ConstructCustomApiReq.input.siteDomain,<br>  siteName: steps.ConstructCustomApiReq.input.siteName,<br>  type: steps.ConstructCustomApiReq.type,<br>  url: steps.ConstructCustomApiReq.url<br>}<br>  <br>}<br><br>done(params);</pre>"
+
+        </div>
+    </div>
+    <h2>
+        Formula Configuration
+    </h2>
+    <div class="container">
+        <h3>Basic</h3><table><tr><th>key</th><th>value</th></tr><tr><td>Name</td><td>HubspotSyncRulesForFieldsInit</td></tr><tr><td>Single Threaded?</td><td>false</td></tr><tr><td>Active?</td><td>true</td></tr><tr><td>Number of Steps</td><td>13</td></tr><tr><td>Number of Triggers</td><td>1</td></tr></table>
+    <br/><h3>Elements</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table>
+    <br/><h3>Values</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table><br/>
+    </div>
+    <div class="key">
+        <h2>
+            Key
+        </h2>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+            </tr>
+
+            <tr>
+                <td>Filter Steps</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A{Step Name}
+                    </div>
+                </td>
+                <td>Trigger/End</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        B((Actual))
+                        C((Generated))
+                        style C stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Request Step</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A>GET]
+                        style A stroke:#0f6ab4;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        B>POST]
+                        style B stroke:#10a54a;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PATCH]
+                        style C stroke:#D38042;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PUT]
+                        style C stroke:#C5862B;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        D>DELETE]
+                        style D stroke:#a41e22;
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Script</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(Step Name)
+                    </div>
+                </td>
+                <td>Loop</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(-Step Name-)
+                    </div>
+                </td>
+                <td>Other(TYPE)</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D[Step Name]
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Pass/Fail Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL-->BL
+                    </div>
+                </td>
+                <td>Generated Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL((B))
+                        AL-.->BL
+                        style BL stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Continue Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL==>BL
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+</body>
+</html>

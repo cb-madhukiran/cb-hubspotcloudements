@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HubSpotAuth</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>
+        var callback = function(){}
+    </script>
+    <style>
+        div.mermaidTooltip {
+                    margin-left: 50px;
+                    text-align: left;
+                    max-width: none;
+                }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+                    fill: #ffffff;
+                    stroke: rgb(200,200,200);
+                    stroke-width: 2px;
+                }
+        .mermaid .label {
+                  max-width: 50px;
+                }
+        table, th, td {
+                    border: 1px solid black;
+                }
+        table {
+                    border-spacing: 5px;
+                    border-radius: 5px;
+                    margin: auto;
+                }
+        th, td {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 5px;
+                }
+        th {
+                    color: blue;
+                }
+        td {
+                    width: 180px;
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                }
+        h2 {
+                    text-align: center;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                    padding: 1em;
+                }
+        .container {
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                    font-size: 11px;
+                    font-weight: 900;
+                }
+        body {
+                    font-family: 'Arial';
+                }
+        .edgeLabel {
+                    font-size: 9px;
+                }
+    </style>
+</head>
+<body>
+    <h2>
+        HubSpotAuth
+    </h2>
+    <div class="container">
+        <div class="mermaid">
+            graph TD
+
+                step-000((Trigger))
+            step-001(SendOptions)
+            step-002((END))
+
+                step-000== continue ==>step-001
+            step-001-. done .->step-002
+
+                style step-002 stroke-width:3px,stroke-dasharray: 5, 5;
+
+                click step-000 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnRyaWdnZXI8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5UcmlnZ2VyIEVsZW1lbnQ6PC9iPjxicj48YnI+PHByZT4gICB0eXBlIDogbWFudWFsPGJyPiAgYXN5bmMgOiB0cnVlPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnU2VuZE9wdGlvbnMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ3R5cGUnOiAnbWFudWFsJyw8YnI+ICAnYXN5bmMnOiB0cnVlLDxicj4gICduYW1lJzogJ3RyaWdnZXInLDxicj4gICdwcm9wZXJ0aWVzJzoge308YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Trigger Element:<br><pre>   type : manual<br>  async : true</pre>"
+            click step-001 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlNlbmRPcHRpb25zPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCByZXM7PGJyPjxicj5pZih0cmlnZ2VyLmFyZ3MucmVxdWVzdC5xdWVyeS5lcnJvciAhPT0gdW5kZWZpbmVkKXs8YnI+ICByZXMgPSB7PGJyPiAgICAgICdjYXJkcyc6IFt7PGJyPiAgICAgICAgICAnaWQnOiAnY2hlY2syJyw8YnI+ICAgICAgICAgICdjYXJkJzogezxicj4gICAgICAgICAgICAgICd0eXBlJzogJ0FDVElPTicsPGJyPiAgICAgICAgICAgICAgJ2hlYWRpbmcnOiAnRXJyb3I6ICBBdXRoZW50aWNhdGlvbiBGYWlsZWQnLDxicj4gICAgICAgICAgICAgICdsaXN0Q29udGVudCc6IFs8YnI+ICAgICAgICAgICAgICAgICAgdHJpZ2dlci5hcmdzLnJlcXVlc3QucXVlcnkuZXJyb3I8YnI+ICAgICAgICAgICAgICBdLDxicj4gICAgICAgICAgICAgICdpY29uJzogJ1dBUk5JTkcnPGJyPiAgICAgICAgICB9PGJyPiAgICAgIH1dPGJyPiAgfTs8YnI+ICBkb25lKHs8YnI+ICAgIHN0YXR1c0NvZGU6IDQwMSw8YnI+ICAgIHJlczogcmVzPGJyPiAgfSk7PGJyPn08YnI+PGJyPjxicj5sZXQgY29kZSA9IHRyaWdnZXIuYXJncy5yZXF1ZXN0LnF1ZXJ5LmNvZGU7PGJyPmxldCBzaXRlTmFtZSA9IHRyaWdnZXIuYXJncy5yZXF1ZXN0LnF1ZXJ5LnN0YXRlOzxicj5sZXQgcmVkaXJlY3RfdXJpID0gdHJpZ2dlci5hcmdzLnJlcXVlc3QucXVlcnkucmVkaXJlY3RfdXJpOzxicj5sZXQgY2xpZW50X2luZm8gPSBKU09OLnBhcnNlKHRyaWdnZXIuYXJncy5yZXF1ZXN0LnF1ZXJ5LmNsaWVudF9pbmZvKTs8YnI+PGJyPmxldCBjbGllbnRfaWQgPSBjbGllbnRfaW5mby5jbGllbnRfaWQ7PGJyPmxldCBjbGllbnRfc2VjcmV0ID0gY2xpZW50X2luZm8uY2xpZW50X3NlY3JldDs8YnI+PGJyPjxicj5yZXMgPSB7PGJyPiAgICB1cmw6ICdodHRwczovL2FwaS5odWJhcGkuY29tL29hdXRoL3YxL3Rva2VuJyw8YnI+ICAgIG1ldGhvZDonUE9TVCcsPGJyPiAgICBoZWFkZXJzOiB7PGJyPiAgICAgICdBY2NlcHQnOiAnYXBwbGljYXRpb24vanNvbicsPGJyPiAgICAgICdDb250ZW50LVR5cGUnIDogJ2FwcGxpY2F0aW9uL3gtd3d3LWZvcm0tdXJsZW5jb2RlZCc8YnI+ICAgIH0sPGJyPiAgICBmb3JtOiB7PGJyPiAgICAgICdncmFudF90eXBlJyA6ICdhdXRob3JpemF0aW9uX2NvZGUnLDxicj4gICAgICAnY29kZScgOiBjb2RlLDxicj4gICAgICAnY2xpZW50X2lkJzogY2xpZW50X2lkLDxicj4gICAgICAnY2xpZW50X3NlY3JldCc6Y2xpZW50X3NlY3JldCw8YnI+ICAgICAgJ3JlZGlyZWN0X3VyaScgOiByZWRpcmVjdF91cmk8YnI+ICAgIH0sPGJyPiAgICAncmVkaXJlY3RfdXJpJzogcmVkaXJlY3RfdXJpLDxicj4gICAgJ3NpdGVfbmFtZSc6IHNpdGVOYW1lLDxicj4gICAgdXJsUGFyYW1zOnt9PGJyPiAgfTs8YnI+PGJyPmRvbmUoezxicj4gIHN0YXR1c0NvZGU6IDIwMCw8YnI+ICByZXN1bHQ6IHJlczxicj59KTs8YnI+PGJyPiAgPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnU2VuZE9wdGlvbnMnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgcmVzO1xuXG5pZih0cmlnZ2VyLmFyZ3MucmVxdWVzdC5xdWVyeS5lcnJvciAhPT0gdW5kZWZpbmVkKXtcbiAgcmVzID0ge1xuICAgICAgXCdjYXJkc1wnOiBbe1xuICAgICAgICAgIFwnaWRcJzogXCdjaGVjazJcJyxcbiAgICAgICAgICBcJ2NhcmRcJzoge1xuICAgICAgICAgICAgICBcJ3R5cGVcJzogXCdBQ1RJT05cJyxcbiAgICAgICAgICAgICAgXCdoZWFkaW5nXCc6IFwnRXJyb3I6ICBBdXRoZW50aWNhdGlvbiBGYWlsZWRcJyxcbiAgICAgICAgICAgICAgXCdsaXN0Q29udGVudFwnOiBbXG4gICAgICAgICAgICAgICAgICB0cmlnZ2VyLmFyZ3MucmVxdWVzdC5xdWVyeS5lcnJvclxuICAgICAgICAgICAgICBdLFxuICAgICAgICAgICAgICBcJ2ljb25cJzogXCdXQVJOSU5HXCdcbiAgICAgICAgICB9XG4gICAgICB9XVxuICB9O1xuICBkb25lKHtcbiAgICBzdGF0dXNDb2RlOiA0MDEsXG4gICAgcmVzOiByZXNcbiAgfSk7XG59XG5cblxubGV0IGNvZGUgPSB0cmlnZ2VyLmFyZ3MucmVxdWVzdC5xdWVyeS5jb2RlO1xubGV0IHNpdGVOYW1lID0gdHJpZ2dlci5hcmdzLnJlcXVlc3QucXVlcnkuc3RhdGU7XG5sZXQgcmVkaXJlY3RfdXJpID0gdHJpZ2dlci5hcmdzLnJlcXVlc3QucXVlcnkucmVkaXJlY3RfdXJpO1xubGV0IGNsaWVudF9pbmZvID0gSlNPTi5wYXJzZSh0cmlnZ2VyLmFyZ3MucmVxdWVzdC5xdWVyeS5jbGllbnRfaW5mbyk7XG5cbmxldCBjbGllbnRfaWQgPSBjbGllbnRfaW5mby5jbGllbnRfaWQ7XG5sZXQgY2xpZW50X3NlY3JldCA9IGNsaWVudF9pbmZvLmNsaWVudF9zZWNyZXQ7XG5cblxucmVzID0ge1xuICAgIHVybDogJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vb2F1dGgvdjEvdG9rZW4nLFxuICAgIG1ldGhvZDpcJ1BPU1RcJyxcbiAgICBoZWFkZXJzOiB7XG4gICAgICAnQWNjZXB0JzogJ2FwcGxpY2F0aW9uL2pzb24nLFxuICAgICAgJ0NvbnRlbnQtVHlwZScgOiAnYXBwbGljYXRpb24veC13d3ctZm9ybS11cmxlbmNvZGVkJ1xuICAgIH0sXG4gICAgZm9ybToge1xuICAgICAgJ2dyYW50X3R5cGUnIDogJ2F1dGhvcml6YXRpb25fY29kZScsXG4gICAgICAnY29kZScgOiBjb2RlLFxuICAgICAgJ2NsaWVudF9pZCc6IGNsaWVudF9pZCxcbiAgICAgICdjbGllbnRfc2VjcmV0JzpjbGllbnRfc2VjcmV0LFxuICAgICAgJ3JlZGlyZWN0X3VyaScgOiByZWRpcmVjdF91cmlcbiAgICB9LFxuICAgIFwncmVkaXJlY3RfdXJpXCc6IHJlZGlyZWN0X3VyaSxcbiAgICBcJ3NpdGVfbmFtZVwnOiBzaXRlTmFtZSxcbiAgICB1cmxQYXJhbXM6e31cbiAgfTtcblxuZG9uZSh7XG4gIHN0YXR1c0NvZGU6IDIwMCxcbiAgcmVzdWx0OiByZXNcbn0pO1xuXG4gICc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let res;<br><br>if(trigger.args.request.query.error !== undefined){<br>  res = {<br>      'cards': [{<br>          'id': 'check2',<br>          'card': {<br>              'type': 'ACTION',<br>              'heading': 'Error:  Authentication Failed',<br>              'listContent': [<br>                  trigger.args.request.query.error<br>              ],<br>              'icon': 'WARNING'<br>          }<br>      }]<br>  };<br>  done({<br>    statusCode: 401,<br>    res: res<br>  });<br>}<br><br><br>let code = trigger.args.request.query.code;<br>let siteName = trigger.args.request.query.state;<br>let redirect_uri = trigger.args.request.query.redirect_uri;<br>let client_info = JSON.parse(trigger.args.request.query.client_info);<br><br>let client_id = client_info.client_id;<br>let client_secret = client_info.client_secret;<br><br><br>res = {<br>    url: 'https://api.hubapi.com/oauth/v1/token',<br>    method:'POST',<br>    headers: {<br>      'Accept': 'application/json',<br>      'Content-Type' : 'application/x-www-form-urlencoded'<br>    },<br>    form: {<br>      'grant_type' : 'authorization_code',<br>      'code' : code,<br>      'client_id': client_id,<br>      'client_secret':client_secret,<br>      'redirect_uri' : redirect_uri<br>    },<br>    'redirect_uri': redirect_uri,<br>    'site_name': siteName,<br>    urlParams:{}<br>  };<br><br>done({<br>  statusCode: 200,<br>  result: res<br>});<br><br>  </pre>"
+
+        </div>
+    </div>
+    <h2>
+        Formula Configuration
+    </h2>
+    <div class="container">
+        <h3>Basic</h3><table><tr><th>key</th><th>value</th></tr><tr><td>Name</td><td>HubSpotAuth</td></tr><tr><td>Single Threaded?</td><td>false</td></tr><tr><td>Active?</td><td>true</td></tr><tr><td>Number of Steps</td><td>1</td></tr><tr><td>Number of Triggers</td><td>1</td></tr></table>
+    <br/><h3>Elements</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table>
+    <br/><h3>Values</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table><br/>
+    </div>
+    <div class="key">
+        <h2>
+            Key
+        </h2>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+            </tr>
+
+            <tr>
+                <td>Filter Steps</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A{Step Name}
+                    </div>
+                </td>
+                <td>Trigger/End</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        B((Actual))
+                        C((Generated))
+                        style C stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Request Step</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A>GET]
+                        style A stroke:#0f6ab4;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        B>POST]
+                        style B stroke:#10a54a;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PATCH]
+                        style C stroke:#D38042;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PUT]
+                        style C stroke:#C5862B;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        D>DELETE]
+                        style D stroke:#a41e22;
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Script</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(Step Name)
+                    </div>
+                </td>
+                <td>Loop</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(-Step Name-)
+                    </div>
+                </td>
+                <td>Other(TYPE)</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D[Step Name]
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Pass/Fail Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL-->BL
+                    </div>
+                </td>
+                <td>Generated Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL((B))
+                        AL-.->BL
+                        style BL stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Continue Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL==>BL
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+</body>
+</html>

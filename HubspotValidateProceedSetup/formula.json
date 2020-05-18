@@ -1,0 +1,33 @@
+{
+    "active": true,
+    "api": "GET /validate/proceed",
+    "configuration": [],
+    "debugLoggingEnabled": true,
+    "engine": "v1",
+    "id": 31482,
+    "method": "GET",
+    "name": "HubspotValidateProceedSetup",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "SendProceed",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {},
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "SendProceed"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ],
+    "uri": "/validate/proceed"
+}

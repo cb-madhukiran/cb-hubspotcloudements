@@ -1,0 +1,1 @@
+done(steps.PrepareHubSpotCreatesDealProperty.errorFlag === true);

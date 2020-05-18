@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HubSpotMigrateCMMR</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/6.0.0/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>
+        var callback = function(){}
+    </script>
+    <style>
+        div.mermaidTooltip {
+                    margin-left: 50px;
+                    text-align: left;
+                    max-width: none;
+                }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+                    fill: #ffffff;
+                    stroke: rgb(200,200,200);
+                    stroke-width: 2px;
+                }
+        .mermaid .label {
+                  max-width: 50px;
+                }
+        table, th, td {
+                    border: 1px solid black;
+                }
+        table {
+                    border-spacing: 5px;
+                    border-radius: 5px;
+                    margin: auto;
+                }
+        th, td {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    border-radius: 5px;
+                }
+        th {
+                    color: blue;
+                }
+        td {
+                    width: 180px;
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                }
+        h2 {
+                    text-align: center;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                    padding: 1em;
+                }
+        .container {
+                    text-align: center;
+                    background-color: rgb(237, 241, 242);
+                    font-size: 11px;
+                    font-weight: 900;
+                }
+        body {
+                    font-family: 'Arial';
+                }
+        .edgeLabel {
+                    font-size: 9px;
+                }
+    </style>
+</head>
+<body>
+    <h2>
+        HubSpotMigrateCMMR
+    </h2>
+    <div class="container">
+        <div class="mermaid">
+            graph TD
+
+                step-000((Trigger))
+            step-001(InputParams)
+            step-002[ChargebeeConfig]
+            step-003{HasChargebeeConfig}
+            step-004[RefreshToken]
+            step-005(CMMRError)
+            step-006((END))
+            step-007(UpdateToken)
+            step-008[GetHubSpotGroup]
+            step-009(PrepareHubSpotCreates)
+            step-010{DoCreateHubSpotGroup}
+            step-011{DoCreateHubSpotProperties}
+            step-012[CreateHubSpotProperty]
+            step-013(ContactParam)
+            step-014[GetContacts]
+            step-015(BulKInput)
+            step-016{HasContactInput}
+            step-017[GetCBCustomers]
+            step-018{HasMoreContacts}
+            step-019((END))
+            step-020(HubContactInput)
+            step-021{HasUpdates}
+            step-022[UpdateHubProperties]
+
+                step-000== continue ==>step-001
+            step-001-- success -->step-002
+            step-002-- success -->step-003
+            step-003-- success -->step-004
+            step-003-- failure -->step-005
+            step-004-- success -->step-007
+            step-005-. done .->step-006
+            step-007-- success -->step-008
+            step-008-- success -->step-009
+            step-009-- success -->step-010
+            step-010-- success -->step-005
+            step-010-- failure -->step-011
+            step-011-- success -->step-012
+            step-011-- failure -->step-013
+            step-012-- success -->step-013
+            step-013-- success -->step-014
+            step-014-- success -->step-015
+            step-015-- success -->step-016
+            step-016-- success -->step-017
+            step-016-- failure -->step-018
+            step-017-- success -->step-020
+            step-018-- success -->step-014
+            step-018-. failure .->step-019
+            step-020-- success -->step-021
+            step-021-- success -->step-022
+            step-021-- failure -->step-018
+            step-022-- success -->step-018
+
+                style step-006 stroke-width:3px,stroke-dasharray: 5, 5;
+            style step-019 stroke-width:3px,stroke-dasharray: 5, 5;
+
+                click step-000 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPnRyaWdnZXI8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5UcmlnZ2VyIEVsZW1lbnQ6PC9iPjxicj48YnI+PHByZT4gICB0eXBlIDogbWFudWFsPGJyPiAgYXN5bmMgOiB0cnVlPC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnSW5wdXRQYXJhbXMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ3R5cGUnOiAnbWFudWFsJyw8YnI+ICAnYXN5bmMnOiB0cnVlLDxicj4gICduYW1lJzogJ3RyaWdnZXInLDxicj4gICdwcm9wZXJ0aWVzJzoge308YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "Trigger Element:<br><pre>   type : manual<br>  async : true</pre>"
+            click step-001 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPklucHV0UGFyYW1zPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmxldCBhcGlLZXkgPSB0cmlnZ2VyLmFyZ3MuYXBpS2V5Ozxicj5sZXQgc2l0ZU5hbWUgPSB0cmlnZ2VyLmFyZ3Muc2l0ZU5hbWU7PGJyPmxldCB0eXBlID0gdHJpZ2dlci5hcmdzLnR5cGU7PGJyPmxldCBzaXRlRG9tYWluID0gdHJpZ2dlci5hcmdzLnNpdGVEb21haW47PGJyPmxldCBodWJzcG90R3JvdXAgPSB0cmlnZ2VyLmFyZ3MuaHVic3BvdEdyb3VwOzxicj5sZXQgaHVic3BvdFByb3BlcnR5ID0gdHJpZ2dlci5hcmdzLmh1YnNwb3RQcm9wZXJ0eTs8YnI+PGJyPmxldCBpbnB1dCA9IHs8YnI+ICBhcGlLZXk6IGFwaUtleSw8YnI+ICBzaXRlTmFtZTogc2l0ZU5hbWUsPGJyPiAgc2l0ZURvbWFpbjogc2l0ZURvbWFpbiw8YnI+ICB0eXBlOiB0eXBlLDxicj4gIGh1YnNwb3RHcm91cDogaHVic3BvdEdyb3VwLDxicj4gIGh1YnNwb3RQcm9wZXJ0eTogaHVic3BvdFByb3BlcnR5LDxicj4gIGhHcm91cDogJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vcHJvcGVydGllcy92MS9jb250YWN0cy9ncm91cHMvbmFtZWQvJyArIGh1YnNwb3RHcm91cCArICc/aW5jbHVkZVByb3BlcnRpZXM9dHJ1ZScsPGJyPiAgaGNyZWF0ZTogezxicj4gICAgdXJsOiAnaHR0cHM6Ly9hcGkuaHViYXBpLmNvbS9wcm9wZXJ0aWVzL3YxL2NvbnRhY3RzL3Byb3BlcnRpZXMnLDxicj4gICAgYm9keTogezxicj4gICAgICAnbmFtZSc6IGh1YnNwb3RQcm9wZXJ0eSw8YnI+ICAgICAgJ2xhYmVsJzogJ0NNTVInLDxicj4gICAgICAnZGVzY3JpcHRpb24nOiAnQ01NUicsPGJyPiAgICAgICdncm91cE5hbWUnOiBodWJzcG90R3JvdXAsPGJyPiAgICAgICd0eXBlJzogJ251bWJlcicsPGJyPiAgICAgICdmaWVsZFR5cGUnOiAndGV4dCcsPGJyPiAgICAgICdmb3JtRmllbGQnOiB0cnVlPGJyPiAgICB9PGJyPiAgfSw8YnI+ICB0cENvbmZpZzogezxicj4gICAgYXBpS2V5OiBhcGlLZXksPGJyPiAgICBzaXRlTmFtZTogc2l0ZU5hbWUsPGJyPiAgICBzaXRlRG9tYWluOiBzaXRlRG9tYWluLDxicj4gICAgdHlwZTogdHlwZSw8YnI+ICAgIGhlYWRlcnM6IHs8YnI+ICAgICAgQXV0aG9yaXphdGlvbjogJ0Jhc2ljICcgKyBDRS5iNjQoYXBpS2V5ICsgJzonKTxicj4gICAgfSw8YnI+ICAgIHVybDogJ2h0dHBzOi8vJyArIHNpdGVOYW1lICsgJy4nICsgc2l0ZURvbWFpbiArICcvYXBpL3YyL3RoaXJkX3BhcnR5X2NvbmZpZ3VyYXRpb25zJyw8YnI+ICAgIHF1ZXJ5OiB7PGJyPiAgICAgIGludGVncmF0aW9uX25hbWU6IHR5cGU8YnI+ICAgIH08YnI+ICB9PGJyPn07PGJyPmRvbmUoaW5wdXQpOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0NoYXJnZWJlZUNvbmZpZyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdJbnB1dFBhcmFtcycsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2xldCBhcGlLZXkgPSB0cmlnZ2VyLmFyZ3MuYXBpS2V5O1xubGV0IHNpdGVOYW1lID0gdHJpZ2dlci5hcmdzLnNpdGVOYW1lO1xubGV0IHR5cGUgPSB0cmlnZ2VyLmFyZ3MudHlwZTtcbmxldCBzaXRlRG9tYWluID0gdHJpZ2dlci5hcmdzLnNpdGVEb21haW47XG5sZXQgaHVic3BvdEdyb3VwID0gdHJpZ2dlci5hcmdzLmh1YnNwb3RHcm91cDtcbmxldCBodWJzcG90UHJvcGVydHkgPSB0cmlnZ2VyLmFyZ3MuaHVic3BvdFByb3BlcnR5O1xuXG5sZXQgaW5wdXQgPSB7XG4gIGFwaUtleTogYXBpS2V5LFxuICBzaXRlTmFtZTogc2l0ZU5hbWUsXG4gIHNpdGVEb21haW46IHNpdGVEb21haW4sXG4gIHR5cGU6IHR5cGUsXG4gIGh1YnNwb3RHcm91cDogaHVic3BvdEdyb3VwLFxuICBodWJzcG90UHJvcGVydHk6IGh1YnNwb3RQcm9wZXJ0eSxcbiAgaEdyb3VwOiBcJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vcHJvcGVydGllcy92MS9jb250YWN0cy9ncm91cHMvbmFtZWQvXCcgKyBodWJzcG90R3JvdXAgKyBcJz9pbmNsdWRlUHJvcGVydGllcz10cnVlXCcsXG4gIGhjcmVhdGU6IHtcbiAgICB1cmw6IFwnaHR0cHM6Ly9hcGkuaHViYXBpLmNvbS9wcm9wZXJ0aWVzL3YxL2NvbnRhY3RzL3Byb3BlcnRpZXNcJyxcbiAgICBib2R5OiB7XG4gICAgICBcJ25hbWVcJzogaHVic3BvdFByb3BlcnR5LFxuICAgICAgXCdsYWJlbFwnOiBcJ0NNTVJcJyxcbiAgICAgIFwnZGVzY3JpcHRpb25cJzogXCdDTU1SXCcsXG4gICAgICBcJ2dyb3VwTmFtZVwnOiBodWJzcG90R3JvdXAsXG4gICAgICBcJ3R5cGVcJzogXCdudW1iZXJcJyxcbiAgICAgIFwnZmllbGRUeXBlXCc6IFwndGV4dFwnLFxuICAgICAgXCdmb3JtRmllbGRcJzogdHJ1ZVxuICAgIH1cbiAgfSxcbiAgdHBDb25maWc6IHtcbiAgICBhcGlLZXk6IGFwaUtleSxcbiAgICBzaXRlTmFtZTogc2l0ZU5hbWUsXG4gICAgc2l0ZURvbWFpbjogc2l0ZURvbWFpbixcbiAgICB0eXBlOiB0eXBlLFxuICAgIGhlYWRlcnM6IHtcbiAgICAgIEF1dGhvcml6YXRpb246IFwnQmFzaWMgXCcgKyBDRS5iNjQoYXBpS2V5ICsgXCc6XCcpXG4gICAgfSxcbiAgICB1cmw6IFwnaHR0cHM6Ly9cJyArIHNpdGVOYW1lICsgXCcuXCcgKyBzaXRlRG9tYWluICsgXCcvYXBpL3YyL3RoaXJkX3BhcnR5X2NvbmZpZ3VyYXRpb25zXCcsXG4gICAgcXVlcnk6IHtcbiAgICAgIGludGVncmF0aW9uX25hbWU6IHR5cGVcbiAgICB9XG4gIH1cbn07XG5kb25lKGlucHV0KTsnPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>let apiKey = trigger.args.apiKey;<br>let siteName = trigger.args.siteName;<br>let type = trigger.args.type;<br>let siteDomain = trigger.args.siteDomain;<br>let hubspotGroup = trigger.args.hubspotGroup;<br>let hubspotProperty = trigger.args.hubspotProperty;<br><br>let input = {<br>  apiKey: apiKey,<br>  siteName: siteName,<br>  siteDomain: siteDomain,<br>  type: type,<br>  hubspotGroup: hubspotGroup,<br>  hubspotProperty: hubspotProperty,<br>  hGroup: 'https://api.hubapi.com/properties/v1/contacts/groups/named/' + hubspotGroup + '?includeProperties=true',<br>  hcreate: {<br>    url: 'https://api.hubapi.com/properties/v1/contacts/properties',<br>    body: {<br>      'name': hubspotProperty,<br>      'label': 'CMMR',<br>      'description': 'CMMR',<br>      'groupName': hubspotGroup,<br>      'type': 'number',<br>      'fieldType': 'text',<br>      'formField': true<br>    }<br>  },<br>  tpConfig: {<br>    apiKey: apiKey,<br>    siteName: siteName,<br>    siteDomain: siteDomain,<br>    type: type,<br>    headers: {<br>      Authorization: 'Basic ' + CE.b64(apiKey + ':')<br>    },<br>    url: 'https://' + siteName + '.' + siteDomain + '/api/v2/third_party_configurations',<br>    query: {<br>      integration_name: type<br>    }<br>  }<br>};<br>done(input);</pre>"
+            click step-002 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNoYXJnZWJlZUNvbmZpZzwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPk90aGVyIChmb3JtdWxhKTo8L2I+PGJyPjxicj48cHJlPiAgZm9ybXVsYUlkIDogMzE3OTI8YnI+ICAgICAgIGFyZ3MgOiAke3N0ZXBzLklucHV0UGFyYW1zLnRwQ29uZmlnfTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0hhc0NoYXJnZWJlZUNvbmZpZyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdDaGFyZ2ViZWVDb25maWcnLDxicj4gICd0eXBlJzogJ2Zvcm11bGEnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2Zvcm11bGFJZCc6ICczMTc5MicsPGJyPiAgICAnYXJncyc6ICcke3N0ZXBzLklucHV0UGFyYW1zLnRwQ29uZmlnfSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (formula):<br><pre>  formulaId : 31792<br>       args : ${steps.InputParams.tpConfig}</pre>"
+            click step-003 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkhhc0NoYXJnZWJlZUNvbmZpZzwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5pZihzdGVwcy5DaGFyZ2ViZWVDb25maWcuY2Jfc3RhdHVzPT09J3N1Y2Nlc3MnKSB7PGJyPiAgc3RlcHMuSW5wdXRQYXJhbXMuY29uZmlnSnNvbiA9IHN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5kYXRhOzxicj4gIGRvbmUodHJ1ZSk7PGJyPn1lbHNlIHs8YnI+ICAgc3RlcHMuSW5wdXRQYXJhbXMuZXJyb3JDb2RlID0gIHN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5jYl9lcnJvcl9jb2RlOzxicj4gIGRvbmUoZmFsc2UpOzxicj59PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnUmVmcmVzaFRva2VuJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdDTU1SRXJyb3InPGJyPiAgXSw8YnI+ICAnbmFtZSc6ICdIYXNDaGFyZ2ViZWVDb25maWcnLDxicj4gICd0eXBlJzogJ2ZpbHRlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdpZihzdGVwcy5DaGFyZ2ViZWVDb25maWcuY2Jfc3RhdHVzPT09XCdzdWNjZXNzXCcpIHtcbiAgc3RlcHMuSW5wdXRQYXJhbXMuY29uZmlnSnNvbiA9IHN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5kYXRhO1xuICBkb25lKHRydWUpO1xufWVsc2Uge1xuICAgc3RlcHMuSW5wdXRQYXJhbXMuZXJyb3JDb2RlID0gIHN0ZXBzLkNoYXJnZWJlZUNvbmZpZy5jYl9lcnJvcl9jb2RlO1xuICBkb25lKGZhbHNlKTtcbn0nPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>if(steps.ChargebeeConfig.cb_status==='success') {<br>  steps.InputParams.configJson = steps.ChargebeeConfig.data;<br>  done(true);<br>}else {<br>   steps.InputParams.errorCode =  steps.ChargebeeConfig.cb_error_code;<br>  done(false);<br>}</pre>"
+            click step-004 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlJlZnJlc2hUb2tlbjwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPk90aGVyIChmb3JtdWxhKTo8L2I+PGJyPjxicj48cHJlPiAgZm9ybXVsYUlkIDogMzE0NDc8YnI+ICAgICAgIGFyZ3MgOiAke3N0ZXBzLklucHV0UGFyYW1zLmNvbmZpZ0pzb24udGhpcmRfcGFydHlfY29uZmlndXJhdGlvbi5jb25maWdfanNvbi5jbG91ZEVsZW1lbnRzLnRoaXJkUGFydHl9PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnVXBkYXRlVG9rZW4nPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogW10sPGJyPiAgJ25hbWUnOiAnUmVmcmVzaFRva2VuJyw8YnI+ICAndHlwZSc6ICdmb3JtdWxhJyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdmb3JtdWxhSWQnOiAnMzE0NDcnLDxicj4gICAgJ2FyZ3MnOiAnJHtzdGVwcy5JbnB1dFBhcmFtcy5jb25maWdKc29uLnRoaXJkX3BhcnR5X2NvbmZpZ3VyYXRpb24uY29uZmlnX2pzb24uY2xvdWRFbGVtZW50cy50aGlyZFBhcnR5fSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (formula):<br><pre>  formulaId : 31447<br>       args : ${steps.InputParams.configJson.third_party_configuration.config_json.cloudElements.thirdParty}</pre>"
+            click step-005 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNNTVJFcnJvcjwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5kb25lKHtjYkVycm9yOnN0ZXBzLklucHV0UGFyYW1zLmVycm9yQ29kZX0pOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogW10sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ0NNTVJFcnJvcicsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2RvbmUoe2NiRXJyb3I6c3RlcHMuSW5wdXRQYXJhbXMuZXJyb3JDb2RlfSk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done({cbError:steps.InputParams.errorCode});</pre>"
+            click step-007 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlVwZGF0ZVRva2VuPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmlmKHN0ZXBzLlJlZnJlc2hUb2tlbi5hY2Nlc3NUb2tlbiE9PSB1bmRlZmluZWQpIHs8YnI+IHN0ZXBzLklucHV0UGFyYW1zLmNvbmZpZ0pzb24udGhpcmRfcGFydHlfY29uZmlndXJhdGlvbi5jb25maWdfanNvbi5jbG91ZEVsZW1lbnRzLnRoaXJkUGFydHkuYWNjZXNzVG9rZW4gPSBzdGVwcy5SZWZyZXNoVG9rZW4uYWNjZXNzVG9rZW47PGJyPiAgIHN0ZXBzLklucHV0UGFyYW1zLmNvbmZpZ0pzb24udGhpcmRfcGFydHlfY29uZmlndXJhdGlvbi5jb25maWdfanNvbi5jbG91ZEVsZW1lbnRzLnRoaXJkUGFydHkucmVmcmVzaFRva2VuID0gc3RlcHMuUmVmcmVzaFRva2VuLnJlZnJlc2hUb2tlbjs8YnI+ICAgIHN0ZXBzLklucHV0UGFyYW1zLmNvbmZpZ0pzb24udGhpcmRfcGFydHlfY29uZmlndXJhdGlvbi5jb25maWdfanNvbi5jbG91ZEVsZW1lbnRzLnRoaXJkUGFydHkuZXhwaXJlc0luID0gc3RlcHMuUmVmcmVzaFRva2VuLmV4cGlyZXNJbjs8YnI+PGJyPn08YnI+PGJyPmxldCBoZWFkZXJzID0gIHs8YnI+ICAgICAgJ0F1dGhvcml6YXRpb24nOidCZWFyZXIgJytzdGVwcy5JbnB1dFBhcmFtcy5jb25maWdKc29uLnRoaXJkX3BhcnR5X2NvbmZpZ3VyYXRpb24uY29uZmlnX2pzb24uY2xvdWRFbGVtZW50cy50aGlyZFBhcnR5LmFjY2Vzc1Rva2VuLDxicj4gICAgICAgQWNjZXB0OiAnYXBwbGljYXRpb24vanNvbic8YnI+ICAgIH07PGJyPiAgICA8YnI+bGV0IGRhdGEgPSB7PGJyPiAgZ3JvdXAgOns8YnI+ICAgICAgICB1cmw6IHN0ZXBzLklucHV0UGFyYW1zLmhHcm91cCw8YnI+ICAgICAgICBoZWFkZXJzOmhlYWRlcnMsPGJyPiAgICAgICAgYXBpS2V5OiBzdGVwcy5JbnB1dFBhcmFtcy5hcGlLZXksPGJyPiAgICAgICAgc2l0ZU5hbWU6IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVOYW1lLDxicj4gICAgICAgIHNpdGVEb21haW46IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVEb21haW4sPGJyPiAgICAgICAgdHlwZTogc3RlcHMuSW5wdXRQYXJhbXMudHlwZSw8YnI+ICAgIH0sPGJyPiAgICBoZWFkZXJzOmhlYWRlcnMsPGJyPiAgICBjcmVhdGU6ezxicj59PGJyPn07PGJyPmRvbmUoZGF0YSk7PGJyPjxicj48YnI+PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnR2V0SHViU3BvdEdyb3VwJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ1VwZGF0ZVRva2VuJyw8YnI+ICAndHlwZSc6ICdzY3JpcHQnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnaWYoc3RlcHMuUmVmcmVzaFRva2VuLmFjY2Vzc1Rva2VuIT09IHVuZGVmaW5lZCkge1xuIHN0ZXBzLklucHV0UGFyYW1zLmNvbmZpZ0pzb24udGhpcmRfcGFydHlfY29uZmlndXJhdGlvbi5jb25maWdfanNvbi5jbG91ZEVsZW1lbnRzLnRoaXJkUGFydHkuYWNjZXNzVG9rZW4gPSBzdGVwcy5SZWZyZXNoVG9rZW4uYWNjZXNzVG9rZW47XG4gICBzdGVwcy5JbnB1dFBhcmFtcy5jb25maWdKc29uLnRoaXJkX3BhcnR5X2NvbmZpZ3VyYXRpb24uY29uZmlnX2pzb24uY2xvdWRFbGVtZW50cy50aGlyZFBhcnR5LnJlZnJlc2hUb2tlbiA9IHN0ZXBzLlJlZnJlc2hUb2tlbi5yZWZyZXNoVG9rZW47XG4gICAgc3RlcHMuSW5wdXRQYXJhbXMuY29uZmlnSnNvbi50aGlyZF9wYXJ0eV9jb25maWd1cmF0aW9uLmNvbmZpZ19qc29uLmNsb3VkRWxlbWVudHMudGhpcmRQYXJ0eS5leHBpcmVzSW4gPSBzdGVwcy5SZWZyZXNoVG9rZW4uZXhwaXJlc0luO1xuXG59XG5cbmxldCBoZWFkZXJzID0gIHtcbiAgICAgIFwnQXV0aG9yaXphdGlvblwnOlwnQmVhcmVyIFwnK3N0ZXBzLklucHV0UGFyYW1zLmNvbmZpZ0pzb24udGhpcmRfcGFydHlfY29uZmlndXJhdGlvbi5jb25maWdfanNvbi5jbG91ZEVsZW1lbnRzLnRoaXJkUGFydHkuYWNjZXNzVG9rZW4sXG4gICAgICAgQWNjZXB0OiBcJ2FwcGxpY2F0aW9uL2pzb25cJ1xuICAgIH07XG4gICAgXG5sZXQgZGF0YSA9IHtcbiAgZ3JvdXAgOntcbiAgICAgICAgdXJsOiBzdGVwcy5JbnB1dFBhcmFtcy5oR3JvdXAsXG4gICAgICAgIGhlYWRlcnM6aGVhZGVycyxcbiAgICAgICAgYXBpS2V5OiBzdGVwcy5JbnB1dFBhcmFtcy5hcGlLZXksXG4gICAgICAgIHNpdGVOYW1lOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlTmFtZSxcbiAgICAgICAgc2l0ZURvbWFpbjogc3RlcHMuSW5wdXRQYXJhbXMuc2l0ZURvbWFpbixcbiAgICAgICAgdHlwZTogc3RlcHMuSW5wdXRQYXJhbXMudHlwZSxcbiAgICB9LFxuICAgIGhlYWRlcnM6aGVhZGVycyxcbiAgICBjcmVhdGU6e1xufVxufTtcbmRvbmUoZGF0YSk7XG5cblxuJzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>if(steps.RefreshToken.accessToken!== undefined) {<br> steps.InputParams.configJson.third_party_configuration.config_json.cloudElements.thirdParty.accessToken = steps.RefreshToken.accessToken;<br>   steps.InputParams.configJson.third_party_configuration.config_json.cloudElements.thirdParty.refreshToken = steps.RefreshToken.refreshToken;<br>    steps.InputParams.configJson.third_party_configuration.config_json.cloudElements.thirdParty.expiresIn = steps.RefreshToken.expiresIn;<br><br>}<br><br>let headers =  {<br>      'Authorization':'Bearer '+steps.InputParams.configJson.third_party_configuration.config_json.cloudElements.thirdParty.accessToken,<br>       Accept: 'application/json'<br>    };<br>    <br>let data = {<br>  group :{<br>        url: steps.InputParams.hGroup,<br>        headers:headers,<br>        apiKey: steps.InputParams.apiKey,<br>        siteName: steps.InputParams.siteName,<br>        siteDomain: steps.InputParams.siteDomain,<br>        type: steps.InputParams.type,<br>    },<br>    headers:headers,<br>    create:{<br>}<br>};<br>done(data);<br><br><br></pre>"
+            click step-008 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkdldEh1YlNwb3RHcm91cDwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPk90aGVyIChmb3JtdWxhKTo8L2I+PGJyPjxicj48cHJlPiAgZm9ybXVsYUlkIDogMzEyNjA8YnI+ICAgICAgIGFyZ3MgOiAke3N0ZXBzLlVwZGF0ZVRva2VuLmdyb3VwfTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ1ByZXBhcmVIdWJTcG90Q3JlYXRlcyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdHZXRIdWJTcG90R3JvdXAnLDxicj4gICd0eXBlJzogJ2Zvcm11bGEnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2Zvcm11bGFJZCc6ICczMTI2MCcsPGJyPiAgICAnYXJncyc6ICcke3N0ZXBzLlVwZGF0ZVRva2VuLmdyb3VwfSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (formula):<br><pre>  formulaId : 31260<br>       args : ${steps.UpdateToken.group}</pre>"
+            click step-009 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlByZXBhcmVIdWJTcG90Q3JlYXRlczwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5sZXQgY3JlYXRlR3JvdXAgPSBmYWxzZTs8YnI+bGV0IGNyZWF0ZVByb3BzID0gZmFsc2U7PGJyPmlmIChzdGVwcy5HZXRIdWJTcG90R3JvdXAuZGF0YSA9PT0gdW5kZWZpbmVkIHx8IHN0ZXBzLkdldEh1YlNwb3RHcm91cC5kYXRhLm5hbWUgPT09IHVuZGVmaW5lZCkgezxicj4gIGNyZWF0ZUdyb3VwID0gdHJ1ZTs8YnI+ICBjcmVhdGVQcm9wcyA9IHRydWU7PGJyPiAgIHN0ZXBzLklucHV0UGFyYW1zLmVycm9yQ29kZSA9ICdub2dyb3VwZm91bmQnOzxicj59IGVsc2Ugezxicj4gIGZvciAodmFyIGkgPSAwOyBpIDxzcGFuPjw8L3NwYW4+IHN0ZXBzLkdldEh1YlNwb3RHcm91cC5kYXRhLnByb3BlcnRpZXMubGVuZ3RoOyBpKyspIHs8YnI+ICAgIGlmIChzdGVwcy5HZXRIdWJTcG90R3JvdXAuZGF0YS5wcm9wZXJ0aWVzW2ldLm5hbWUgPT09IHN0ZXBzLklucHV0UGFyYW1zLmh1YnNwb3RQcm9wZXJ0eSkgezxicj4gICAgICBjcmVhdGVQcm9wcyA9IGZhbHNlOzxicj4gICAgICBicmVhazs8YnI+ICAgIH0gZWxzZSB7PGJyPiAgICAgIGNyZWF0ZVByb3BzID0gdHJ1ZTs8YnI+ICAgIH08YnI+ICB9PGJyPn08YnI+PGJyPmlmIChjcmVhdGVHcm91cCkgezxicj4gIHN0ZXBzLlVwZGF0ZVRva2VuLmNyZWF0ZS5ncm91cCA9IHs8YnI+ICAgIHVybDogJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vcHJvcGVydGllcy92MS9jb250YWN0cy9ncm91cHMnLDxicj4gICAgYm9keTogezxicj4gICAgICAnbmFtZSc6IHN0ZXBzLklucHV0UGFyYW1zLmh1YnNwb3RHcm91cCw8YnI+ICAgICAgJ2Rpc3BsYXlOYW1lJzogJ0NoYXJnZWJlZSBjdXN0b21lciBpbmZvJzxicj4gICAgfSw8YnI+ICAgIGhlYWRlcnM6IHN0ZXBzLlVwZGF0ZVRva2VuLmhlYWRlcnMsPGJyPiAgICBhcGlLZXk6IHN0ZXBzLklucHV0UGFyYW1zLmFwaUtleSw8YnI+ICAgIHNpdGVOYW1lOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlTmFtZSw8YnI+ICAgIHNpdGVEb21haW46IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVEb21haW4sPGJyPiAgICB0eXBlOiBzdGVwcy5JbnB1dFBhcmFtcy50eXBlLDxicj4gIH07PGJyPn08YnI+aWYgKGNyZWF0ZVByb3BzKSB7PGJyPiAgc3RlcHMuVXBkYXRlVG9rZW4uY3JlYXRlLnByb3AgPSB7PGJyPiAgICB1cmw6IHN0ZXBzLklucHV0UGFyYW1zLmhjcmVhdGUudXJsLDxicj4gICAgaGVhZGVyczogc3RlcHMuVXBkYXRlVG9rZW4uaGVhZGVycyw8YnI+ICAgIGFwaUtleTogc3RlcHMuSW5wdXRQYXJhbXMuYXBpS2V5LDxicj4gICAgc2l0ZU5hbWU6IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVOYW1lLDxicj4gICAgc2l0ZURvbWFpbjogc3RlcHMuSW5wdXRQYXJhbXMuc2l0ZURvbWFpbiw8YnI+ICAgIHR5cGU6IHN0ZXBzLklucHV0UGFyYW1zLnR5cGUsPGJyPiAgICBib2R5OiBzdGVwcy5JbnB1dFBhcmFtcy5oY3JlYXRlLmJvZHksPGJyPiAgfTs8YnI+fTxicj5kb25lKHN0ZXBzLlVwZGF0ZVRva2VuLmNyZWF0ZSk7PGJyPjwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0RvQ3JlYXRlSHViU3BvdEdyb3VwJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ1ByZXBhcmVIdWJTcG90Q3JlYXRlcycsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2xldCBjcmVhdGVHcm91cCA9IGZhbHNlO1xubGV0IGNyZWF0ZVByb3BzID0gZmFsc2U7XG5pZiAoc3RlcHMuR2V0SHViU3BvdEdyb3VwLmRhdGEgPT09IHVuZGVmaW5lZCB8fCBzdGVwcy5HZXRIdWJTcG90R3JvdXAuZGF0YS5uYW1lID09PSB1bmRlZmluZWQpIHtcbiAgY3JlYXRlR3JvdXAgPSB0cnVlO1xuICBjcmVhdGVQcm9wcyA9IHRydWU7XG4gICBzdGVwcy5JbnB1dFBhcmFtcy5lcnJvckNvZGUgPSBcJ25vZ3JvdXBmb3VuZFwnO1xufSBlbHNlIHtcbiAgZm9yICh2YXIgaSA9IDA7IGkgPHNwYW4+PDwvc3Bhbj4gc3RlcHMuR2V0SHViU3BvdEdyb3VwLmRhdGEucHJvcGVydGllcy5sZW5ndGg7IGkrKykge1xuICAgIGlmIChzdGVwcy5HZXRIdWJTcG90R3JvdXAuZGF0YS5wcm9wZXJ0aWVzW2ldLm5hbWUgPT09IHN0ZXBzLklucHV0UGFyYW1zLmh1YnNwb3RQcm9wZXJ0eSkge1xuICAgICAgY3JlYXRlUHJvcHMgPSBmYWxzZTtcbiAgICAgIGJyZWFrO1xuICAgIH0gZWxzZSB7XG4gICAgICBjcmVhdGVQcm9wcyA9IHRydWU7XG4gICAgfVxuICB9XG59XG5cbmlmIChjcmVhdGVHcm91cCkge1xuICBzdGVwcy5VcGRhdGVUb2tlbi5jcmVhdGUuZ3JvdXAgPSB7XG4gICAgdXJsOiBcJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vcHJvcGVydGllcy92MS9jb250YWN0cy9ncm91cHNcJyxcbiAgICBib2R5OiB7XG4gICAgICBcJ25hbWVcJzogc3RlcHMuSW5wdXRQYXJhbXMuaHVic3BvdEdyb3VwLFxuICAgICAgXCdkaXNwbGF5TmFtZVwnOiBcJ0NoYXJnZWJlZSBjdXN0b21lciBpbmZvXCdcbiAgICB9LFxuICAgIGhlYWRlcnM6IHN0ZXBzLlVwZGF0ZVRva2VuLmhlYWRlcnMsXG4gICAgYXBpS2V5OiBzdGVwcy5JbnB1dFBhcmFtcy5hcGlLZXksXG4gICAgc2l0ZU5hbWU6IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVOYW1lLFxuICAgIHNpdGVEb21haW46IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVEb21haW4sXG4gICAgdHlwZTogc3RlcHMuSW5wdXRQYXJhbXMudHlwZSxcbiAgfTtcbn1cbmlmIChjcmVhdGVQcm9wcykge1xuICBzdGVwcy5VcGRhdGVUb2tlbi5jcmVhdGUucHJvcCA9IHtcbiAgICB1cmw6IHN0ZXBzLklucHV0UGFyYW1zLmhjcmVhdGUudXJsLFxuICAgIGhlYWRlcnM6IHN0ZXBzLlVwZGF0ZVRva2VuLmhlYWRlcnMsXG4gICAgYXBpS2V5OiBzdGVwcy5JbnB1dFBhcmFtcy5hcGlLZXksXG4gICAgc2l0ZU5hbWU6IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVOYW1lLFxuICAgIHNpdGVEb21haW46IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVEb21haW4sXG4gICAgdHlwZTogc3RlcHMuSW5wdXRQYXJhbXMudHlwZSxcbiAgICBib2R5OiBzdGVwcy5JbnB1dFBhcmFtcy5oY3JlYXRlLmJvZHksXG4gIH07XG59XG5kb25lKHN0ZXBzLlVwZGF0ZVRva2VuLmNyZWF0ZSk7XG4nPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>let createGroup = false;<br>let createProps = false;<br>if (steps.GetHubSpotGroup.data === undefined || steps.GetHubSpotGroup.data.name === undefined) {<br>  createGroup = true;<br>  createProps = true;<br>   steps.InputParams.errorCode = 'nogroupfound';<br>} else {<br>  for (var i = 0; i <span><</span> steps.GetHubSpotGroup.data.properties.length; i++) {<br>    if (steps.GetHubSpotGroup.data.properties[i].name === steps.InputParams.hubspotProperty) {<br>      createProps = false;<br>      break;<br>    } else {<br>      createProps = true;<br>    }<br>  }<br>}<br><br>if (createGroup) {<br>  steps.UpdateToken.create.group = {<br>    url: 'https://api.hubapi.com/properties/v1/contacts/groups',<br>    body: {<br>      'name': steps.InputParams.hubspotGroup,<br>      'displayName': 'Chargebee customer info'<br>    },<br>    headers: steps.UpdateToken.headers,<br>    apiKey: steps.InputParams.apiKey,<br>    siteName: steps.InputParams.siteName,<br>    siteDomain: steps.InputParams.siteDomain,<br>    type: steps.InputParams.type,<br>  };<br>}<br>if (createProps) {<br>  steps.UpdateToken.create.prop = {<br>    url: steps.InputParams.hcreate.url,<br>    headers: steps.UpdateToken.headers,<br>    apiKey: steps.InputParams.apiKey,<br>    siteName: steps.InputParams.siteName,<br>    siteDomain: steps.InputParams.siteDomain,<br>    type: steps.InputParams.type,<br>    body: steps.InputParams.hcreate.body,<br>  };<br>}<br>done(steps.UpdateToken.create);<br></pre>"
+            click step-010 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkRvQ3JlYXRlSHViU3BvdEdyb3VwPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+SmF2YVNjcmlwdDo8L2I+PGJyPjxicj48cHJlPmRvbmUoc3RlcHMuVXBkYXRlVG9rZW4uY3JlYXRlLmdyb3VwIT09IHVuZGVmaW5lZCk7PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnQ01NUkVycm9yJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFs8YnI+ICAgICdEb0NyZWF0ZUh1YlNwb3RQcm9wZXJ0aWVzJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnRG9DcmVhdGVIdWJTcG90R3JvdXAnLDxicj4gICd0eXBlJzogJ2ZpbHRlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdkb25lKHN0ZXBzLlVwZGF0ZVRva2VuLmNyZWF0ZS5ncm91cCE9PSB1bmRlZmluZWQpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>done(steps.UpdateToken.create.group!== undefined);</pre>"
+            click step-011 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkRvQ3JlYXRlSHViU3BvdFByb3BlcnRpZXM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+ZG9uZShzdGVwcy5VcGRhdGVUb2tlbi5jcmVhdGUucHJvcCAhPT0gdW5kZWZpbmVkKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdDcmVhdGVIdWJTcG90UHJvcGVydHknPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ0NvbnRhY3RQYXJhbSc8YnI+ICBdLDxicj4gICduYW1lJzogJ0RvQ3JlYXRlSHViU3BvdFByb3BlcnRpZXMnLDxicj4gICd0eXBlJzogJ2ZpbHRlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdkb25lKHN0ZXBzLlVwZGF0ZVRva2VuLmNyZWF0ZS5wcm9wICE9PSB1bmRlZmluZWQpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>done(steps.UpdateToken.create.prop !== undefined);</pre>"
+            click step-012 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNyZWF0ZUh1YlNwb3RQcm9wZXJ0eTwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPk90aGVyIChmb3JtdWxhKTo8L2I+PGJyPjxicj48cHJlPiAgZm9ybXVsYUlkIDogMzEzMzM8YnI+ICAgICAgIGFyZ3MgOiAke3N0ZXBzLlVwZGF0ZVRva2VuLmNyZWF0ZS5wcm9wfTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0NvbnRhY3RQYXJhbSc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdDcmVhdGVIdWJTcG90UHJvcGVydHknLDxicj4gICd0eXBlJzogJ2Zvcm11bGEnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2Zvcm11bGFJZCc6ICczMTMzMycsPGJyPiAgICAnYXJncyc6ICcke3N0ZXBzLlVwZGF0ZVRva2VuLmNyZWF0ZS5wcm9wfSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (formula):<br><pre>  formulaId : 31333<br>       args : ${steps.UpdateToken.create.prop}</pre>"
+            click step-013 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkNvbnRhY3RQYXJhbTwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5sZXQgZGF0YSA9IHs8YnI+ICB1cmw6ICdodHRwczovL2FwaS5odWJhcGkuY29tL2NvbnRhY3RzL3YxL2xpc3RzL2FsbC9jb250YWN0cy9hbGwnLDxicj4gIHF1ZXJ5Ons8YnI+ICAgIGNvdW50OjMwLDxicj4gICAgcHJvcGVydHk6J2NoYXJnZWJlZWN1c3RvbWVyaWQnPGJyPiAgfSw8YnI+ICBoZWFkZXJzOiBzdGVwcy5VcGRhdGVUb2tlbi5oZWFkZXJzLDxicj4gICAgYXBpS2V5OiBzdGVwcy5JbnB1dFBhcmFtcy5hcGlLZXksPGJyPiAgICBzaXRlTmFtZTogc3RlcHMuSW5wdXRQYXJhbXMuc2l0ZU5hbWUsPGJyPiAgICBzaXRlRG9tYWluOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlRG9tYWluLDxicj4gICAgdHlwZTogc3RlcHMuSW5wdXRQYXJhbXMudHlwZSw8YnI+fTs8YnI+ZG9uZShkYXRhKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdHZXRDb250YWN0cyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdDb250YWN0UGFyYW0nLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgZGF0YSA9IHtcbiAgdXJsOiBcJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vY29udGFjdHMvdjEvbGlzdHMvYWxsL2NvbnRhY3RzL2FsbFwnLFxuICBxdWVyeTp7XG4gICAgY291bnQ6MzAsXG4gICAgcHJvcGVydHk6XCdjaGFyZ2ViZWVjdXN0b21lcmlkXCdcbiAgfSxcbiAgaGVhZGVyczogc3RlcHMuVXBkYXRlVG9rZW4uaGVhZGVycyxcbiAgICBhcGlLZXk6IHN0ZXBzLklucHV0UGFyYW1zLmFwaUtleSxcbiAgICBzaXRlTmFtZTogc3RlcHMuSW5wdXRQYXJhbXMuc2l0ZU5hbWUsXG4gICAgc2l0ZURvbWFpbjogc3RlcHMuSW5wdXRQYXJhbXMuc2l0ZURvbWFpbixcbiAgICB0eXBlOiBzdGVwcy5JbnB1dFBhcmFtcy50eXBlLFxufTtcbmRvbmUoZGF0YSk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>let data = {<br>  url: 'https://api.hubapi.com/contacts/v1/lists/all/contacts/all',<br>  query:{<br>    count:30,<br>    property:'chargebeecustomerid'<br>  },<br>  headers: steps.UpdateToken.headers,<br>    apiKey: steps.InputParams.apiKey,<br>    siteName: steps.InputParams.siteName,<br>    siteDomain: steps.InputParams.siteDomain,<br>    type: steps.InputParams.type,<br>};<br>done(data);</pre>"
+            click step-014 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkdldENvbnRhY3RzPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+T3RoZXIgKGZvcm11bGEpOjwvYj48YnI+PGJyPjxwcmU+ICBmb3JtdWxhSWQgOiAzMTI2MDxicj4gICAgICAgYXJncyA6ICR7c3RlcHMuQ29udGFjdFBhcmFtfTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0J1bEtJbnB1dCc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdHZXRDb250YWN0cycsPGJyPiAgJ3R5cGUnOiAnZm9ybXVsYScsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnZm9ybXVsYUlkJzogJzMxMjYwJyw8YnI+ICAgICdhcmdzJzogJyR7c3RlcHMuQ29udGFjdFBhcmFtfSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (formula):<br><pre>  formulaId : 31260<br>       args : ${steps.ContactParam}</pre>"
+            click step-015 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkJ1bEtJbnB1dDwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5sZXQgZGF0YSA9IHs8YnI+ICBtYXA6e30sPGJyPn07PGJyPjxicj5sZXQgY3VzdG9tZXJzPVtdOzxicj5pZihzdGVwcy5HZXRDb250YWN0cy5kYXRhICE9PSB1bmRlZmluZWQgJiYgc3RlcHMuR2V0Q29udGFjdHMuZGF0YS5jb250YWN0cyAhPT0gdW5kZWZpbmVkICYmIHN0ZXBzLkdldENvbnRhY3RzLmRhdGEuY29udGFjdHMubGVuZ3RoIDxzcGFuPj48L3NwYW4+MCl7PGJyPiAgZm9yKHZhciBpPTA7aTxzcGFuPjw8L3NwYW4+c3RlcHMuR2V0Q29udGFjdHMuZGF0YS5jb250YWN0cy5sZW5ndGg7aSsrKXs8YnI+ICAgIGxldCBjcCA9IHN0ZXBzLkdldENvbnRhY3RzLmRhdGEuY29udGFjdHNbaV07PGJyPiAgICBpZihjcC5wcm9wZXJ0aWVzICE9PSB1bmRlZmluZWQgJiYgY3AucHJvcGVydGllcy5jaGFyZ2ViZWVjdXN0b21lcmlkICE9PSB1bmRlZmluZWQgJiYgY3AucHJvcGVydGllcy5jaGFyZ2ViZWVjdXN0b21lcmlkLnZhbHVlICE9PSB1bmRlZmluZWQgKSB7PGJyPiAgICAgIGRhdGEubWFwW2NwLnByb3BlcnRpZXMuY2hhcmdlYmVlY3VzdG9tZXJpZC52YWx1ZV0gPSBjcC52aWQ7PGJyPiAgICAgIGN1c3RvbWVycy5wdXNoKHsnaWQnOmNwLnByb3BlcnRpZXMuY2hhcmdlYmVlY3VzdG9tZXJpZC52YWx1ZX0pOzxicj4gICAgfTxicj4gIH08YnI+fTxicj48YnI+aWYoY3VzdG9tZXJzLmxlbmd0aCA8c3Bhbj4+PC9zcGFuPiAwKXs8YnI+ICBkYXRhLmlucHV0ID0gezxicj4gICAgIGFwaUtleTogc3RlcHMuSW5wdXRQYXJhbXMuYXBpS2V5LDxicj4gICAgICAgIHNpdGVOYW1lOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlTmFtZSw8YnI+ICAgICAgICBzaXRlRG9tYWluOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlRG9tYWluLDxicj4gICAgICAgIGRlYnVnTG9nZ2luZ0VuYWJsZWQ6IHRydWUsPGJyPiAgICAgICAgdHlwZTogc3RlcHMuSW5wdXRQYXJhbXMudHlwZSw8YnI+ICAgICAgICBjdXN0b21lcnM6Y3VzdG9tZXJzPGJyPiAgfTs8YnI+fTxicj5kb25lKGRhdGEpOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0hhc0NvbnRhY3RJbnB1dCc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdCdWxLSW5wdXQnLDxicj4gICd0eXBlJzogJ3NjcmlwdCcsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdsZXQgZGF0YSA9IHtcbiAgbWFwOnt9LFxufTtcblxubGV0IGN1c3RvbWVycz1bXTtcbmlmKHN0ZXBzLkdldENvbnRhY3RzLmRhdGEgIT09IHVuZGVmaW5lZCAmJiBzdGVwcy5HZXRDb250YWN0cy5kYXRhLmNvbnRhY3RzICE9PSB1bmRlZmluZWQgJiYgc3RlcHMuR2V0Q29udGFjdHMuZGF0YS5jb250YWN0cy5sZW5ndGggPHNwYW4+Pjwvc3Bhbj4wKXtcbiAgZm9yKHZhciBpPTA7aTxzcGFuPjw8L3NwYW4+c3RlcHMuR2V0Q29udGFjdHMuZGF0YS5jb250YWN0cy5sZW5ndGg7aSsrKXtcbiAgICBsZXQgY3AgPSBzdGVwcy5HZXRDb250YWN0cy5kYXRhLmNvbnRhY3RzW2ldO1xuICAgIGlmKGNwLnByb3BlcnRpZXMgIT09IHVuZGVmaW5lZCAmJiBjcC5wcm9wZXJ0aWVzLmNoYXJnZWJlZWN1c3RvbWVyaWQgIT09IHVuZGVmaW5lZCAmJiBjcC5wcm9wZXJ0aWVzLmNoYXJnZWJlZWN1c3RvbWVyaWQudmFsdWUgIT09IHVuZGVmaW5lZCApIHtcbiAgICAgIGRhdGEubWFwW2NwLnByb3BlcnRpZXMuY2hhcmdlYmVlY3VzdG9tZXJpZC52YWx1ZV0gPSBjcC52aWQ7XG4gICAgICBjdXN0b21lcnMucHVzaCh7XCdpZFwnOmNwLnByb3BlcnRpZXMuY2hhcmdlYmVlY3VzdG9tZXJpZC52YWx1ZX0pO1xuICAgIH1cbiAgfVxufVxuXG5pZihjdXN0b21lcnMubGVuZ3RoIDxzcGFuPj48L3NwYW4+IDApe1xuICBkYXRhLmlucHV0ID0ge1xuICAgICBhcGlLZXk6IHN0ZXBzLklucHV0UGFyYW1zLmFwaUtleSxcbiAgICAgICAgc2l0ZU5hbWU6IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVOYW1lLFxuICAgICAgICBzaXRlRG9tYWluOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlRG9tYWluLFxuICAgICAgICBkZWJ1Z0xvZ2dpbmdFbmFibGVkOiB0cnVlLFxuICAgICAgICB0eXBlOiBzdGVwcy5JbnB1dFBhcmFtcy50eXBlLFxuICAgICAgICBjdXN0b21lcnM6Y3VzdG9tZXJzXG4gIH07XG59XG5kb25lKGRhdGEpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let data = {<br>  map:{},<br>};<br><br>let customers=[];<br>if(steps.GetContacts.data !== undefined && steps.GetContacts.data.contacts !== undefined && steps.GetContacts.data.contacts.length <span>></span>0){<br>  for(var i=0;i<span><</span>steps.GetContacts.data.contacts.length;i++){<br>    let cp = steps.GetContacts.data.contacts[i];<br>    if(cp.properties !== undefined && cp.properties.chargebeecustomerid !== undefined && cp.properties.chargebeecustomerid.value !== undefined ) {<br>      data.map[cp.properties.chargebeecustomerid.value] = cp.vid;<br>      customers.push({'id':cp.properties.chargebeecustomerid.value});<br>    }<br>  }<br>}<br><br>if(customers.length <span>></span> 0){<br>  data.input = {<br>     apiKey: steps.InputParams.apiKey,<br>        siteName: steps.InputParams.siteName,<br>        siteDomain: steps.InputParams.siteDomain,<br>        debugLoggingEnabled: true,<br>        type: steps.InputParams.type,<br>        customers:customers<br>  };<br>}<br>done(data);</pre>"
+            click step-016 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkhhc0NvbnRhY3RJbnB1dDwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5kb25lKHN0ZXBzLkJ1bEtJbnB1dC5pbnB1dCAhPT0gdW5kZWZpbmVkKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdHZXRDQkN1c3RvbWVycyc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbPGJyPiAgICAnSGFzTW9yZUNvbnRhY3RzJzxicj4gIF0sPGJyPiAgJ25hbWUnOiAnSGFzQ29udGFjdElucHV0Jyw8YnI+ICAndHlwZSc6ICdmaWx0ZXInLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2JvZHknOiAnZG9uZShzdGVwcy5CdWxLSW5wdXQuaW5wdXQgIT09IHVuZGVmaW5lZCk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done(steps.BulKInput.input !== undefined);</pre>"
+            click step-017 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkdldENCQ3VzdG9tZXJzPC90aXRsZT48L2hlYWQ+PGJvZHk+PGI+T3RoZXIgKGZvcm11bGEpOjwvYj48YnI+PGJyPjxwcmU+ICBmb3JtdWxhSWQgOiAzMTcyOTxicj4gICAgICAgYXJncyA6ICR7c3RlcHMuQnVsS0lucHV0LmlucHV0fTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0h1YkNvbnRhY3RJbnB1dCc8YnI+ICBdLDxicj4gICdvbkZhaWx1cmUnOiBbXSw8YnI+ICAnbmFtZSc6ICdHZXRDQkN1c3RvbWVycycsPGJyPiAgJ3R5cGUnOiAnZm9ybXVsYScsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnZm9ybXVsYUlkJzogJzMxNzI5Jyw8YnI+ICAgICdhcmdzJzogJyR7c3RlcHMuQnVsS0lucHV0LmlucHV0fSc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "Other (formula):<br><pre>  formulaId : 31729<br>       args : ${steps.BulKInput.input}</pre>"
+            click step-018 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkhhc01vcmVDb250YWN0czwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5pZihzdGVwcy5HZXRDb250YWN0cy5kYXRhICE9PSB1bmRlZmluZWQgJiYgc3RlcHMuR2V0Q29udGFjdHMuZGF0YVsnaGFzLW1vcmUnXSAhPT0gdW5kZWZpbmVkICYmIHN0ZXBzLkdldENvbnRhY3RzLmRhdGFbJ2hhcy1tb3JlJ10pIHs8YnI+ICBzdGVwcy5Db250YWN0UGFyYW0ucXVlcnkudmlkT2Zmc2V0ID0gc3RlcHMuR2V0Q29udGFjdHMuZGF0YVsndmlkLW9mZnNldCddOzxicj4gIGRvbmUodHJ1ZSk7PGJyPn1lbHNlIHs8YnI+ICBkb25lKGZhbHNlKTs8YnI+fTwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ0dldENvbnRhY3RzJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ0hhc01vcmVDb250YWN0cycsPGJyPiAgJ3R5cGUnOiAnZmlsdGVyJyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2lmKHN0ZXBzLkdldENvbnRhY3RzLmRhdGEgIT09IHVuZGVmaW5lZCAmJiBzdGVwcy5HZXRDb250YWN0cy5kYXRhW1wnaGFzLW1vcmVcJ10gIT09IHVuZGVmaW5lZCAmJiBzdGVwcy5HZXRDb250YWN0cy5kYXRhW1wnaGFzLW1vcmVcJ10pIHtcbiAgc3RlcHMuQ29udGFjdFBhcmFtLnF1ZXJ5LnZpZE9mZnNldCA9IHN0ZXBzLkdldENvbnRhY3RzLmRhdGFbXCd2aWQtb2Zmc2V0XCddO1xuICBkb25lKHRydWUpO1xufWVsc2Uge1xuICBkb25lKGZhbHNlKTtcbn0nPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "JavaScript:<br><pre>if(steps.GetContacts.data !== undefined && steps.GetContacts.data['has-more'] !== undefined && steps.GetContacts.data['has-more']) {<br>  steps.ContactParam.query.vidOffset = steps.GetContacts.data['vid-offset'];<br>  done(true);<br>}else {<br>  done(false);<br>}</pre>"
+            click step-020 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkh1YkNvbnRhY3RJbnB1dDwvdGl0bGU+PC9oZWFkPjxib2R5PjxiPkphdmFTY3JpcHQ6PC9iPjxicj48YnI+PHByZT5sZXQgZGF0YSA9IHt9Ozxicj5sZXQgcHJvcHMgPSBbXTs8YnI+aWYoc3RlcHMuR2V0Q0JDdXN0b21lcnMuZGF0YSAhPT0gdW5kZWZpbmVkKSB7PGJyPiAgbGV0IGtleXMgPSBPYmplY3Qua2V5cyhzdGVwcy5HZXRDQkN1c3RvbWVycy5kYXRhKTs8YnI+ICBmb3IodmFyIGk9MDtpPHNwYW4+PDwvc3Bhbj5rZXlzLmxlbmd0aDtpKyspezxicj4gICAgaWYoc3RlcHMuR2V0Q0JDdXN0b21lcnMuZGF0YVtrZXlzW2ldXS5jbXJyICE9PSB1bmRlZmluZWQpIHs8YnI+ICAgICAgcHJvcHMucHVzaCh7PGJyPiAgICAgICAgdmlkOnN0ZXBzLkJ1bEtJbnB1dC5tYXBba2V5c1tpXV0sPGJyPiAgICAgICAgcHJvcGVydGllczpbezxicj4gICAgICAgICdwcm9wZXJ0eSc6IHN0ZXBzLklucHV0UGFyYW1zLmh1YnNwb3RQcm9wZXJ0eSw8YnI+ICAgICAgICAndmFsdWUnOiBzdGVwcy5HZXRDQkN1c3RvbWVycy5kYXRhW2tleXNbaV1dLmNtcnI8YnI+ICAgICAgfV08YnI+ICAgICAgfSk7PGJyPiAgICB9PGJyPiAgfTxicj59PGJyPmlmKHByb3BzLmxlbmd0aCA8c3Bhbj4+PC9zcGFuPiAwKSB7PGJyPiAgZGF0YSA9IHs8YnI+ICAgIHVybDogJ2h0dHBzOi8vYXBpLmh1YmFwaS5jb20vY29udGFjdHMvdjEvY29udGFjdC9iYXRjaCcsPGJyPiAgICBib2R5OiBwcm9wcyw8YnI+ICAgIGhlYWRlcnM6IHN0ZXBzLlVwZGF0ZVRva2VuLmhlYWRlcnMsPGJyPiAgICBhcGlLZXk6IHN0ZXBzLklucHV0UGFyYW1zLmFwaUtleSw8YnI+ICAgIHNpdGVOYW1lOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlTmFtZSw8YnI+ICAgIHNpdGVEb21haW46IHN0ZXBzLklucHV0UGFyYW1zLnNpdGVEb21haW4sPGJyPiAgICB0eXBlOiBzdGVwcy5JbnB1dFBhcmFtcy50eXBlLDxicj4gIH07PGJyPn08YnI+ZG9uZShkYXRhKTs8L3ByZT48YnI+PGI+UkFXIEpTT046PC9iPjxicj48YnI+PHByZT57PGJyPiAgJ29uU3VjY2Vzcyc6IFs8YnI+ICAgICdIYXNVcGRhdGVzJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ0h1YkNvbnRhY3RJbnB1dCcsPGJyPiAgJ3R5cGUnOiAnc2NyaXB0Jyw8YnI+ICAncHJvcGVydGllcyc6IHs8YnI+ICAgICdib2R5JzogJ2xldCBkYXRhID0ge307XG5sZXQgcHJvcHMgPSBbXTtcbmlmKHN0ZXBzLkdldENCQ3VzdG9tZXJzLmRhdGEgIT09IHVuZGVmaW5lZCkge1xuICBsZXQga2V5cyA9IE9iamVjdC5rZXlzKHN0ZXBzLkdldENCQ3VzdG9tZXJzLmRhdGEpO1xuICBmb3IodmFyIGk9MDtpPHNwYW4+PDwvc3Bhbj5rZXlzLmxlbmd0aDtpKyspe1xuICAgIGlmKHN0ZXBzLkdldENCQ3VzdG9tZXJzLmRhdGFba2V5c1tpXV0uY21yciAhPT0gdW5kZWZpbmVkKSB7XG4gICAgICBwcm9wcy5wdXNoKHtcbiAgICAgICAgdmlkOnN0ZXBzLkJ1bEtJbnB1dC5tYXBba2V5c1tpXV0sXG4gICAgICAgIHByb3BlcnRpZXM6W3tcbiAgICAgICAgXCdwcm9wZXJ0eVwnOiBzdGVwcy5JbnB1dFBhcmFtcy5odWJzcG90UHJvcGVydHksXG4gICAgICAgIFwndmFsdWVcJzogc3RlcHMuR2V0Q0JDdXN0b21lcnMuZGF0YVtrZXlzW2ldXS5jbXJyXG4gICAgICB9XVxuICAgICAgfSk7XG4gICAgfVxuICB9XG59XG5pZihwcm9wcy5sZW5ndGggPHNwYW4+Pjwvc3Bhbj4gMCkge1xuICBkYXRhID0ge1xuICAgIHVybDogXCdodHRwczovL2FwaS5odWJhcGkuY29tL2NvbnRhY3RzL3YxL2NvbnRhY3QvYmF0Y2hcJyxcbiAgICBib2R5OiBwcm9wcyxcbiAgICBoZWFkZXJzOiBzdGVwcy5VcGRhdGVUb2tlbi5oZWFkZXJzLFxuICAgIGFwaUtleTogc3RlcHMuSW5wdXRQYXJhbXMuYXBpS2V5LFxuICAgIHNpdGVOYW1lOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlTmFtZSxcbiAgICBzaXRlRG9tYWluOiBzdGVwcy5JbnB1dFBhcmFtcy5zaXRlRG9tYWluLFxuICAgIHR5cGU6IHN0ZXBzLklucHV0UGFyYW1zLnR5cGUsXG4gIH07XG59XG5kb25lKGRhdGEpOyc8YnI+ICB9PGJyPn08L3ByZT48L2JvZHk+PC9odG1sPg=='));document.close();" "JavaScript:<br><pre>let data = {};<br>let props = [];<br>if(steps.GetCBCustomers.data !== undefined) {<br>  let keys = Object.keys(steps.GetCBCustomers.data);<br>  for(var i=0;i<span><</span>keys.length;i++){<br>    if(steps.GetCBCustomers.data[keys[i]].cmrr !== undefined) {<br>      props.push({<br>        vid:steps.BulKInput.map[keys[i]],<br>        properties:[{<br>        'property': steps.InputParams.hubspotProperty,<br>        'value': steps.GetCBCustomers.data[keys[i]].cmrr<br>      }]<br>      });<br>    }<br>  }<br>}<br>if(props.length <span>></span> 0) {<br>  data = {<br>    url: 'https://api.hubapi.com/contacts/v1/contact/batch',<br>    body: props,<br>    headers: steps.UpdateToken.headers,<br>    apiKey: steps.InputParams.apiKey,<br>    siteName: steps.InputParams.siteName,<br>    siteDomain: steps.InputParams.siteDomain,<br>    type: steps.InputParams.type,<br>  };<br>}<br>done(data);</pre>"
+            click step-021 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPkhhc1VwZGF0ZXM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5KYXZhU2NyaXB0OjwvYj48YnI+PGJyPjxwcmU+ZG9uZShzdGVwcy5IdWJDb250YWN0SW5wdXQudXJsICE9PSB1bmRlZmluZWQpOzwvcHJlPjxicj48Yj5SQVcgSlNPTjo8L2I+PGJyPjxicj48cHJlPns8YnI+ICAnb25TdWNjZXNzJzogWzxicj4gICAgJ1VwZGF0ZUh1YlByb3BlcnRpZXMnPGJyPiAgXSw8YnI+ICAnb25GYWlsdXJlJzogWzxicj4gICAgJ0hhc01vcmVDb250YWN0cyc8YnI+ICBdLDxicj4gICduYW1lJzogJ0hhc1VwZGF0ZXMnLDxicj4gICd0eXBlJzogJ2ZpbHRlcicsPGJyPiAgJ3Byb3BlcnRpZXMnOiB7PGJyPiAgICAnYm9keSc6ICdkb25lKHN0ZXBzLkh1YkNvbnRhY3RJbnB1dC51cmwgIT09IHVuZGVmaW5lZCk7Jzxicj4gIH08YnI+fTwvcHJlPjwvYm9keT48L2h0bWw+'));document.close();" "JavaScript:<br><pre>done(steps.HubContactInput.url !== undefined);</pre>"
+            click step-022 "javascript:document.open();document.write(window.atob('PGh0bWw+PGhlYWQ+PHRpdGxlPlVwZGF0ZUh1YlByb3BlcnRpZXM8L3RpdGxlPjwvaGVhZD48Ym9keT48Yj5PdGhlciAoZm9ybXVsYSk6PC9iPjxicj48YnI+PHByZT4gIGZvcm11bGFJZCA6IDMxMzMzPGJyPiAgICAgICBhcmdzIDogJHtzdGVwcy5IdWJDb250YWN0SW5wdXR9PC9wcmU+PGJyPjxiPlJBVyBKU09OOjwvYj48YnI+PGJyPjxwcmU+ezxicj4gICdvblN1Y2Nlc3MnOiBbPGJyPiAgICAnSGFzTW9yZUNvbnRhY3RzJzxicj4gIF0sPGJyPiAgJ29uRmFpbHVyZSc6IFtdLDxicj4gICduYW1lJzogJ1VwZGF0ZUh1YlByb3BlcnRpZXMnLDxicj4gICd0eXBlJzogJ2Zvcm11bGEnLDxicj4gICdwcm9wZXJ0aWVzJzogezxicj4gICAgJ2Zvcm11bGFJZCc6ICczMTMzMycsPGJyPiAgICAnYXJncyc6ICcke3N0ZXBzLkh1YkNvbnRhY3RJbnB1dH0nPGJyPiAgfTxicj59PC9wcmU+PC9ib2R5PjwvaHRtbD4='));document.close();" "Other (formula):<br><pre>  formulaId : 31333<br>       args : ${steps.HubContactInput}</pre>"
+
+        </div>
+    </div>
+    <h2>
+        Formula Configuration
+    </h2>
+    <div class="container">
+        <h3>Basic</h3><table><tr><th>key</th><th>value</th></tr><tr><td>Name</td><td>HubSpotMigrateCMMR</td></tr><tr><td>Single Threaded?</td><td>false</td></tr><tr><td>Active?</td><td>true</td></tr><tr><td>Number of Steps</td><td>20</td></tr><tr><td>Number of Triggers</td><td>1</td></tr></table>
+    <br/><h3>Elements</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table>
+    <br/><h3>Values</h3><table><tr><th>key</th><th>name</th><th>required</th></tr></table><br/>
+    </div>
+    <div class="key">
+        <h2>
+            Key
+        </h2>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Symbol</th>
+            </tr>
+
+            <tr>
+                <td>Filter Steps</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A{Step Name}
+                    </div>
+                </td>
+                <td>Trigger/End</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        B((Actual))
+                        C((Generated))
+                        style C stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Request Step</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        A>GET]
+                        style A stroke:#0f6ab4;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        B>POST]
+                        style B stroke:#10a54a;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PATCH]
+                        style C stroke:#D38042;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        C>PUT]
+                        style C stroke:#C5862B;
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        D>DELETE]
+                        style D stroke:#a41e22;
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Script</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(Step Name)
+                    </div>
+                </td>
+                <td>Loop</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D(-Step Name-)
+                    </div>
+                </td>
+                <td>Other(TYPE)</td>
+                <td>
+                    <div class="mermaid">
+                        graph TD
+                        D[Step Name]
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Pass/Fail Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL-->BL
+                    </div>
+                </td>
+                <td>Generated Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL((B))
+                        AL-.->BL
+                        style BL stroke-width:2px,stroke-dasharray: 5, 5;
+                    </div>
+                </td>
+                <td>Continue Connection</td>
+                <td>
+                    <div class="mermaid">
+                        graph LR
+                        AL(A)
+                        BL(B)
+                        AL==>BL
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <br><br><br><br><br><br><br><br><br>
+    </div>
+</body>
+</html>
