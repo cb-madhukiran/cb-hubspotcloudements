@@ -1,17 +1,531 @@
 let creates = [];
 let deletes = [];
-let updates = [];
 
 let prefix = "cb_";
-let companyProperties = steps.getPropertiesForHubspot.companyProperties
-let dealProperties = steps.getPropertiesForHubspot.dealProperties
-let contactProperties = steps.getPropertiesForHubspot.contactProperties;
 if (
   steps.ChargebeeConfigParams.data.config_json.noneedprefix !== undefined &&
   steps.ChargebeeConfigParams.data.config_json.noneedprefix === true
 ) {
   prefix = "";
 }
+let companyProperties = [
+  {
+    name: prefix + "totalsubscriptionmrr",
+    label: "Total subscription MRR",
+    description: "Total subscription MRR",
+    groupName: "chargebeesubscriptionmetrics",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "totalnoofsubscription",
+    label: "Total # of subscriptions",
+    description: "Number of active subscriptions.",
+    groupName: "chargebeesubscriptionmetrics",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "totaldues",
+    label: "Total dues",
+    description: "Total dues across all subscriptions synced to Chargebee",
+    groupName: "chargebeesubscriptionmetrics",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "totalinvoiceamountpaid",
+    label: "Total invoice amount paid",
+    description: "Total number of paid invoices synced to Chargebee.",
+    groupName: "chargebeesubscriptionmetrics",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "totaldueinvoicescount",
+    label: "Total due invoices count",
+    description: "Total number of invoices in the 'due' state",
+    groupName: "chargebeesubscriptionmetrics",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+];
+
+let contactProperties = [
+  {
+    name: "chargebeecustomerid",
+    label: "Customer ID",
+    description: "A unique identifier for this Chargebee customer",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "billingaddress",
+    label: "Billing Address",
+    description: "Billing Address",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "billingcity",
+    label: "Billing City",
+    description: "Billing City",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "billingstate",
+    label: "Billing State",
+    description: "Billing State",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "billingcountry",
+    label: "Billing Country",
+    description: "Billing Country",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "billingzip",
+    label: "Billing Zip ",
+    description: "Billing Zip",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "autocollection",
+    label: "Auto Collection",
+    description:
+      "Attempts to charge the customer's payment method when an invoice is created.",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "preferredcurrencycode",
+    label: "Preferred Currency Code",
+    description:
+      "Chargebee determines which gateway to use based on this code.",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "paymentmethodstatus",
+    label: "Payment Method Status",
+    description: "PaymentMethod Status",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "paymentmethodtype",
+    label: "Payment Method Type",
+    description: "PaymentMethod Type",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "nettermdays",
+    label: "Net Term Days",
+    description:
+      "The time within which a customer has to pay an outstanding invoice.",
+    groupName: "chargebeecustomerinfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "taxexemptstatus",
+    label: "Tax Exempt Status",
+    description: "Tax exempt status",
+    groupName: "chargebeecustomerinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "subscriptionid",
+    label: "Subscription ID",
+    description: "A unique identifier for this Chargebee subscription",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "currencycode",
+    label: "Currency Code",
+    description: "Chargebee Currency Code",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "subscriptiostatus",
+    label: "Subscription Status",
+    description: "Subscription status",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "subscriptionmrr",
+    label: "Subscription MRR",
+    description: "The monthly recurring revenue from this subscription.",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "customermrr",
+    label: "Total Customer MRR",
+    description: "Total Customer MRR",
+    groupName: "chargebeecustomerinfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "product",
+    label: "Product",
+    description: "The plan connected to this subscription.",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "planquantity",
+    label: "Plan quantity",
+    description: "Plan quantity",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "setupfee",
+    label: "Setup Fee",
+    description: "Setup Fee",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "dueinvoicescount",
+    label: "Due invoices count",
+    description: "Due invoices count",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "invoiceamountpaid",
+    label: "Invoice amount paid",
+    description: "Invoices amount paid",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "remainingbillingcycles",
+    label: "Remaining billing cycles",
+    description: "Remaining billing cycles",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "ponumber",
+    label: "PO Number",
+    description: "PO Number",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "nextbillingat",
+    label: "Next Billing At",
+    description: "The date the next invoice will be raised",
+    groupName: "chargebeesubscriptioninfo",
+    type: "datetime",
+    fieldType: "date",
+    formField: true,
+  },
+  {
+    name: prefix + "nextbillingamount",
+    label: "Next Billing Amount",
+    description: "The amount that will be invoiced next.",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "totaldues",
+    label: "Total Dues",
+    description: "Total Dues",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "duesince",
+    label: "Due Since",
+    description: "Due Since",
+    groupName: "chargebeesubscriptioninfo",
+    type: "datetime",
+    fieldType: "date",
+    formField: true,
+  },
+  {
+    name: prefix + "lastorderdate",
+    label: "Last Order Date",
+    description:
+      "The date closest to, but before today.\n or \n The date closest to, but before the present date.",
+    groupName: "chargebeeorderinfo",
+    type: "datetime",
+    fieldType: "date",
+    formField: true,
+  },
+  {
+    name: prefix + "lastorder",
+    label: "Last Order",
+    description: "Last Order",
+    groupName: "chargebeeorderinfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "lastorderstatus",
+    label: "Last Order Status",
+    description: "Last Order Status",
+    groupName: "chargebeeorderinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "lastorderbasecomponentsku",
+    label: "Last Order Base Component",
+    description: "The SKU line item of the last order.",
+    groupName: "chargebeeorderinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "nextorderdate",
+    label: "Next Order Date",
+    description:
+      "The date closest to, but after today.\n or \n The date closest to, but after the present date.",
+    groupName: "chargebeeorderinfo",
+    type: "datetime",
+    fieldType: "date",
+    formField: true,
+  },
+  {
+    name: prefix + "nextorder",
+    label: "Next Order",
+    description: "Next Order",
+    groupName: "chargebeeorderinfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "nextorderbasecomponentsku",
+    label: "Next Order Base Component",
+    description: "The SKU line item of the next order.",
+    groupName: "chargebeeorderinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "nextorderstatus",
+    label: "Next Order Status",
+    description: "Next Order Status",
+    groupName: "chargebeeorderinfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+];
+let dealProperties = [
+  {
+    name: "hubspotcontact",
+    label: "Hubspot contact",
+    description: "Hubspot contact",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "currencycode",
+    label: "Currency Code",
+    description: "Chargebee Currency Code",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "subscriptionid",
+    label: "Subscription ID",
+    description: "Subscription ID",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "subscriptionstatus",
+    label: "Subscription status",
+    description: "Subscription status",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "subscriptionmrr",
+    label: "Subscription MRR",
+    description: "The monthly recurring revenue from this subscription.",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "product",
+    label: "Product",
+    description: "Product",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "planquantity",
+    label: "Plan Quantity",
+    description: "Plan Quantity",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "setupfee",
+    label: "Setup Fee",
+    description: "Setup Fee",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "dueinvoicescount",
+    label: "Due Invoices Count",
+    description: "Due Invoices Count",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "remainingbillingcycles",
+    label: "Remaining Billing Cycles",
+    description: "Remaining billing cycles",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "ponumber",
+    label: "PO Number",
+    description: "PO Number",
+    groupName: "chargebeesubscriptioninfo",
+    type: "string",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "totaldues",
+    label: "Total dues",
+    description: "Total dues",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "nextbillingat",
+    label: "Next billing at",
+    description: "Next billing at",
+    groupName: "chargebeesubscriptioninfo",
+    type: "datetime",
+    fieldType: "date",
+    formField: true,
+  },
+  {
+    name: prefix + "nextbillingamount",
+    label: "Next Billing Amount",
+    description: "Next Billing Amount",
+    groupName: "chargebeesubscriptioninfo",
+    type: "number",
+    fieldType: "text",
+    formField: true,
+  },
+  {
+    name: prefix + "duesince",
+    label: "Due Since",
+    description: "Due Since",
+    groupName: "chargebeesubscriptioninfo",
+    type: "datetime",
+    fieldType: "date",
+    formField: true,
+  },
+];
+
+
 
 var entities = {
   company: "companies",
@@ -22,7 +536,7 @@ var entities = {
 let hubspotPropertyRoute = "https://api.hubapi.com/crm/v3/properties/";
 
 let retainHubspot = steps.InputParams.retainHubspot;
-console.log(retainHubspot);
+
 let getPropertiesListOfEntity = (entity) => {
   switch (entity) {
     case "company":
@@ -340,21 +854,10 @@ if (retainHubspot) {
             body: properties[k],
           });
         }
-        //else update
-        {
-          let url =
-            "https://api.hubapi.com/crm/v3/properties/" +
-            entity +'/'+ name;
-            "/" +
-            updates.push({
-              url: url,
-              body : properties[k]
-            });
-        }
       }
     }
   }
-} else {
+} else if(steps.GetCustomHubSpotGroups.cb_code !== 404 ){
   //delete
   let properties = steps.GetCustomHubSpotGroups.data.properties;
   let groupName = steps.GetCustomHubSpotGroups.data.name;
@@ -375,6 +878,5 @@ if (retainHubspot) {
 
 done({
   creates: creates,
-  deletes: deletes,
-  updates: updates
+  deletes: deletes
 });
