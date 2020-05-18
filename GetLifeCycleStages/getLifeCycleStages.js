@@ -20,7 +20,6 @@ let instanceId = steps.EnvProps.id;
 
 //Please ensure the keys order
 let allowedStageDropDownKeys = [
-  "select",
   "subscriber",
   "lead",
   "marketingqualifiedlead",
@@ -31,7 +30,6 @@ let allowedStageDropDownKeys = [
   "other",
 ];
  let allowedStageDropDownValues = {
-  select: "Select",
   subscriber: "Subscriber",
   lead: "Lead",
   marketingqualifiedlead: "Marketing Qualified lead",
@@ -103,22 +101,30 @@ var getDropDownValues = (index)=>{
   var allValues = _.partition(allowedStageDropDownKeys,(i)=>allowedStageDropDownKeys.indexOf(i)<index);
   var allowedValues = allValues[1];
 
-  var result = {select : 'Select'}
+  var result = [{
+    "value": "select",
+    "disp": "Select"
+  }];
 
     allowedValues.forEach((element)=>{
-      result[element]=allowedStageDropDownValues[element];
+      result.push({
+          "value":element,
+          "disp":allowedStageDropDownValues[element]
+      })
     })
     return result;
 }
 
 
-var NoSubscriptionStageDropDownMap = getDropDownValues(0) // can contain all values for No subscription
+var NoSubscriptionStageDropDownList = getDropDownValues(0) // can contain all values for No subscription
 
-var TrialSubscriptionStageDropDownMap = getDropDownValues(getIndex('TrialSubscription'));  
+var TrialSubscriptionStageDropDownList = getDropDownValues(getIndex('TrialSubscription'));  
 
-var ActiveSubscriptionStageDropDownMap = getDropDownValues(getIndex('ActiveSubscription'));
+var ActiveSubscriptionStageDropDownList = getDropDownValues(getIndex('ActiveSubscription'));
 
-var CancelledSubscriptionStageDropDownMap = getDropDownValues(getIndex('CanceledSubscription'));
+var CancelledSubscriptionStageDropDownList = getDropDownValues(getIndex('CanceledSubscription'));
+
+
 
 let dynamicRequest =  {
   type: "ON_CHANGE_FETCH_INPUT",
@@ -142,10 +148,10 @@ let stages = [
   {
     dispName: '<p style="padding-left: 10px;">  Has no subscription',
     req: "false",
-    type: "DROPDOWN",
+    type: "DROPDOWN_DYNAMIC",
     id: "NoSubscription",
     isMuted: "true",
-    allowedValues: NoSubscriptionStageDropDownMap,
+    dropDownItemsList: NoSubscriptionStageDropDownList,
     defaultVal: NoSubscription,
     isDynamic : "true",
     request : dynamicRequest
@@ -153,10 +159,10 @@ let stages = [
   {
     dispName: '<p style="padding-left: 10px;"> Has an In-Trial subscription',
     req: "false",
-    type: "DROPDOWN",
+    type: "DROPDOWN_DYNAMIC",
     id: "TrialSubscription",
     isMuted: "true",
-    allowedValues: TrialSubscriptionStageDropDownMap,
+    dropDownItemsList: TrialSubscriptionStageDropDownList,
     defaultVal: TrialSubscription,
     isDynamic : "true",
     request : dynamicRequest
@@ -164,10 +170,10 @@ let stages = [
   {
     dispName: '<p style="padding-left: 10px;"> Has an Active subscription',
     req: "false",
-    type: "DROPDOWN",
+    type: "DROPDOWN_DYNAMIC",
     id: "ActiveSubscription",
     isMuted: "true",
-    allowedValues: ActiveSubscriptionStageDropDownMap,
+    dropDownItemsList: ActiveSubscriptionStageDropDownList,
     defaultVal: ActiveSubscription,
     isDynamic : "true",
     request : dynamicRequest
@@ -175,10 +181,10 @@ let stages = [
   {
     dispName: '<p style="padding-left: 10px;"> Has a Cancelled subscription',
     req: "false",
-    type: "DROPDOWN",
+    type: "DROPDOWN_DYNAMIC",
     id: "CanceledSubscription",
     isMuted: "true",
-    allowedValues: CancelledSubscriptionStageDropDownMap,
+    dropDownItemsList: CancelledSubscriptionStageDropDownList,
     defaultVal: CanceledSubscription,
     isDynamic : "true",
     request : dynamicRequest
