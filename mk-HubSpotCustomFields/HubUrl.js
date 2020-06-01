@@ -37,17 +37,20 @@ let config = {
             url: "https://api.hubapi.com/properties/v1/deals/groups/named/chargebeesubscriptioninfo?includeProperties=true",
             type: "deal",
             group:"chargebeesubscriptioninfo",
+            displayName: "Chargebee subscription info",
             custom: false
         },
         {
             url: "https://api.hubapi.com/properties/v1/companies/groups/named/chargebeesubscriptionmetrics?includeProperties=true",
             type: "company",
-              group:"chargebeesubscriptionmetrics",
+            group:"chargebeesubscriptionmetrics",
+            displayName: "Chargebee subscription metrics",
             custom: false
         },
         {
             url: "https://api.hubapi.com/properties/v1/contacts/groups/named/chargebeecustomerinfo?includeProperties=true",
              group:"chargebeecustomerinfo",
+             displayName: "Chargebee customer info",
             type: "contacts",
             custom: false
         },
@@ -55,12 +58,14 @@ let config = {
             url: "https://api.hubapi.com/properties/v1/contacts/groups/named/chargebeesubscriptioninfo?includeProperties=true",
             type: "contacts",
              group:"chargebeesubscriptioninfo",
+             displayName: "Chargebee subscription info",
             custom: false
         },
         {
             url: "https://api.hubapi.com/properties/v1/contacts/groups/named/chargebeeorderinfo?includeProperties=true",
             type: "contacts",
             group:"chargebeeorderinfo",
+            displayName: "Chargebee order info",
             custom: false
         } 
         ],

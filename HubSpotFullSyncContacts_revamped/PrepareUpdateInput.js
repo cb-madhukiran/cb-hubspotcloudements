@@ -1,3 +1,4 @@
+const _ = require('lodash');
 let customer = steps.HubData.customer;
 let subscription = steps.HubData.subscription;
 let syncRulesContacts = steps.CustomersParam.syncRulesContacts;
@@ -10,6 +11,10 @@ let prefix = "cb_";
 //let prefix = "";
 let properties = [];
 let cbkeys = ['currencycode','billingaddress','billingstate','billingcity','billingcountry','billingzip','autocollection','preferredcurrencycode','paymentmethodstatus','paymentmethodtype','nettermdays','taxexemptstatus','subscriptionid','subscriptiostatus','product','planquantity','setupfee','dueinvoicescount','remainingbillingcycles','ponumber','nextbillingat','totaldues','duesince','subscriptionmrr','lastorderdate','lastorderbasecomponentsku','lastorderstatus','lastorder','nextorderdate','nextorderbasecomponentsku','nextorderstatus','nextorder','invoiceamountpaid','nextbillingamount'];
+
+let cloudElements =  steps.GetTpIntegConf.data.config_json.cloudElements;
+var syncRuleforOrders = _.get(cloudElements, "syncRuleForOrders.sync", "false")
+console.log("Orders: "+syncRuleforOrders);
 
 let cbMap = {
   "firstname":true,
@@ -123,14 +128,17 @@ hData = updateData(hData, hContact, 'duesince');
 hData = updateData(hData, hContact, 'subscriptionmrr', true, true);
 hData = updateData(hData, hContact, 'customermrr', true, true);
 hData = updateData(hData, hContact, 'lifecyclestage');
-hData = updateData(hData, hContact, 'lastorderdate');
-hData = updateData(hData, hContact, 'lastorderbasecomponentsku');
-hData = updateData(hData, hContact, 'lastorderstatus');
-hData = updateData(hData, hContact, 'lastorder', true, true);
-hData = updateData(hData, hContact, 'nextorderdate');
-hData = updateData(hData, hContact, 'nextorderbasecomponentsku');
-hData = updateData(hData, hContact, 'nextorderstatus');
-hData = updateData(hData, hContact, 'nextorder', true, true);
+if(syncRuleforOrders === "true")
+{
+    hData = updateData(hData, hContact, 'lastorderdate');
+    hData = updateData(hData, hContact, 'lastorderbasecomponentsku');
+    hData = updateData(hData, hContact, 'lastorderstatus');
+    hData = updateData(hData, hContact, 'lastorder', true, true);
+    hData = updateData(hData, hContact, 'nextorderdate');
+    hData = updateData(hData, hContact, 'nextorderbasecomponentsku');
+    hData = updateData(hData, hContact, 'nextorderstatus');
+    hData = updateData(hData, hContact, 'nextorder', true, true);
+}
 hData = updateData(hData, hContact, 'invoiceamountpaid', true, true);
 hData = updateData(hData, hContact, 'nextbillingamount', true, true);
 
@@ -233,9 +241,9 @@ if (subscription !== undefined) {
 }
 
 
-let lifecyclestage = steps.GetTpIntegConf.data.config_json.cloudElements.syncRulesContacts.LifecycleStage;
+let lifecyclestage = cloudElements.syncRulesContacts.LifecycleStage;
 let nLifecyclestage;
-console.log(steps.GetTpIntegConf.data.config_json.cloudElements.syncRulesContacts.LifecycleStage);
+console.log(cloudElements.syncRulesContacts.LifecycleStage);
 //if (hData.lifecyclestage === undefined) {
    if (cbsubscriptiostatus === "cancelled") {
         if (syncRulesContacts.LifecycleStage.CanceledSubscription !== undefined && syncRulesContacts.LifecycleStage.CanceledSubscription !== "select") {
@@ -293,53 +301,55 @@ setHData(hData, 'setupfee', cbsetupfee, true);
 setHData(hData, 'subscriptionmrr', cbsubscriptionmrr, true);
 setHData(hData, 'customermrr', getNumber(steps.HubData.cmrr)*100, true);
 
-
-
-let cblastorderdate;
-let cblastorderbasecomponentsku;
-let cblastorderstatus;
-let cblastorder;
-let cbnextorderdate;
-let cbnextorderbasecomponentsku;
-let cbnextorderstatus;
-let cbnextorder;
-
+console.log("Orders: "+syncRuleforOrders);
 let myOrder;
+if(syncRuleforOrders === "true")
+{
+    let cblastorderdate;
+    let cblastorderbasecomponentsku;
+    let cblastorderstatus;
+    let cblastorder;
+    let cbnextorderdate;
+    let cbnextorderbasecomponentsku;
+    let cbnextorderstatus;
+    let cbnextorder;
 
-if (steps.HubData.order !== undefined) {
-    let orderBefore = steps.HubData.order.before;
-    myOrder = orderBefore;
-    if(orderBefore !== undefined) {
-        if (orderBefore.order_date !== undefined) {
-            cblastorderdate = getNumber(orderBefore.order_date) * 1000;
-        }
-        cblastorderbasecomponentsku = orderBefore.sku;
-        cblastorderstatus = orderBefore.status;
-        cblastorder = getNumber(orderBefore.total);
-    }
-   
 
-    let orderAfter = steps.HubData.order.after;
-    if(orderAfter !== undefined) {
-        if (orderAfter.order_date !== undefined) {
-            cbnextorderdate = getNumber(orderAfter.order_date) * 1000;
+
+    if (steps.HubData.order !== undefined) {
+        let orderBefore = steps.HubData.order.before;
+        myOrder = orderBefore;
+        if(orderBefore !== undefined) {
+            if (orderBefore.order_date !== undefined) {
+                cblastorderdate = getNumber(orderBefore.order_date) * 1000;
+            }
+            cblastorderbasecomponentsku = orderBefore.sku;
+            cblastorderstatus = orderBefore.status;
+            cblastorder = getNumber(orderBefore.total);
         }
-        cbnextorderbasecomponentsku = orderAfter.sku;
-        cbnextorderstatus = orderAfter.status;
-        cbnextorder = getNumber(orderAfter.total);
+    
+
+        let orderAfter = steps.HubData.order.after;
+        if(orderAfter !== undefined) {
+            if (orderAfter.order_date !== undefined) {
+                cbnextorderdate = getNumber(orderAfter.order_date) * 1000;
+            }
+            cbnextorderbasecomponentsku = orderAfter.sku;
+            cbnextorderstatus = orderAfter.status;
+            cbnextorder = getNumber(orderAfter.total);
+        }
+    
     }
-   
+
+    setHData(hData, 'lastorderdate', cblastorderdate, true);
+    setHData(hData, 'lastorderbasecomponentsku', cblastorderbasecomponentsku, true);
+    setHData(hData, 'lastorderstatus', cblastorderstatus, true);
+    setHData(hData, 'lastorder', cblastorder, true);
+    setHData(hData, 'nextorderdate', cbnextorderdate, true);
+    setHData(hData, 'nextorderbasecomponentsku', cbnextorderbasecomponentsku, true);
+    setHData(hData, 'nextorderstatus', cbnextorderstatus, true);
+    setHData(hData, 'nextorder', cbnextorder, true);
 }
-
-setHData(hData, 'lastorderdate', cblastorderdate, true);
-setHData(hData, 'lastorderbasecomponentsku', cblastorderbasecomponentsku, true);
-setHData(hData, 'lastorderstatus', cblastorderstatus, true);
-setHData(hData, 'lastorder', cblastorder, true);
-setHData(hData, 'nextorderdate', cbnextorderdate, true);
-setHData(hData, 'nextorderbasecomponentsku', cbnextorderbasecomponentsku, true);
-setHData(hData, 'nextorderstatus', cbnextorderstatus, true);
-setHData(hData, 'nextorder', cbnextorder, true);
-
 
 let cbinvoiceamountpaid;
 let cbinvoiceestimate;
@@ -355,7 +365,7 @@ setHData(hData, 'invoiceamountpaid', cbinvoiceamountpaid, true);
 setHData(hData, 'nextbillingamount', cbinvoiceestimate, true);
 
 //custom
-let syncRulesFields = steps.GetTpIntegConf.data.config_json.cloudElements.syncRulesFields;
+let syncRulesFields = cloudElements.syncRulesFields;
 if (syncRulesFields === undefined) {
     syncRulesFields = {
         "company": {
@@ -489,14 +499,18 @@ properties = updateProperties(properties, hData, 'duesince');
 properties = updateProperties(properties, hData, 'subscriptionmrr', true);
 properties = updateProperties(properties, hData, 'customermrr', true);
 properties = updateProperties(properties, hData, 'lifecyclestage');
-properties = updateProperties(properties, hData, 'lastorderdate');
-properties = updateProperties(properties, hData, 'lastorderbasecomponentsku');
-properties = updateProperties(properties, hData, 'lastorderstatus');
-properties = updateProperties(properties, hData, 'lastorder', true);
-properties = updateProperties(properties, hData, 'nextorderdate');
-properties = updateProperties(properties, hData, 'nextorderbasecomponentsku');
-properties = updateProperties(properties, hData, 'nextorderstatus');
-properties = updateProperties(properties, hData, 'nextorder', true);
+if(syncRuleforOrders === "true")
+{
+
+    properties = updateProperties(properties, hData, 'lastorderdate');
+    properties = updateProperties(properties, hData, 'lastorderbasecomponentsku');
+    properties = updateProperties(properties, hData, 'lastorderstatus');
+    properties = updateProperties(properties, hData, 'lastorder', true);
+    properties = updateProperties(properties, hData, 'nextorderdate');
+    properties = updateProperties(properties, hData, 'nextorderbasecomponentsku');
+    properties = updateProperties(properties, hData, 'nextorderstatus');
+    properties = updateProperties(properties, hData, 'nextorder', true);
+}
 properties = updateProperties(properties, hData, 'invoiceamountpaid', true);
 properties = updateProperties(properties, hData, 'nextbillingamount', true);
 

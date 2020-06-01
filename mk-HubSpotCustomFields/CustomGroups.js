@@ -1,31 +1,51 @@
+const _ = require('lodash');
 let creates = [];
 let deletes = [];
-let updates = [];
 
 let prefix = "cb_";
-let companyProperties = steps.getPropertiesForHubspot.companyProperties
-let dealProperties = steps.getPropertiesForHubspot.dealProperties
-let contactProperties = steps.getPropertiesForHubspot.contactProperties;
 if (
   steps.ChargebeeConfigParams.data.config_json.noneedprefix !== undefined &&
   steps.ChargebeeConfigParams.data.config_json.noneedprefix === true
 ) {
   prefix = "";
 }
+let companyProperties = steps.getHubspotProperties.companyProperties;
+let contactProperties =  steps.getHubspotProperties.contactProperties;
+let dealProperties = steps.getHubspotProperties.dealProperties;
 
-var entities = {
+let syncRulesforOrders = "false";
+
+if (
+  steps.ConfigData.configJson.config_json.cloudElements.syncRuleForOrders !==
+  undefined
+) {
+  syncRulesforOrders =
+    steps.ConfigData.configJson.config_json.cloudElements.syncRuleForOrders
+      .sync;
+}
+
+var entitiesForHubspot = {
   company: "companies",
   contacts: "contacts",
   deal: "deals",
 };
 
+var entitiesForCustomFields = {
+  company: "company",
+  contacts: "contact",
+  deal: "deal",
+}
+
+let entityType = steps.LoopOverHubGroups.entry.type;
+let entity = entitiesForHubspot[entityType];
+
 let hubspotPropertyRoute = "https://api.hubapi.com/crm/v3/properties/";
 
 let retainHubspot = steps.InputParams.retainHubspot;
-console.log(retainHubspot);
+
 let getPropertiesListOfEntity = (entity) => {
   switch (entity) {
-    case "company":
+    case "companies":
       return companyProperties;
     case "deals":
       return dealProperties;
@@ -35,18 +55,33 @@ let getPropertiesListOfEntity = (entity) => {
       return [];
   }
 };
+
+let getCustomPropertiesFieldList = (entity) => {
+  switch(entity){
+    case "company":
+      return steps.HubUrl.config.customCompanyFields;;
+    default:
+      return steps.HubUrl.config.customefields;;
+  }
+}
 //This will help us understand if the property is created by us
 let createPropertyMapOfEntity = (properties) => {
   let map = {};
   for (var property in properties) {
-    map[property.name] = true;
+    map[properties[property].name] = true;
   }
   return map;
 };
+let fieldEnum = {
+  KEYNAME : 0,
+  TYPE: 1,
+  FIELDTYPE : 2
+}
 
+let isCustom = steps.LoopOverHubGroups.entry.custom;
 if (retainHubspot) {
   //First "if" is to check for custom is true or not
-  if (steps.LoopOverHubGroups.entry.custom) {
+  if (isCustom) {
     let syncRulesFields =
       steps.ConfigData.configJson.config_json.cloudElements.syncRulesFields;
     //Setting the syncRulesFields
@@ -75,10 +110,7 @@ if (retainHubspot) {
       }
     }
     syncRulesFields = JSON.parse(JSON.stringify(syncRulesFields));
-    //get Custom fields from HubUrl step
-    let customefields = steps.HubUrl.config.customefields;
-    //get custom company fields from HubUrl step
-    let customCompanyFields = steps.HubUrl.config.customCompanyFields;
+    let fieldProps = steps.UpdateCustomFieldInfo.fieldProps;
     let companyKeys = Object.keys(syncRulesFields.company);
     //looping companykeys and is set in syncrulesfileds
     for (var i = 0; i < companyKeys.length; i++) {
@@ -122,120 +154,36 @@ if (retainHubspot) {
       }
     } else {
       // that custom group does not exist add a entry to creates first by creating the group
-      if (steps.LoopOverHubGroups.entry.type === "company") {
         creates.push({
-          url: "https://api.hubapi.com/properties/v1/companies/groups",
+          url: "https://api.hubapi.com/properties/v1/"+entity+"/groups",
           body: {
             name: "chargebeecustomproperties",
             displayName: "Chargebee Custom Properties",
           },
         });
-      }
-      if (steps.LoopOverHubGroups.entry.type === "contacts") {
-        creates.push({
-          url: "https://api.hubapi.com/properties/v1/contacts/groups",
-          body: {
-            name: "chargebeecustomproperties",
-            displayName: "Chargebee Custom Properties",
-          },
-        });
-      }
-      if (steps.LoopOverHubGroups.entry.type === "deal") {
-        creates.push({
-          url: "https://api.hubapi.com/properties/v1/deals/groups",
-          body: {
-            name: "chargebeecustomproperties",
-            displayName: "Chargebee Custom Properties",
-          },
-        });
-      }
     }
 
-    if (steps.LoopOverHubGroups.entry.type === "company") {
-      //loop over customcompanyfields and if the field has a value as 'on' create it
-      for (var i = 0; i < customCompanyFields.length; i++) {
-        let fld = customCompanyFields[i];
-
-        for (var j = 0; j < fld.fields.length; j++) {
-          var es = fld.fields[j];
-          var desc = fld.label + " " + es[0].replace(/_/g, " ");
-          var id = fld.key + "_" + es[0];
-
-          if (syncRulesFields.company[id] === "on") {
-            creates.push({
-              url: "https://api.hubapi.com/properties/v1/companies/properties",
-              body: {
-                name: prefix + id,
-                label: desc,
-                description: desc,
-                groupName: "chargebeecustomproperties",
-                type: es[1],
-                fieldType: es[2],
-                formField: true,
-              },
-            });
-          } else if (syncRulesFields.company[id] === "delete") {
-            //delete if marked as delete
-            deletes.push(
-              "https://api.hubapi.com/properties/v1/companies/properties/named/" +
-                prefix +
-                id
-            );
-          }
-        }
-      }
-    } else {
+    let customFieldsList = getCustomPropertiesFieldList(entitiesForCustomFields.entityType)
+     {
       //for each custom fields we have subscription and customer
-      for (var i = 0; i < customefields.length; i++) {
-        let fld = customefields[i];
+      for (var i = 0; i < customFieldsList.length; i++) {
+        let fld = customFieldsList[i];
 
         for (var j = 0; j < fld.fields.length; j++) {
-          var es = fld.fields[j];
-          var desc = fld.label + " " + es[0].replace(/_/g, " ");
-          var id = fld.key + "_" + es[0];
-          if (steps.LoopOverHubGroups.entry.type === "contacts") {
-            if (syncRulesFields.contact[id] === "on") {
-              creates.push({
-                url: "https://api.hubapi.com/properties/v1/contacts/properties",
-                body: {
-                  name: prefix + id,
-                  label: desc,
-                  description: desc,
-                  groupName: "chargebeecustomproperties",
-                  type: es[1],
-                  fieldType: es[2],
-                  formField: true,
-                },
-              });
-            } else if (syncRulesFields.contact[id] === "delete") {
+          let field = fld.fields[j];
+          let desc = fld.label + " " + field[fieldEnum.KEYNAME].replace(/_/g, " ");
+          let id = fld.key + "_" + field[fieldEnum.KEYNAME];
+
+          if (syncRulesFields[entitiesForCustomFields[entityType]][id] === "on") {
+            let createInput = getCreateInput(entity, fieldProps,field[fieldEnum.KEYNAME],field[fieldEnum.TYPE], field[fieldEnum.FIELDTYPE],desc, id);
+              creates.push(createInput);
+          } else if (syncRulesFields[entitiesForCustomFields[entityType]][id] === "delete") {
               deletes.push(
-                "https://api.hubapi.com/properties/v1/contacts/properties/named/" +
+                "https://api.hubapi.com/properties/v1/"+ entity +"/properties/named/" +
                   prefix +
                   id
               );
             }
-          } else {
-            if (syncRulesFields.deal[id] === "on") {
-              creates.push({
-                url: "https://api.hubapi.com/properties/v1/deals/properties",
-                body: {
-                  name: prefix + id,
-                  label: desc,
-                  description: desc,
-                  groupName: "chargebeecustomproperties",
-                  type: es[1],
-                  fieldType: es[2],
-                  formField: true,
-                },
-              });
-            } else if (syncRulesFields.deal[id] === "delete") {
-              deletes.push(
-                "https://api.hubapi.com/properties/v1/deals/properties/named/" +
-                  prefix +
-                  id
-              );
-            }
-          }
         }
       }
     }
@@ -243,81 +191,18 @@ if (retainHubspot) {
     //if custom is not true
     //if that non custom group doesnt exist create it
     if (steps.GetCustomHubSpotGroups.cb_code === 404) {
-      if (steps.LoopOverHubGroups.entry.type === "company") {
-        creates.push({
-          url: "https://api.hubapi.com/properties/v1/companies/groups",
-          body: {
-            name: "chargebeesubscriptionmetrics",
-            displayName: "Chargebee subscription metrics",
-          },
-        });
-
-        for (var k = 0; k < companyProperties.length; k++) {
-          creates.push({
-            url: "https://api.hubapi.com/properties/v1/companies/properties",
-            body: companyProperties[k],
-          });
-        }
-      }
-      if (steps.LoopOverHubGroups.entry.type === "contacts") {
-        if (steps.LoopOverHubGroups.entry.group === "chargebeecustomerinfo") {
-          creates.push({
-            url: "https://api.hubapi.com/properties/v1/contacts/groups",
-            body: {
-              name: "chargebeecustomerinfo",
-              displayName: "Chargebee customer info",
-            },
-          });
-        }
-        if (
-          steps.LoopOverHubGroups.entry.group === "chargebeesubscriptioninfo"
-        ) {
-          creates.push({
-            url: "https://api.hubapi.com/properties/v1/contacts/groups",
-            body: {
-              name: "chargebeesubscriptioninfo",
-              displayName: "Chargebee subscription info",
-            },
-          });
-        }
-        if (steps.LoopOverHubGroups.entry.group === "chargebeeorderinfo") {
-          creates.push({
-            url: "https://api.hubapi.com/properties/v1/contacts/groups",
-            body: {
-              name: "chargebeeorderinfo",
-              displayName: "Chargebee order info",
-            },
-          });
-        }
-
-        for (var k = 0; k < contactProperties.length; k++) {
-          if (
-            steps.LoopOverHubGroups.entry.group ===
-            contactProperties[k].groupName
-          ) {
-            creates.push({
-              url: "https://api.hubapi.com/properties/v1/contacts/properties",
-              body: contactProperties[k],
-            });
-          }
-        }
-      }
-      if (steps.LoopOverHubGroups.entry.type === "deal") {
-        creates.push({
-          url: "https://api.hubapi.com/properties/v1/deals/groups",
-          body: {
-            name: "chargebeesubscriptioninfo",
-            displayName: "Chargebee subscription info",
-          },
-        });
-
-        for (var k = 0; k < dealProperties.length; k++) {
-          creates.push({
-            url: "https://api.hubapi.com/properties/v1/deals/properties",
-            body: dealProperties[k],
-          });
-        }
-      }
+      let groupName = steps.LoopOverHubGroups.entry.group; 
+      let properties =  getPropertiesListOfEntity(entity);
+      let displayName = steps.LoopOverHubGroups.entry.displayName; 
+      //created the corresponding group
+      creates.push({
+        url: "https://api.hubapi.com/properties/v1/"+entity+"/groups",
+        body: {
+          name: groupName,
+          displayName: displayName,
+        },
+      });
+      addProperties(properties, entity, groupName);
     } else if (steps.GetCustomHubSpotGroups.cb_code === 200) {
       // if already exists get all the properties from hubspot
       let pMap = {};
@@ -326,44 +211,47 @@ if (retainHubspot) {
       for (var ij = 0; ij < existingProps.length; ij++) {
         pMap[existingProps[ij].name] = existingProps[ij].name;
       }
-
       //add to creates array only if it doesn't exists
-      let entity = entities[steps.LoopOverHubGroups.entry.type];
+      let groupName = steps.LoopOverHubGroups.entry.group; 
       let properties = getPropertiesListOfEntity(entity);
-      for (var k = 0; k < properties.length; k++) {
-        let name = properties[k].name;
+      let propertiesInGroup = properties[groupName];
+      for (var k = 0; k < propertiesInGroup.length; k++) {
+        let name = propertiesInGroup[k].name;
         if (pMap[name] === undefined) {
-          let url =
-            "https://api.hubapi.com/properties/v1/" + entity + "/properties";
-          creates.push({
-            url: url,
-            body: properties[k],
-          });
+          addToCreates(entity, propertiesInGroup[k], groupName);
         }
-        //else update
-        {
-          let url =
-            "https://api.hubapi.com/crm/v3/properties/" +
-            entity +'/'+ name;
-            "/" +
-            updates.push({
-              url: url,
-              body : properties[k]
-            });
-        }
+        // else{
+        //   if (groupName === "chargebeeorderinfo") {
+        //     if (syncRulesforOrders === "false") {
+        //       let url = hubspotPropertyRoute + entity + "/" + propertiesInGroup[k].name;
+        //       deletes.push({ url: url });
+        //     }
+        //   }
+        // }
       }
     }
   }
-} else {
+} else if(steps.GetCustomHubSpotGroups.cb_code !== 404) {
+  
   //delete
   let properties = steps.GetCustomHubSpotGroups.data.properties;
   let groupName = steps.GetCustomHubSpotGroups.data.name;
-  let entity = entities[steps.LoopOverHubGroups.entry.type];
-  let map = createPropertyMapOfEntity(getPropertiesListOfEntity(entity));
-
+  let cbProperties;
+  let map={};
+  if(!isCustom){
+    cbProperties = getPropertiesListOfEntity(entity);
+    map = createPropertyMapOfEntity(cbProperties[groupName]);
+  }
+  else{
+    let syncRulesFields =
+      steps.ConfigData.configJson.config_json.cloudElements.syncRulesFields;
+    _.forEach(syncRulesFields[entitiesForCustomFields[entityType]], function(value, key) {
+      map[prefix + key] = value;
+    });
+  }
   for (let i = 0; i < properties.length; i++) {
     // checking if this property is created by us
-    if (map[properties[i].name]) {
+    if (map[properties[i].name] !== undefined) {
       let url = hubspotPropertyRoute + entity + "/" + properties[i].name;
       deletes.push({ url: url });
     }
@@ -373,8 +261,61 @@ if (retainHubspot) {
   deletes.push({ url: hubspotGroupurl });
 }
 
+
+function addToCreates(entity, data, groupName) {
+  let createInput = {
+    url: "https://api.hubapi.com/properties/v1/" + entity + "/properties",
+    body: data,
+  };
+  if (groupName === "chargebeeorderinfo") {
+    if (syncRulesforOrders === "true") {
+      creates.push(createInput);
+    }
+  }
+  else {
+    creates.push(createInput);
+  }
+}
+
+function getCreateInput(entity, fieldProps, keyName, type, fieldType, desc, id) {
+  let createInput = {
+    url: "https://api.hubapi.com/properties/v1/" + entity + "/properties",
+    body: {
+      name: prefix + id,
+      label: desc,
+      description: desc,
+      groupName: "chargebeecustomproperties",
+      type: type,
+      fieldType: fieldType,
+      formField: true,
+    },
+  };
+  if (type === "enumeration" && fieldType === "select") {
+    if (fieldProps[keyName].allowedValues !== undefined) {
+      createInput.body.options = generateOptions(fieldProps, keyName);
+    }
+  }
+  return createInput;
+}
+
+function generateOptions(fieldProps, keyName) {
+  let allowedValues = fieldProps[keyName].allowedValues;
+  let options = [];
+  for (var opt in allowedValues) {
+    options.push({
+      "label": allowedValues[opt],
+      "value": allowedValues[opt],
+    });
+  }
+  return options;
+}
+
+function addProperties(properties,entity, groupName) {
+  for (var k = 0; k < properties[groupName].length; k++) {
+    addToCreates(entity,properties[groupName][k],groupName);
+  }
+}
 done({
   creates: creates,
   deletes: deletes,
-  updates: updates
 });

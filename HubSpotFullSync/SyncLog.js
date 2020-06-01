@@ -60,8 +60,6 @@ let subRecord = {
     headers: steps.InputParams.input.cbheaders,
     query: {
       limit: steps.InputParams.batchLimit,
-      "created_at[after]": syncType.lastSync,
-      "updated_at[after]": syncType.lastSync
     },
     apiKey: steps.InputParams.input.apiKey,
     siteName: steps.InputParams.input.siteName,
@@ -98,7 +96,7 @@ let cstRecord = {
   }
 };
 
-if (syncType.lastSync !== undefined && steps.InputParams.input.initialSync === false) {
+if (syncType.lastSync !== undefined && syncType.lastSync !== "" && steps.InputParams.input.initialSync === false) {
   eRecord.input.query["modified_at[after]"] = syncData.SyncRun;
   subRecord.input.query["created_at[after]"] = syncType.lastSync;
   invoiceRecord.input.query["updated_at[after]"] = syncType.lastSync;
